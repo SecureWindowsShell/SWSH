@@ -27,6 +27,15 @@ Username: root
 Server: my.server.ssh
 Unique Nickname: server.ssh
 ```
+# Connection to server
+To connect, you must create add it first using ```swsh -a``` or ```swsh --add```. After that, run ```swsh -c nickname``` or ```swsh --connect nickname``` to connect.
+
+If done properly, output would be similar to this:
+```
+Waiting for response from usr@host...
+Connected to usr@host...
+~:/ $ 
+```
 # Future
 > “The best way to predict your future is to create it.” ~***Abraham Lincoln***
 
