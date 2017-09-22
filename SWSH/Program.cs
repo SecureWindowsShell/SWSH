@@ -22,7 +22,7 @@ namespace SWSH {
                 if (_command.StartsWith("swsh")) {
                     _command = _command.Replace("swsh", "").Trim();
                     if (_command == "--version" || _command == "-v") __version();
-                        else if (_command == "--add" || _command == "-a") {
+                    else if (_command == "--add" || _command == "-a") {
                         __color("exit", ConsoleColor.Red);
                         Console.Write(" or ");
                         __color("-e", ConsoleColor.Red);
@@ -62,7 +62,7 @@ namespace SWSH {
                             Console.Write("Waiting for response from {0}@{1}...\n", ccinfo.Username, ccinfo.Host);
                             using (var ssh = new SshClient(ccinfo)) {
                                 ssh.Connect();
-                                __color("Connected to "+ ccinfo.Username + "@" + ccinfo.Host + "...\n", ConsoleColor.Green);
+                                __color("Connected to " + ccinfo.Username + "@" + ccinfo.Host + "...\n", ConsoleColor.Green);
                                 string pwd = " ", home = "";
                                 home = pwd = ssh.CreateCommand("echo $HOME").Execute();
                                 while (true) {
@@ -88,7 +88,7 @@ namespace SWSH {
                                 }
                                 ssh.Disconnect();
                             }
-                            __color("Connection to "+ ccinfo.Username + "@" + ccinfo.Host + ", closed.\n", ConsoleColor.Yellow);
+                            __color("Connection to " + ccinfo.Username + "@" + ccinfo.Host + ", closed.\n", ConsoleColor.Yellow);
                         } else break;
                         #endregion
                     }
@@ -119,7 +119,7 @@ namespace SWSH {
                     connectionInfo = new ConnectionInfo(server, user, authenticationMethod);
                 }
                 return connectionInfo;
-            }else {
+            } else {
                 __color("ERROR: ", ConsoleColor.Red);
                 Console.WriteLine("SWSH -> {0} -> nickname does not exists", nickname);
                 __start();
