@@ -41,7 +41,7 @@ Add features:
 * scp support
 * Password support
 * Edit nicknames
-* Check existence of private key making a nickname 
+* Check existence of private key when adding a nickname 
 * Custom directory to save data
 
 Fix:
