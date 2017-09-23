@@ -44,14 +44,17 @@ Feel free to contribute this project and add a feature :)
 Below are some items I am trying to add or fix in SWSH:
 
 Add features:
-* Delete nicknames
-* Show all nicknames
-* Show details about a nickname
+* *~Delete nicknames~* ```swsh --delete```
+* *~Show all nicknames~* ```swsh --show```
+* *~Show details about a nickname~* ```swsh --show [nickname]```
 * scp support
 * Password support
 * Edit nicknames
 * Check existence of private key when adding a nickname 
 * Custom directory to save data
+* *~Clear console~* ```clear```
 
 Fix:
 * Make ```cd ..``` work 
+
+### Note: Public release will be made after these features and fixes are added in SWSH.
