@@ -187,15 +187,15 @@ namespace SWSH {
             Console.ResetColor();
         }
         public static void help() {
-            Console.Write("SWSH [command] [arg]\n");
-            Console.WriteLine("\t--version -v: -Check the version of swsh.");
-            Console.WriteLine("\t--add [-password]* -a [-password]*: -Add a new connection either using private key or password (-password).");
-            Console.WriteLine("\t--show [nickname]*: Show nicknames/Details of a nickname.");
-            Console.WriteLine("\t--connect [nickname] -c [nickname]: -Connects to Server over SSH.");
-            Console.WriteLine("\t--delete [nickname]: -Deleted connection's nickname.");
-            Console.WriteLine("\t--help -h: -Displays this help.");
-            Console.WriteLine("clear: Clears the console.");
-            Console.WriteLine("exit: Exits.");
+            Console.Write("swsh [command] [arg]\n");
+            Console.WriteLine("\t-v --version:              -Check the version of swsh.");
+            Console.WriteLine("\t-a --add     [-password]*  -Add a new connection either using private key or password (-password).");
+            Console.WriteLine("\t   --show    [nickname]*   -Show nicknames/Details of a nickname.");
+            Console.WriteLine("\t-c --connect [nickname]    -Connects to Server over SSH.");
+            Console.WriteLine("\t   --delete  [nickname]    -Deleted connection's nickname.");
+            Console.WriteLine("\t-h --help:                 -Displays this help.");
+            Console.WriteLine("clear\t                           -Clears the console.");
+            Console.WriteLine("exit\t                           -Exits.");
             Console.WriteLine("\n\nNOTES:\n[1] cd .. is not supported.\n[2] * = Optional.");
         }
         public static void __checkexit(string keyword) {
