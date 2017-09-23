@@ -19,7 +19,7 @@ nickname.swsh
 └──username
 └──host
 ```
-# Making a nickname
+# Making a nickname with Key
 To add a new nickname run ```swsh -a``` or ```swsh --add``` and fill the asked details like:
 ```
 Path to private key: C:\path\to\ssh\private.key
@@ -27,10 +27,17 @@ Username: root
 Server: my.server.ssh
 Unique Nickname: server.ssh
 ```
+# Making a nickname with Password
+To add a new nickname run ```swsh -a -password``` or ```swsh --add -password``` and fill the asked details like:
+```
+Username: root
+Server: my.server.ssh
+Unique Nickname: server.ssh
+```
 # Connection to server
 To connect, you must create add it first using ```swsh -a``` or ```swsh --add```. After that, run ```swsh -c nickname``` or ```swsh --connect nickname``` to connect.
 
-If done properly, output would be similar to this:
+If done properly, output would be similar to this (you will be asked for password if you didn't add key):
 ```
 Waiting for response from usr@host...
 Connected to usr@host...
@@ -48,9 +55,9 @@ Add features:
 * *~Show all nicknames~* ```swsh --show```
 * *~Show details about a nickname~* ```swsh --show [nickname]```
 * scp support
-* Password support
+* *~Password support~* ```swsh -a -password```
 * Edit nicknames
-* Check existence of private key when adding a nickname 
+* *~Check existence of private key when adding a nickname~* 
 * Custom directory to save data
 * *~Clear console~* ```clear```
 
