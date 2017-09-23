@@ -4,7 +4,7 @@ using Renci.SshNet;
 
 namespace SWSH {
     class Program {
-        static string _command = "", _version = "pre-alpha-0.0.1", _mainDirectory = "swsh-data/";
+        static string _command = "", _version = "alpha-1.0", _mainDirectory = "swsh-data/";
         static void Main(string[] args) {
             __version();
             Console.Write("swsh --help or -h for help.\n\n");
@@ -122,7 +122,7 @@ namespace SWSH {
                             }
                         }
                     } else if (_command.StartsWith("--delete")) {
-                        if (File.Exists(_mainDirectory + _command.Replace("--delete", "").Trim() + ".swsh")){
+                        if (File.Exists(_mainDirectory + _command.Replace("--delete", "").Trim() + ".swsh")) {
                             __color("Are you sure you want to delete this nickname? (y/n): ", ConsoleColor.Red);
                             var ans = Console.ReadLine().ToUpper();
                             if (ans == "Y") {
