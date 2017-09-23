@@ -63,6 +63,5 @@ Add features:
 
 Fix:
 * Make ```cd ..``` work 
-* A connection attempt failed while using password. Issue #1
 
 ### Note: Public release will be made after these features and fixes are added in SWSH.
