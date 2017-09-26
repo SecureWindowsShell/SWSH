@@ -58,7 +58,8 @@ Add features:
 * *~Password support~* ```swsh -a -password```
 * Edit nicknames
 * *~Check existence of private key when adding a nickname~* 
-* Custom directory to save data
+* ~Custom directory to save data~ (nah, not gonna work...) 
+* Ability to manipulate current working directory on Windows side
 * *~Clear console~* ```clear```
 
 Fix:
