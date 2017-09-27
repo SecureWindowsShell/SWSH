@@ -56,13 +56,15 @@ Add features:
 * *~Show details about a nickname~* ```swsh --show [nickname]```
 * scp support
 * *~Password support~* ```swsh -a -password```
-* Edit nicknames
+* *~Edit nicknames~* ```swsh --edit [nickname]```
 * *~Check existence of private key when adding a nickname~* 
 * ~Custom directory to save data~ (nah, not gonna work...) 
-* Ability to manipulate current working directory on Windows side
+* *~Ability to manipulate current working directory on Windows side~* ```cd``` ```ls```
 * *~Clear console~* ```clear```
+* *~Detailed help~* ```swsh --help [command]```
 
 Fix:
-* Make ```cd ..``` work 
+* *~Make ```cd ..``` work~. Issue #2* 
 * *~A connection attempt failed while using password. Issue #1~*
-### Note: Public release will be made after these features and fixes are added in SWSH.
+### Note: Public release will be made after beta-2.0 is fully tested. Current release: beta-1.0.
+### Note: SWSH can be downloaded from [here](https://github.com/muhammadmuzzammil1998/SWSH/releases/tag/beta-1.0) if you want to give it a go.

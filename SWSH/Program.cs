@@ -1,12 +1,11 @@
 ﻿using System;
 using System.IO;
 using Renci.SshNet;
-using System.Security.Cryptography;
-using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SWSH {
     class Program {
-        static string _command = "", _version = "alpha-2.0", _mainDirectory = "swsh-data/";
+        static string _command = "", _version = "beta-1.0", _mainDirectory = "swsh-data/", _home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), _workingDirectory = _home;
         static void Main(string[] args) {
             Console.Title = "SWSH - " + _version;
             __version();
@@ -16,6 +15,7 @@ namespace SWSH {
         public static void __start() {
             while (true) {
                 try {
+                    __color(_workingDirectory.Replace('\\', '/').Remove(0, 2) + ":", ConsoleColor.DarkCyan);
                     __color("swsh> ", ConsoleColor.DarkGray);
                     _command = Console.ReadLine();
                     if (_command.StartsWith("swsh")) {
@@ -58,8 +58,62 @@ namespace SWSH {
                             String[] data = new String[] { key, usr, svr };
                             if (!Directory.Exists(_mainDirectory)) Directory.CreateDirectory(_mainDirectory);
                             File.AppendAllLines(_mainDirectory + nkn + ".swsh", data);
-                        } else if (_command == "--help" || _command == "-h") {
-                            help();
+                        } else if (_command.StartsWith("--help") || _command.StartsWith("-h")) {
+                            _command = (_command.StartsWith("--help") ? _command.Remove(0, 6) : _command.Remove(0, 2)).Trim();
+                            if (_command.Length > 0) {
+                                var title = "Help for " + _command;
+                                Console.WriteLine(title);
+                                for (int i = 0; i < title.Length; i++) Console.Write("=");
+                                Console.WriteLine();
+                                switch (_command) {
+                                    case "-v":
+                                    case "--version": {
+                                            Console.WriteLine("Syntax: swsh --version");
+                                            Console.WriteLine("Checks the version of swsh.\n\nUsage: swsh --version\n");
+                                            break;
+                                        }
+                                    case "-a":
+                                    case "--add": {
+                                            Console.WriteLine("Syntax: (swsh --add/swsh -a) [-password]");
+                                            Console.WriteLine("Add a new connection either using private key or password.\n\nUsage to add using private "
+                                                + "key: swsh --add\nUsage to add using a password: swsh --add -password\n\nYou'll be asked for password "
+                                                + "each time as SWSH doesn't store them.\n");
+                                            break;
+                                        }
+                                    case "--show": {
+                                            Console.WriteLine("Syntax: swsh --show [nickname]");
+                                            Console.WriteLine("Show nicknames if no arguments have passed. If nickname is provided, shows details of a n"
+                                                + "ickname.\nUsage to check all nicknames: swsh --show\nUsage to check a nickname: swsh --show myserver");
+                                            break;
+                                        }
+                                    case "-c":
+                                    case "--connect": {
+                                            Console.WriteLine("Syntax: (swsh --connect/swsh -c) [nickname]");
+                                            Console.WriteLine("Connects to Server over SSH.\nUsage: swsh --connect myserver");
+                                            break;
+                                        }
+                                    case "--delete": {
+                                            Console.WriteLine("Syntax: swsh --delete [nickname]");
+                                            Console.WriteLine("Deletes connection's nickname.\nUsage: swsh --delete myserver");
+                                            break;
+                                        }
+                                    case "--edit": {
+                                            Console.WriteLine("Syntax: swsh --edit [nickname] [arg]");
+                                            Console.WriteLine("arg:\n\t-user [newUserName]\n\t-key [newKey]\n\t-server [newServer]");
+                                            Console.WriteLine("Edits nickname, use one argument at a time.\nUsage: swsh --edit myserver -user newUSER");
+                                            break;
+                                        }
+                                    case "-h":
+                                    case "--help": {
+                                            Console.WriteLine("Syntax: (swsh --help/swsh -h) [command]");
+                                            Console.WriteLine("Displays this help or command details.\nUsage: swsh --help -h");
+                                            break;
+                                        }
+                                    default:
+                                        __color("ERROR: SWSH -> " + _command + " -> unknown command.\n", ConsoleColor.Red);
+                                        break;
+                                }
+                            } else __help();
                         } else if (_command.StartsWith("--connect") || _command.StartsWith("-c")) {
                             #region   SSH Control  
                             ConnectionInfo ccinfo;
@@ -77,20 +131,20 @@ namespace SWSH {
                                         string pwd = " ", home = "";
                                         home = pwd = ssh.CreateCommand("echo $HOME").Execute();
                                         while (true) {
-                                            if (pwd == home) pwd = "~";
+                                            pwd = Regex.Replace(ssh.CreateCommand("cd " + pwd + "; pwd").Execute(), @"\t|\n|\r", "");
+                                            if (pwd == Regex.Replace(home, @"\t|\n|\r", "")) pwd = "~";
                                             __color(pwd, ConsoleColor.Green);
                                             Console.Write(":/ $ ");
                                             _command = Console.ReadLine();
                                             if (_command == "exit")
                                                 break;
-                                            else if (_command.StartsWith("cd ")) {
+                                            else if (_command.StartsWith("cd")) {
                                                 _command = _command.Remove(0, 3);
                                                 if (_command.StartsWith("/")) pwd = _command;
                                                 else if (_command.StartsWith("./")) pwd += "/" + _command.Remove(0, 2);
-                                                else if (_command.StartsWith("..")) {
-                                                    __color("ERROR: ", ConsoleColor.Red);
-                                                    Console.Write("SWSH -> cd {0} -> Operation not allowed. Run \"swsh -h\" and see Note #1.\n", _command);
-                                                } else pwd += "/" + _command;
+                                                else if (_command.StartsWith("..")) pwd = Regex.Replace(ssh.CreateCommand("cd " + pwd + "; dirname $(pwd)").Execute(), @"\t|\n|\r", "");
+                                                else if (_command.Trim() == String.Empty) pwd = "~";
+                                                else pwd += "/" + _command;
                                             } else if (_command == "clear") Console.Clear();
                                             else {
                                                 var result = ssh.CreateCommand("cd " + pwd + "; " + _command).Execute();
@@ -109,21 +163,31 @@ namespace SWSH {
                         } else if (_command.StartsWith("--show")) {
                             _command = _command.Remove(0, 6);
                             if (_command.Trim() == string.Empty) {
-                                foreach (var file in Directory.GetFiles(_mainDirectory)) {
-                                    var data = File.ReadAllLines(file);
-                                    Console.Write("\nDetails of {0}:\n", Path.GetFileNameWithoutExtension(file));
-                                    for (int i = 0; i < Path.GetFileNameWithoutExtension(file).Length + 12; i++) Console.Write("=");
-                                    if (data[0] == "-password") {
-                                        Console.Write("\nUsername: {0}\nHost: {1}\n\n", data[1], data[2]);
-                                    } else {
-                                        Console.Write("\nPath to key: {0}\nUsername: {1}\nHost: {2}\nStatus: ", data[0], data[1], data[2]);
-                                        var conInfo = __CreateConnectionInfoKey(Path.GetFileNameWithoutExtension(file));
-                                        if (conInfo != null)
-                                            using (var connection = new SshClient(conInfo)) {
-                                                connection.Connect();
-                                                __color("Working\n\n", ConsoleColor.Green);
+                                if (Directory.Exists(_mainDirectory)) {
+                                    if (Directory.GetFiles(_mainDirectory).Length > 0) {
+                                        foreach (var file in Directory.GetFiles(_mainDirectory)) {
+                                            var data = File.ReadAllLines(file);
+                                            Console.Write("\nDetails of {0}:\n", Path.GetFileNameWithoutExtension(file));
+                                            for (int i = 0; i < Path.GetFileNameWithoutExtension(file).Length + 12; i++) Console.Write("=");
+                                            if (data[0] == "-password") {
+                                                Console.Write("\nUsername: {0}\nHost: {1}\n\n", data[1], data[2]);
+                                            } else {
+                                                Console.Write("\nPath to key: {0}\nUsername: {1}\nHost: {2}\nStatus: ", data[0], data[1], data[2]);
+                                                var conInfo = __CreateConnectionInfoKey(Path.GetFileNameWithoutExtension(file));
+                                                if (conInfo != null)
+                                                    using (var connection = new SshClient(conInfo)) {
+                                                        connection.Connect();
+                                                        __color("Working\n\n", ConsoleColor.Green);
+                                                    }
                                             }
+                                        }
+                                    } else {
+                                        __color("ERROR: ", ConsoleColor.Red);
+                                        Console.WriteLine("SWSH -> no nickname(s) found. try swsh --help");
                                     }
+                                } else {
+                                    __color("ERROR: ", ConsoleColor.Red);
+                                    Console.WriteLine("SWSH -> no nickname(s) found. try swsh --help");
                                 }
                             } else {
                                 _command = _command.Trim();
@@ -160,25 +224,89 @@ namespace SWSH {
                                 __color("ERROR: ", ConsoleColor.Red);
                                 Console.WriteLine("SWSH -> {0} -> nickname does not exists", _command.Replace("--delete", "").Trim());
                             }
+                        } else if (_command.StartsWith("--edit")) {
+                            _command = _command.Remove(0, 6);
+                            String[] data = _command.Split(' ');
+                            if (File.Exists(_mainDirectory + data[1] + ".swsh")) {
+                                string[] arrLine = File.ReadAllLines(_mainDirectory + data[1] + ".swsh");
+                                if (data[2] == "-user") arrLine[1] = data[3];
+                                else if (data[2] == "-server") arrLine[2] = data[3];
+                                else if (data[2] == "-key") {
+                                    if (!Directory.Exists(data[3])) {
+                                        __color("ERROR: ", ConsoleColor.Red);
+                                        Console.Write("SWSH -> {0} -> file is non existent.\n", data[3]);
+                                        __color("exit", ConsoleColor.Red);
+                                        Console.Write(" or ");
+                                        __color("-e", ConsoleColor.Red);
+                                        Console.Write(" to cancel.\n");
+                                        getKey:
+                                        Console.Write("-key: ");
+                                        var key = Console.ReadLine();
+                                        if (key == "-e" || key == "exit") {
+                                            __color("Aborted.\n", ConsoleColor.Yellow);
+                                            goto end;
+                                        }
+                                        if (File.Exists(key)) arrLine[0] = key;
+                                        else {
+                                            __color("ERROR: ", ConsoleColor.Red);
+                                            Console.Write("SWSH -> {0} -> file is non existent.\n", key);
+                                            goto getKey;
+                                        }
+                                    }
+                                }
+                                File.WriteAllLines(_mainDirectory + data[1] + ".swsh", arrLine);
+                                __color("Updated.\n", ConsoleColor.Green);
+                                end:;
+                            } else {
+                                __color("ERROR: ", ConsoleColor.Red);
+                                Console.WriteLine("SWSH -> {0} -> nickname does not exists", data[1]);
+                            }
+                        } else if (_command == "clear") {
+                            Console.Clear();
+                            __version();
+                            Console.Write("swsh --help or -h for help.\n\n");
+                        } else if (_command == "exit") break;
+                        else {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            __help();
+                            Console.ResetColor();
                         }
-                    } else if (_command == "clear") {
-                        Console.Clear();
-                        __version();
-                        Console.Write("swsh --help or -h for help.\n\n");
-                    } else if (_command == "exit") break;
-                    else {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        help();
-                        Console.ResetColor();
-                    }
+                    } else if (_command == "ls") {
+                        if (Directory.GetFiles(_workingDirectory).Length > 0) {
+                            __color("files: \n", ConsoleColor.Cyan);
+                            foreach (var file in Directory.GetFiles(_workingDirectory))
+                                Console.WriteLine(Path.GetFileName(file));
+                        }
+                        if (Directory.GetDirectories(_workingDirectory).Length > 0) {
+                            __color("\ndirectories: \n", ConsoleColor.DarkCyan);
+                            foreach (var dir in Directory.GetDirectories(_workingDirectory))
+                                Console.WriteLine((dir.Replace(Path.GetDirectoryName(dir) + Path.DirectorySeparatorChar, "")).Replace('\\', '/'));
+                        }
+                        if (Directory.GetDirectories(_workingDirectory).Length == 0 && Directory.GetFiles(_workingDirectory).Length == 0) __color("No files or directories here.\n", ConsoleColor.Yellow);
+                    } else if (_command.StartsWith("cd")) {
+                        _command = _command.Remove(0, 3);
+                        if (_command == "..") __changeWorkingDir(Path.GetDirectoryName(_workingDirectory));
+                        else if (_command.StartsWith("./")) __changeWorkingDir(_workingDirectory + "/" + _command.Remove(0, 2));
+                        else if (_command.StartsWith("/")) __changeWorkingDir(Path.GetPathRoot(_workingDirectory) + _command.Remove(0, 1));
+                        else __changeWorkingDir(_workingDirectory + "/" + _command);
+                    } else __color("ERROR: SWSH -> " + _command + " -> unknown command.\n", ConsoleColor.Red);
                 } catch (Exception exp) {
                     __color("ERROR: ", ConsoleColor.Red);
                     Console.WriteLine(exp.Message);
                 }
             }
         }
+        public static void __changeWorkingDir(string path) {
+            path = path.Replace('\\', '/');
+            if (Directory.Exists(path)) _workingDirectory = path;
+            else {
+                __color("ERROR: ", ConsoleColor.Red);
+                Console.WriteLine("SWSH -> {0} -> path does not exists", path);
+            }
+        }
         public static void __version() {
-            Console.Write("   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __  /  \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
+            Console.Write("   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __"
+                + "  /  \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
             Console.Write("\nRelease: {0}\n{1}", _version, "(c) Muhammad Muzzammil & Nabeel Omer\n");
         }
         public static void __color(string message, ConsoleColor cc) {
@@ -186,17 +314,20 @@ namespace SWSH {
             Console.Write(message);
             Console.ResetColor();
         }
-        public static void help() {
+        public static void __help() {
             Console.Write("swsh [command] [arg]\n");
-            Console.WriteLine("\t-v --version:              -Check the version of swsh.");
-            Console.WriteLine("\t-a --add     [-password]*  -Add a new connection either using private key or password (-password).");
-            Console.WriteLine("\t   --show    [nickname]*   -Show nicknames/Details of a nickname.");
-            Console.WriteLine("\t-c --connect [nickname]    -Connects to Server over SSH.");
-            Console.WriteLine("\t   --delete  [nickname]    -Deleted connection's nickname.");
-            Console.WriteLine("\t-h --help:                 -Displays this help.");
-            Console.WriteLine("clear\t                           -Clears the console.");
-            Console.WriteLine("exit\t                           -Exits.");
-            Console.WriteLine("\n\nNOTES:\n[1] cd .. is not supported.\n[2] * = Optional.");
+            Console.WriteLine("\t-v --version:                  -Check the version of swsh.");
+            Console.WriteLine("\t-a --add     [-password]*      -Add a new connection either using private key or password (-password).");
+            Console.WriteLine("\t   --show    [nickname]*       -Show nicknames/Details of a nickname.");
+            Console.WriteLine("\t-c --connect [nickname]        -Connects to Server over SSH.");
+            Console.WriteLine("\t   --delete  [nickname]        -Deletes connection's nickname.");
+            Console.WriteLine("\t   --edit    [nickname] [arg]  -Edits nickname, use one argument at a time.");
+            Console.WriteLine("\t-h --help:   [command]*        -Displays this help or command details.");
+            Console.WriteLine("\tclear                          -Clears the console.");
+            Console.WriteLine("\texit                           -Exits.");
+            Console.WriteLine("ls                                     -Lists all files and directories in working directory.");
+            Console.WriteLine("cd [arg]                               -Changes directory to 'arg'. arg = directory name.");
+            Console.WriteLine("\n\nNOTES:\n[1] * = Optional.");
         }
         public static void __checkexit(string keyword) {
             if (keyword == "exit" || keyword == "-e") __start();
