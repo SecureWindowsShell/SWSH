@@ -12,6 +12,67 @@ namespace SWSH {
             Console.Write("swsh --help or -h for help.\n\n");
             __start();
         }
+        private void AddConnection() {
+            //TODO @muhammedmuzzammil1998: I don't know why this is needed, please review
+            _command = (_command.StartsWith("--")) ? _command.Replace("--add", "").Trim() : _command.Replace("-a", "").Trim();
+            __color("exit", ConsoleColor.Red);
+            Console.Write(" or ");
+            __color("-e", ConsoleColor.Red);
+            Console.Write(" to cancel.\n");
+
+            var key = "";
+            if (_command.StartsWith("-password")) key = "-password";
+            else {
+                while (true) {
+                    Console.Write("Enter path to private key: ");
+                    key = Console.ReadLine();
+                    __checkexit(key);
+                    if (!File.Exists(key)) {
+                        __color("ERROR: ", ConsoleColor.Red);
+                        Console.Write("SWSH -> {0} -> file is non existent.\n", key);
+                        continue;
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            Console.Write("Username: ");
+            var usr = Console.ReadLine();
+            __checkexit(svr);
+            if (usr == "") {
+                __color("ERROR: ", ConsoleColor.Red);
+                Console.WriteLine("Username should not be empty!");
+            }
+
+            Console.Write("Server: ");
+            var svr = Console.ReadLine();
+            __checkexit(svr);
+            if (svr == "") {
+                __color("ERROR: ", ConsoleColor.Red);
+                Console.WriteLine("IP address or domain name should not be empty!");
+            }
+
+            while(true) {
+                Console.Write("Unique Nickname: ");
+                var nkn = Console.ReadLine();
+                if (nkn.Trim() == string.Empty) {
+                    continue;
+                }
+                else if (File.Exists(_mainDirectory + nkn + ".swsh")) {
+                    __color("ERROR: ", ConsoleColor.Red);
+                    Console.WriteLine("SWSH -> {0} -> nickname exists", nkn);
+                }
+                else {
+                    break;
+                }
+            }
+            String[] data = new String[] { key, usr, svr };
+            if (!Directory.Exists(_mainDirectory)) {
+                Directory.CreateDirectory(_mainDirectory);
+            }
+            File.AppendAllLines(_mainDirectory + nkn + ".swsh", data);
+        }
         public static void __start() {
             while (true) {
                 try {
@@ -22,42 +83,7 @@ namespace SWSH {
                         _command = _command.Replace("swsh", "").Trim();
                         if (_command == "--version" || _command == "-v") __version();
                         else if (_command.StartsWith("--add") || _command.StartsWith("-a")) {
-                            _command = (_command.StartsWith("--")) ? _command.Replace("--add", "").Trim() : _command.Replace("-a", "").Trim();
-                            __color("exit", ConsoleColor.Red);
-                            Console.Write(" or ");
-                            __color("-e", ConsoleColor.Red);
-                            Console.Write(" to cancel.\n");
-                            var key = "";
-                            if (_command.StartsWith("-password")) key = "-password";
-                            else {
-                                getPriKey:
-                                Console.Write("Path to private key: ");
-                                key = Console.ReadLine();
-                                __checkexit(key);
-                                if (!File.Exists(key)) {
-                                    __color("ERROR: ", ConsoleColor.Red);
-                                    Console.Write("SWSH -> {0} -> file is non existent.\n", key);
-                                    goto getPriKey;
-                                }
-                            }
-                            Console.Write("Username: ");
-                            var usr = Console.ReadLine();
-                            __checkexit(usr);
-                            Console.Write("Server: ");
-                            var svr = Console.ReadLine();
-                            __checkexit(svr);
-                            getNick:
-                            Console.Write("Unique Nickname: ");
-                            var nkn = Console.ReadLine();
-                            if (File.Exists(_mainDirectory + nkn + ".swsh")) {
-                                __color("ERROR: ", ConsoleColor.Red);
-                                Console.WriteLine("SWSH -> {0} -> nickname exists", nkn);
-                                goto getNick;
-                            }
-                            if (nkn.Trim() == string.Empty) goto getNick;
-                            String[] data = new String[] { key, usr, svr };
-                            if (!Directory.Exists(_mainDirectory)) Directory.CreateDirectory(_mainDirectory);
-                            File.AppendAllLines(_mainDirectory + nkn + ".swsh", data);
+                            AddConnection();
                         } else if (_command.StartsWith("--help") || _command.StartsWith("-h")) {
                             _command = (_command.StartsWith("--help") ? _command.Remove(0, 6) : _command.Remove(0, 2)).Trim();
                             if (_command.Length > 0) {
