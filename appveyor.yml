@@ -1,0 +1,16 @@
+before_build:
+  - nuget restore
+
+
+notifications:
+  - provider: Email
+    to:
+      - muhammadmuzzammil.cs@gmail.com
+      - nabeelkomer@gmail.com
+
+platform:
+  - Any CPU
+
+configuration:
+  - Debug
+  - Release
