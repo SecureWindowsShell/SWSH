@@ -353,6 +353,9 @@ namespace SWSH {
             } catch (Exception exp) { __color("ERROR: " + exp.Message + "\n", ConsoleColor.Red); }
             return null;
         }
+        private void GetStdin() {
+            _command = Console.ReadLine();
+        }
         public static ConnectionInfo __CreateConnectionInfoPassword(string nickname, string password) {
             try {
                 if (File.Exists(_mainDirectory + nickname + ".swsh")) {
