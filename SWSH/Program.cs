@@ -17,7 +17,7 @@ namespace SWSH {
                 try {
                     __color(_workingDirectory.Replace('\\', '/').Remove(0, 2) + ":", ConsoleColor.DarkCyan);
                     __color("swsh> ", ConsoleColor.DarkGray);
-                    _command = Console.ReadLine();
+                    GetStdin();
                     if (_command.StartsWith("swsh")) {
                         _command = _command.Replace("swsh", "").Trim();
                         if (_command == "--version" || _command == "-v") __version();
@@ -135,7 +135,7 @@ namespace SWSH {
                                             if (pwd == Regex.Replace(home, @"\t|\n|\r", "")) pwd = "~";
                                             __color(pwd, ConsoleColor.Green);
                                             Console.Write(":/ $ ");
-                                            _command = Console.ReadLine();
+                                            GetStdin();
                                             if (_command == "exit")
                                                 break;
                                             else if (_command.StartsWith("cd")) {
