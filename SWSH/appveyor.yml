@@ -1,3 +1,5 @@
+before_build: nuget restore -verbosity detailed
+
 platform:
   - x86
   - Any CPU
