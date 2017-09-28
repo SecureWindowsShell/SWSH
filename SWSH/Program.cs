@@ -12,7 +12,7 @@ namespace SWSH {
             Console.Write("swsh --help or -h for help.\n\n");
             __start();
         }
-        private void AddConnection() {
+        private void __addConnection() {
             //TODO @muhammedmuzzammil1998: I don't know why this is needed, please review
             _command = (_command.StartsWith("--")) ? _command.Replace("--add", "").Trim() : _command.Replace("-a", "").Trim();
             __color("exit", ConsoleColor.Red);
@@ -78,12 +78,12 @@ namespace SWSH {
                 try {
                     __color(_workingDirectory.Replace('\\', '/').Remove(0, 2) + ":", ConsoleColor.DarkCyan);
                     __color("swsh> ", ConsoleColor.DarkGray);
-                    GetStdin();
+                    __getStdin();
                     if (_command.StartsWith("swsh")) {
                         _command = _command.Replace("swsh", "").Trim();
                         if (_command == "--version" || _command == "-v") __version();
                         else if (_command.StartsWith("--add") || _command.StartsWith("-a")) {
-                            AddConnection();
+                            __addConnection();
                         } else if (_command.StartsWith("--help") || _command.StartsWith("-h")) {
                             _command = (_command.StartsWith("--help") ? _command.Remove(0, 6) : _command.Remove(0, 2)).Trim();
                             if (_command.Length > 0) {
@@ -161,7 +161,7 @@ namespace SWSH {
                                             if (pwd == Regex.Replace(home, @"\t|\n|\r", "")) pwd = "~";
                                             __color(pwd, ConsoleColor.Green);
                                             Console.Write(":/ $ ");
-                                            GetStdin();
+                                            __getStdin();
                                             if (_command == "exit")
                                                 break;
                                             else if (_command.StartsWith("cd")) {
@@ -379,7 +379,7 @@ namespace SWSH {
             } catch (Exception exp) { __color("ERROR: " + exp.Message + "\n", ConsoleColor.Red); }
             return null;
         }
-        private void GetStdin() {
+        private void __getStdin() {
             _command = Console.ReadLine();
         }
         public static ConnectionInfo __CreateConnectionInfoPassword(string nickname, string password) {
