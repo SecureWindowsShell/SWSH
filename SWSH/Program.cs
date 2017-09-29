@@ -13,7 +13,6 @@ namespace SWSH {
             __start();
         }
         private void __addConnection() {
-            //TODO @muhammedmuzzammil1998: I don't know why this is needed, please review
             _command = (_command.StartsWith("--")) ? _command.Replace("--add", "").Trim() : _command.Replace("-a", "").Trim();
             __color("exit", ConsoleColor.Red);
             Console.Write(" or ");
@@ -73,6 +72,66 @@ namespace SWSH {
             }
             File.AppendAllLines(_mainDirectory + nkn + ".swsh", data);
         }
+        private void __interactiveHelp() {
+            _command = (_command.StartsWith("--help") ? _command.Remove(0, 6) : _command.Remove(0, 2)).Trim();
+            if (_command.Length > 0) {
+                var title = "Help for " + _command;
+                Console.WriteLine(title);
+                for (int i = 0; i < title.Length; i++) Console.Write("=");
+                Console.WriteLine();
+                switch (_command) {
+                    case "-v":
+                    case "--version": {
+                        Console.WriteLine("Syntax: swsh --version");
+                        Console.WriteLine("Checks the version of swsh.\n\nUsage: swsh --version\n");
+                        break;
+                    }
+                    case "-a":
+                    case "--add": {
+                        Console.WriteLine("Syntax: (swsh --add/swsh -a) [-password]");
+                        Console.WriteLine("Add a new connection either using private key or password.\n\nUsage to add using private "
+                            + "key: swsh --add\nUsage to add using a password: swsh --add -password\n\nYou'll be asked for password "
+                            + "each time as SWSH doesn't store them.\n");
+                        break;
+                    }
+                    case "--show": {
+                        Console.WriteLine("Syntax: swsh --show [nickname]");
+                        Console.WriteLine("Show nicknames if no arguments have passed. If nickname is provided, shows details of a n"
+                            + "ickname.\nUsage to check all nicknames: swsh --show\nUsage to check a nickname: swsh --show myserver");
+                        break;
+                    }
+                    case "-c":
+                    case "--connect": {
+                        Console.WriteLine("Syntax: (swsh --connect/swsh -c) [nickname]");
+                        Console.WriteLine("Connects to Server over SSH.\nUsage: swsh --connect myserver");
+                        break;
+                    }
+                    case "--delete": {
+                        Console.WriteLine("Syntax: swsh --delete [nickname]");
+                        Console.WriteLine("Deletes connection's nickname.\nUsage: swsh --delete myserver");
+                        break;
+                    }
+                    case "--edit": {
+                        Console.WriteLine("Syntax: swsh --edit [nickname] [arg]");
+                        Console.WriteLine("arg:\n\t-user [newUserName]\n\t-key [newKey]\n\t-server [newServer]");
+                        Console.WriteLine("Edits nickname, use one argument at a time.\nUsage: swsh --edit myserver -user newUSER");
+                        break;
+                    }
+                    case "-h":
+                    case "--help": {
+                        Console.WriteLine("Syntax: (swsh --help/swsh -h) [command]");
+                        Console.WriteLine("Displays this help or command details.\nUsage: swsh --help -h");
+                        break;
+                    }
+                    default:
+                    __color("ERROR: SWSH -> " + _command + " -> unknown command.\n", ConsoleColor.Red);
+                    break;
+                }
+            }
+            else {
+                __help();
+            }
+        }
         public static void __start() {
             while (true) {
                 try {
@@ -85,61 +144,7 @@ namespace SWSH {
                         else if (_command.StartsWith("--add") || _command.StartsWith("-a")) {
                             __addConnection();
                         } else if (_command.StartsWith("--help") || _command.StartsWith("-h")) {
-                            _command = (_command.StartsWith("--help") ? _command.Remove(0, 6) : _command.Remove(0, 2)).Trim();
-                            if (_command.Length > 0) {
-                                var title = "Help for " + _command;
-                                Console.WriteLine(title);
-                                for (int i = 0; i < title.Length; i++) Console.Write("=");
-                                Console.WriteLine();
-                                switch (_command) {
-                                    case "-v":
-                                    case "--version": {
-                                            Console.WriteLine("Syntax: swsh --version");
-                                            Console.WriteLine("Checks the version of swsh.\n\nUsage: swsh --version\n");
-                                            break;
-                                        }
-                                    case "-a":
-                                    case "--add": {
-                                            Console.WriteLine("Syntax: (swsh --add/swsh -a) [-password]");
-                                            Console.WriteLine("Add a new connection either using private key or password.\n\nUsage to add using private "
-                                                + "key: swsh --add\nUsage to add using a password: swsh --add -password\n\nYou'll be asked for password "
-                                                + "each time as SWSH doesn't store them.\n");
-                                            break;
-                                        }
-                                    case "--show": {
-                                            Console.WriteLine("Syntax: swsh --show [nickname]");
-                                            Console.WriteLine("Show nicknames if no arguments have passed. If nickname is provided, shows details of a n"
-                                                + "ickname.\nUsage to check all nicknames: swsh --show\nUsage to check a nickname: swsh --show myserver");
-                                            break;
-                                        }
-                                    case "-c":
-                                    case "--connect": {
-                                            Console.WriteLine("Syntax: (swsh --connect/swsh -c) [nickname]");
-                                            Console.WriteLine("Connects to Server over SSH.\nUsage: swsh --connect myserver");
-                                            break;
-                                        }
-                                    case "--delete": {
-                                            Console.WriteLine("Syntax: swsh --delete [nickname]");
-                                            Console.WriteLine("Deletes connection's nickname.\nUsage: swsh --delete myserver");
-                                            break;
-                                        }
-                                    case "--edit": {
-                                            Console.WriteLine("Syntax: swsh --edit [nickname] [arg]");
-                                            Console.WriteLine("arg:\n\t-user [newUserName]\n\t-key [newKey]\n\t-server [newServer]");
-                                            Console.WriteLine("Edits nickname, use one argument at a time.\nUsage: swsh --edit myserver -user newUSER");
-                                            break;
-                                        }
-                                    case "-h":
-                                    case "--help": {
-                                            Console.WriteLine("Syntax: (swsh --help/swsh -h) [command]");
-                                            Console.WriteLine("Displays this help or command details.\nUsage: swsh --help -h");
-                                            break;
-                                        }
-                                    default:
-                                        __color("ERROR: SWSH -> " + _command + " -> unknown command.\n", ConsoleColor.Red);
-                                        break;
-                                }
-                            } else __help();
+                            __interactiveHelp();
                         } else if (_command.StartsWith("--connect") || _command.StartsWith("-c")) {
                             #region   SSH Control  
                             ConnectionInfo ccinfo;
