@@ -40,26 +40,33 @@ namespace SWSH {
                 }
             }
 
-            Console.Write("Username: ");
-            var usr = Console.ReadLine();
-            __checkexit(usr);
-            if (usr.Trim() == String.Empty) {
-                __color("ERROR: ", ConsoleColor.Red);
-                Console.Write("SWSH -> username should not be empty!\n");
+            var usr = "";
+            while (true) {
+                Console.Write("Username: ");
+                usr = Console.ReadLine();
+                __checkexit(usr);
+                if (usr.Trim() == String.Empty) {
+                    __color("ERROR: ", ConsoleColor.Red);
+                    Console.Write("SWSH -> username should not be empty!\n");
+                } else break;
             }
 
-            Console.Write("Server: ");
-            var svr = Console.ReadLine();
-            __checkexit(svr);
-            if (svr.Trim() == String.Empty) {
-                __color("ERROR: ", ConsoleColor.Red);
-                Console.Write("SWSH -> IP address or domain name should not be empty!\n");
+            var svr = "";
+            while (true) {
+                Console.Write("Server: ");
+                svr = Console.ReadLine();
+                __checkexit(svr);
+                if (svr.Trim() == String.Empty) {
+                    __color("ERROR: ", ConsoleColor.Red);
+                    Console.Write("SWSH -> IP address or domain name should not be empty!\n");
+                } else break;
             }
 
             var nkn = "";
             while (true) {
                 Console.Write("Unique Nickname: ");
                 nkn = Console.ReadLine();
+                __checkexit(nkn);
                 if (nkn.Trim() == string.Empty) {
                     __color("ERROR: ", ConsoleColor.Red);
                     Console.Write("SWSH -> nickname should not be empty!\n");
@@ -192,9 +199,9 @@ namespace SWSH {
                         } else if (_command.StartsWith("--show")) {
                             _command = _command.Remove(0, 6);
                             if (_command.Trim() == string.Empty) {
-                                if (Directory.Exists(_mainDirectory)) {
-                                    if (Directory.GetFiles(_mainDirectory).Length > 0) {
-                                        foreach (var file in Directory.GetFiles(_mainDirectory)) {
+                                if (Directory.Exists(_mainDirectory) && Directory.GetFiles(_mainDirectory).Length > 0) {
+                                    foreach (var file in Directory.GetFiles(_mainDirectory)) {
+                                        try {
                                             var data = File.ReadAllLines(file);
                                             Console.Write("\nDetails of {0}:\n", Path.GetFileNameWithoutExtension(file));
                                             for (int i = 0; i < Path.GetFileNameWithoutExtension(file).Length + 12; i++) Console.Write("=");
@@ -209,10 +216,10 @@ namespace SWSH {
                                                         __color("Working\n\n", ConsoleColor.Green);
                                                     }
                                             }
+                                        } catch (Exception exp) {
+                                            __color("ERROR: ", ConsoleColor.Red);
+                                            Console.WriteLine(exp.Message);
                                         }
-                                    } else {
-                                        __color("ERROR: ", ConsoleColor.Red);
-                                        Console.WriteLine("SWSH -> no nickname(s) found. try swsh --help");
                                     }
                                 } else {
                                     __color("ERROR: ", ConsoleColor.Red);
@@ -221,37 +228,46 @@ namespace SWSH {
                             } else {
                                 _command = _command.Trim();
                                 var file = _mainDirectory + _command + ".swsh";
-                                if (File.Exists(file)) {
-                                    Console.Write("Details of {0}:\n", _command);
-                                    var data = File.ReadAllLines(file);
-                                    for (int i = 0; i < _command.Length + 12; i++) Console.Write("=");
-                                    Console.Write("\nPath to key: {0}\nUsername: {1}\nHost: {2}\nStatus: ", data[0], data[1], data[2]);
-                                    var connection = new SshClient(__CreateConnectionInfoKey(_command));
-                                    connection.Connect();
-                                    __color("Working\n", ConsoleColor.Green);
-                                    connection.Dispose();
-                                } else {
+                                try {
+                                    if (File.Exists(file)) {
+                                        Console.Write("Details of {0}:\n", _command);
+                                        var data = File.ReadAllLines(file);
+                                        for (int i = 0; i < _command.Length + 12; i++) Console.Write("=");
+                                        Console.Write("\nPath to key: {0}\nUsername: {1}\nHost: {2}\nStatus: ", data[0], data[1], data[2]);
+                                        var connection = new SshClient(__CreateConnectionInfoKey(_command));
+                                        connection.Connect();
+                                        __color("Working\n", ConsoleColor.Green);
+                                        connection.Dispose();
+                                    } else {
+                                        __color("ERROR: ", ConsoleColor.Red);
+                                        Console.WriteLine("SWSH -> {0} -> nickname does not exists", _command);
+                                    }
+                                } catch (Exception exp) {
                                     __color("ERROR: ", ConsoleColor.Red);
-                                    Console.WriteLine("SWSH -> {0} -> nickname does not exists", _command);
+                                    Console.WriteLine(exp.Message);
                                 }
                             }
                         } else if (_command.StartsWith("--delete")) {
-                            if (File.Exists(_mainDirectory + _command.Replace("--delete", "").Trim() + ".swsh")) {
-                                __color("Are you sure you want to delete this nickname? (y/n): ", ConsoleColor.Red);
-                                var ans = Console.ReadLine().ToUpper();
-                                if (ans == "Y") {
-                                    Console.Write("Type the nickname to confirm: ");
-                                    var name = Console.ReadLine();
-                                    if (name != _command.Replace("--delete", "").Trim()) __color("Aborted.\n", ConsoleColor.Yellow);
-                                    else {
-                                        File.Delete(_mainDirectory + _command.Replace("--delete", "").Trim() + ".swsh");
-                                        __color("Deleted.\n", ConsoleColor.Green);
-                                    }
-                                } else
-                                    __color("Aborted.\n", ConsoleColor.Yellow);
-                            } else {
+                            try {
+                                if (File.Exists(__makeNickname(_command.Replace("--delete", "").Trim()))) {
+                                    __color("Are you sure you want to delete this nickname? (y/n): ", ConsoleColor.Red);
+                                    var ans = Console.ReadLine().ToUpper();
+                                    if (ans == "Y") {
+                                        Console.Write("Type the nickname to confirm: ");
+                                        var name = Console.ReadLine();
+                                        if (name != _command.Replace("--delete", "").Trim()) __color("Aborted.\n", ConsoleColor.Yellow);
+                                        else {
+                                            File.Delete(_mainDirectory + _command.Replace("--delete", "").Trim() + ".swsh");
+                                            __color("Deleted.\n", ConsoleColor.Green);
+                                        }
+                                    } else __color("Aborted.\n", ConsoleColor.Yellow);
+                                } else {
+                                    __color("ERROR: ", ConsoleColor.Red);
+                                    Console.WriteLine("SWSH -> {0} -> nickname does not exists", _command.Replace("--delete", "").Trim());
+                                }
+                            } catch (Exception exp) {
                                 __color("ERROR: ", ConsoleColor.Red);
-                                Console.WriteLine("SWSH -> {0} -> nickname does not exists", _command.Replace("--delete", "").Trim());
+                                Console.WriteLine(exp.Message);
                             }
                         } else if (_command.StartsWith("--edit")) {
                             _command = _command.Remove(0, 6);
@@ -359,7 +375,10 @@ namespace SWSH {
             Console.WriteLine("\n\nNOTES:\n[1] * = Optional.");
         }
         public static void __checkexit(string keyword) {
-            if (keyword == "exit" || keyword == "-e") __start();
+            if (keyword == "exit" || keyword == "-e") {
+                __color("Aborted.\n", ConsoleColor.Yellow);
+                __start();
+            }
         }
         public static ConnectionInfo __CreateConnectionInfoKey(string nickname) {
             try {
