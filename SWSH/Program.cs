@@ -21,7 +21,7 @@ using System.Text.RegularExpressions;
 
 namespace SWSH {
     class Program {
-        static string _command = "", _version = "beta-1.0", _mainDirectory = "swsh-data/", _home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), _workingDirectory = _home;
+        public static string _command = "", _version = "beta-1.0", _mainDirectory = "swsh-data/", _home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), _workingDirectory = _home;
         static void Main(string[] args) {
             Console.Title = "SWSH - " + _version;
             __version();
