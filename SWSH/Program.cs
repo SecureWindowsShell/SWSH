@@ -20,7 +20,6 @@ namespace SWSH {
     class Program {
         public static string _command = "", _version = "beta-1.0", _mainDirectory = "swsh-data/",
             _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-
         static void Main(string[] args) {
             Console.Title = "SWSH - " + _version;
             __version();
