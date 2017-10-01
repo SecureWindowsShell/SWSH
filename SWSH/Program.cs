@@ -524,6 +524,7 @@ namespace SWSH
         {
             try
             {
+                //Crash course to functional programming!
                 // This took the both of us 30 minutes to write, never change it!
                 if (!new System.Collections.Generic.List<byte>(
                     new System.Security.Cryptography.SHA1CryptoServiceProvider()
