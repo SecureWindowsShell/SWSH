@@ -70,4 +70,4 @@ Fix:
 * *~Make ```cd ..``` work~. Issue #2* 
 * *~A connection attempt failed while using password. Issue #1~*
 ### Note: Public release will be made after beta-2.0 is fully tested. Current release: beta-1.0.
-### Note: SWSH can be downloaded from [here](https://github.com/muhammadmuzzammil1998/SWSH/releases/tag/beta-1.0) if you want to give it a go.
+### Note: SWSH can be downloaded from [here](https://github.com/muhammadmuzzammil1998/SWSH/releases/tag/beta-1.1) if you want to give it a go.
