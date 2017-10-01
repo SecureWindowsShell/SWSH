@@ -524,6 +524,7 @@ namespace SWSH
         {
             try
             {
+                // This took the both of us 30 minutes to write, never change it!
                 if (!new System.Collections.Generic.List<byte>(
                     new System.Security.Cryptography.SHA1CryptoServiceProvider()
                     .ComputeHash(File.ReadAllBytes(System.Reflection.Assembly.GetExecutingAssembly().Location)))
