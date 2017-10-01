@@ -64,6 +64,7 @@ Add features:
 * *~Ability to manipulate current working directory on Windows side~* ```cd``` ```ls```
 * *~Clear console~* ```clear```
 * *~Detailed help~* ```swsh --help [command]```
+* *~Check integrity of application~*
 
 Fix:
 * *~Make ```cd ..``` work~. Issue #2* 
