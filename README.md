@@ -1,7 +1,7 @@
 # SWSH
 Secure Windows Shell (SWSH - Pronounced swish)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/1rpo0bsdo53749l4?svg=true)](https://ci.appveyor.com/project/nabeelomer/swsh)
+[![Build status](https://ci.appveyor.com/api/projects/status/s8ingehivcjcp084/branch/master?svg=true)](https://ci.appveyor.com/project/muhammadmuzzammil1998/swsh/branch/master)
 
 SWSH is a Secure Shell-like console application for Windows written in C# using [SSH.NET](https://github.com/sshnet/SSH.NET) library.
 It allows you to execute commands over SSH to your server.
