@@ -69,6 +69,7 @@ Add features:
 * *~Check integrity of application~*
 
 Fix:
+* ```swsh --show``` not working. Issue #8 
 * *~Make ```cd ..``` work~. Issue #2* 
 * *~A connection attempt failed while using password. Issue #1~*
 ### Note: Public release will be made after beta-2.0 is fully tested. Current release: beta-1.0.
