@@ -55,23 +55,23 @@ Feel free to contribute this project and add a feature :)
 Below are some items I am trying to add or fix in SWSH:
 
 Add features:
-* *~Delete nicknames~* ```swsh --delete```
-* *~Show all nicknames~* ```swsh --show```
-* *~Show details about a nickname~* ```swsh --show [nickname]```
-* scp support
-* *~Password support~* ```swsh -a -password```
-* *~Edit nicknames~* ```swsh --edit [nickname]```
-* *~Check existence of private key when adding a nickname~* 
-* ~Custom directory to save data~ (nah, not gonna work...) 
-* *~Ability to manipulate current working directory on Windows side~* ```cd``` ```ls```
-* *~Clear console~* ```clear```
-* *~Detailed help~* ```swsh --help [command]```
-* *~Check integrity of application~*
-* keygen for ssh
+- [x] Delete nicknames ```swsh --delete```
+- [x] Show all nicknames ```swsh --show```
+- [x] Show details about a nickname ```swsh --show [nickname]```
+- [ ] scp support
+- [x] Password support ```swsh -a -password```
+- [x] Edit nicknames ```swsh --edit [nickname]```
+- [x] Check existence of private key when adding a nickname
+- [x] ~Custom directory to save data~ (nah, not gonna work...) 
+- [x] Ability to manipulate current working directory on Windows side ```cd``` ```ls```
+- [x] Clear console ```clear```
+- [x] Detailed help ```swsh --help [command]```
+- [x] Check integrity of application
+- [ ] keygen for ssh
 
 Fix:
-* *~```swsh --show``` not working. Issue #8~* 
-* *~Make ```cd ..``` work. Issue #2~* 
-* *~A connection attempt failed while using password. Issue #1~*
+- [x] ```swsh --show``` not working. Issue #8
+- [x] Make ```cd ..``` work. Issue #2
+- [x] A connection attempt failed while using password. Issue #1
 ### Note: Public release will be made after it is fully tested.
 ### Note: SWSH can be downloaded from [here](https://github.com/muhammadmuzzammil1998/SWSH/releases/) if you want to give it a go.
