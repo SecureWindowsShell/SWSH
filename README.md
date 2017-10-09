@@ -3,7 +3,7 @@ Secure Windows Shell (SWSH - Pronounced swish)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/s8ingehivcjcp084/branch/master?svg=true)](https://ci.appveyor.com/project/muhammadmuzzammil1998/swsh/branch/master)
 
-SWSH is a SSH like console application for Windows written in C# using [SSH.NET](https://github.com/sshnet/SSH.NET) library.
+SWSH is a SSH like console application for Windows.
 
 **If you are not using [a binary that we built](https://github.com/SecureWindowsShell/SWSH/releases) or are using an older version of SWSH you will get an error about checksum mismatches, this happens because we only upload the checksum for the latest version of SWSH. Use the flag `--IgnoreChecksumMismatch` to prevent SWSH from exiting on checksum mismatches.**
 
