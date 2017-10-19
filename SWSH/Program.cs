@@ -19,7 +19,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 namespace SWSH {
-    public static class Program  {
+    public static class Program {
         public const string _version = "1.3";
         public static string _command = "", _codename = "unstable-beta", _mainDirectory = "swsh-data/",
             _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
@@ -415,14 +415,13 @@ namespace SWSH {
                                         sftp.Connect();
                                         toupload.ForEach(x => {
                                             var path = _workingDirectory + "/" + x.Trim();
-                                            location = serverData[1] + ((serverData[1].EndsWith("/")) ? "":"/") + x.Trim();
+                                            location = serverData[1] + ((serverData[1].EndsWith("/")) ? "" : "/") + x.Trim();
                                             if (!sftp.Exists(location)) sftp.CreateDirectory(location);
                                             __color("Uploading <directory>: " + x.Trim() + "\n", ConsoleColor.Yellow);
                                             __uploadDir(sftp, path, location);
                                             __color("Done.\n", ConsoleColor.Green);
                                         });
-                                    } 
-                                else
+                                    } else
                                     using (var scp = new ScpClient(ccinfo)) {
                                         scp.Connect();
                                         toupload.ForEach(x => {
@@ -437,7 +436,7 @@ namespace SWSH {
                                             }
                                         });
                                     }
-                                }
+                            }
                         } else {
                             __color("ERROR: ", ConsoleColor.Red);
                             Console.WriteLine("SWSH -> {0} -> nickname does not exists", nickname);
@@ -457,7 +456,7 @@ namespace SWSH {
                     __uploadDir(client, x.FullName, remotePath + "/" + x.Name);
                 } else {
                     using (Stream fileStream = new FileStream(x.FullName, FileMode.Open)) {
-                        Console.ForegroundColor =ConsoleColor.Yellow;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.Write("\tUploading <file>: {0} ({1:N0} bytes)", x, ((FileInfo)x).Length);
                         client.UploadFile(fileStream, remotePath + "/" + x.Name);
                         __color(" -> Done\n", ConsoleColor.Green);
@@ -468,7 +467,7 @@ namespace SWSH {
         private static string Pop(this List<string> list) {
             var retVal = list[list.Count - 1];
             list.RemoveAt(list.Count - 1);
-            return retVal; 
+            return retVal;
         }
         private static string __version() {
             Console.Write("   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __"
