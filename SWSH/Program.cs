@@ -198,6 +198,7 @@ namespace SWSH {
             Console.WriteLine("\texit                           -Exits.");
             Console.WriteLine("ls                                     -Lists all files and directories in working directory.");
             Console.WriteLine("cd [arg]                               -Changes directory to 'arg'. arg = directory name.");
+            Console.WriteLine("scp [args] [nickname]:[location]       -Uploads using scp. 'scp -h' for help.");
             Console.WriteLine("\n\nNOTES:\n[1] * = Optional.");
         }
         private static void __connect() {
@@ -390,38 +391,43 @@ namespace SWSH {
         }
         private static void __scp() {
             _command = _command.Remove(0, 4);
-            List<string> toupload = _command.Split(' ').ToList();
-            var serverData = toupload.Pop().Split(':');
-            var nickname = serverData[0];
-            var location = serverData[1];
-            try {
-                if (File.Exists(__getNickname(nickname))){
-                    ConnectionInfo ccinfo;
-                    if (File.ReadAllLines(_mainDirectory + nickname + ".swsh")[0] == "-password") {
-                        Console.Write("Password for {0}: ", nickname);
-                        ccinfo = __CreateConnectionInfoPassword(nickname, __getCommand());
-                    } else ccinfo = __CreateConnectionInfoKey(nickname);
-                    if (ccinfo != null) {
-                        using (var scp = new ScpClient(ccinfo)) {
-                            scp.Connect();
-                            toupload.ForEach(x => {
-                                var path = _workingDirectory + "/" + x.Trim();
-                                if (File.Exists(path)) {
-                                    __color("Uploading <file>: " + x.Trim(), ConsoleColor.Yellow);
-                                    scp.Upload(new FileInfo(path), location);
-                                    __color("\t\t\tDone\n", ConsoleColor.Green);
-                                } else {
-                                    __color("ERROR: ", ConsoleColor.Red);
-                                    Console.WriteLine("SWSH -> {0} -> file does not exists", path.Replace('/', '\\'));
-                                }
-                            });
+            if (_command == "-h") {
+                Console.WriteLine("scp [args] [nickname]:[location]\t'args' are seperated using spaces ( ) and last 'arg' will be treated as s" +
+                    "erver data which includes nickname as well as the location, part after the colon (:), where the data is to be uploaded.");
+            } else {
+                List<string> toupload = _command.Split(' ').ToList();
+                var serverData = toupload.Pop().Split(':');
+                var nickname = serverData[0];
+                var location = serverData[1];
+                try {
+                    if (File.Exists(__getNickname(nickname))) {
+                        ConnectionInfo ccinfo;
+                        if (File.ReadAllLines(_mainDirectory + nickname + ".swsh")[0] == "-password") {
+                            Console.Write("Password for {0}: ", nickname);
+                            ccinfo = __CreateConnectionInfoPassword(nickname, __getCommand());
+                        } else ccinfo = __CreateConnectionInfoKey(nickname);
+                        if (ccinfo != null) {
+                            using (var scp = new ScpClient(ccinfo)) {
+                                scp.Connect();
+                                toupload.ForEach(x => {
+                                    var path = _workingDirectory + "/" + x.Trim();
+                                    if (File.Exists(path)) {
+                                        __color("Uploading <file>: " + x.Trim(), ConsoleColor.Yellow);
+                                        scp.Upload(new FileInfo(path), location);
+                                        __color("\t\t\tDone\n", ConsoleColor.Green);
+                                    } else {
+                                        __color("ERROR: ", ConsoleColor.Red);
+                                        Console.WriteLine("SWSH -> {0} -> file does not exists", path.Replace('/', '\\'));
+                                    }
+                                });
+                            }
                         }
+                    } else {
+                        __color("ERROR: ", ConsoleColor.Red);
+                        Console.WriteLine("SWSH -> {0} -> nickname does not exists", nickname);
                     }
-                } else {
-                    __color("ERROR: ", ConsoleColor.Red);
-                    Console.WriteLine("SWSH -> {0} -> nickname does not exists", nickname);
-                }
-            } catch (Exception exp) { __color("ERROR: " + exp.Message + "\n", ConsoleColor.Red); }
+                } catch (Exception exp) { __color("ERROR: " + exp.Message + "\n", ConsoleColor.Red); }
+            }
         }
         private static string Pop(this List<string> list) {
             var retVal = list[list.Count - 1];
