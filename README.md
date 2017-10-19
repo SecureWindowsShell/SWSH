@@ -67,6 +67,7 @@ Add features:
 - [x] Detailed help ```swsh --help [command]```
 - [x] Check integrity of application
 - [ ] keygen for ssh
+- [ ] ```.swsh_history``` file to contain history of commands executed
 
 Fix:
 - [x] ```swsh --show``` not working. Issue #8
