@@ -34,7 +34,7 @@ namespace SWSH {
         private static void __start() {
             while (true) {
                 try {
-                    __color(_workingDirectory.Replace('\\', '/').Remove(0, 2) + ":", ConsoleColor.DarkCyan);
+                    __color(_workingDirectory.Replace('\\', '/').Remove(0, 2).ToLower() + ":", ConsoleColor.DarkCyan);
                     __color("swsh> ", ConsoleColor.DarkGray);
                     _command = __getCommand();
                     if (_command.StartsWith("swsh")) {
