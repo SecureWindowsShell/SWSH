@@ -370,15 +370,59 @@ namespace SWSH {
             Console.Write("swsh --help or -h for help.\n\n");
         }
         private static void __ls() {
-            if (Directory.GetFiles(_workingDirectory).Length > 0) {
-                __color("files: \n", ConsoleColor.Cyan);
-                foreach (var file in Directory.GetFiles(_workingDirectory))
-                    Console.WriteLine(Path.GetFileName(file));
-            }
             if (Directory.GetDirectories(_workingDirectory).Length > 0) {
-                __color("\ndirectories: \n", ConsoleColor.DarkCyan);
-                foreach (var dir in Directory.GetDirectories(_workingDirectory))
-                    Console.WriteLine((dir.Replace(Path.GetDirectoryName(dir) + Path.DirectorySeparatorChar, "")).Replace('\\', '/'));
+                List<string> data = new List<string>();
+                Directory.GetDirectories(_workingDirectory).ToList().ForEach(dir => data.Add(dir));
+                Directory.GetFiles(_workingDirectory).ToList().ForEach(file => data.Add(file));
+                data.Sort();
+                Console.WriteLine("Size\tUser        Date Modified   Name\n====\t====        =============   ====");
+                data.ForEach(x => {
+                    if (File.Exists(x)) {
+                        var info = new FileInfo(x);
+                        if (!info.Attributes.ToString().Contains("Hidden")) {
+                            var owner = File.GetAccessControl(x).GetOwner(typeof(System.Security.Principal.NTAccount)).ToString().Split('\\')[1];
+                            var size = ((info.Length > 1024) ? (((info.Length / 1024) > 1024) ? (info.Length / 1024) / 1024 : info.Length / 1024) : 
+                            info.Length).ToString();
+                            var toApp = "";
+                            owner = (owner.Length >= 10) ? owner.Remove(5) + "..." + owner.Remove(0, owner.Length - 2) : owner;
+                            if (owner.Length < 10) for (int i = 0; i < 10 - owner.Length; i++) toApp += " ";
+                            owner += toApp;
+                            if (size.Length < 4) for (int i = 0; i < 3 - size.Length; i++) toApp += " ";
+                            size = toApp + size;
+                            __color(size, ConsoleColor.Green);
+                            __color((info.Length > 1024) ? (((info.Length / 1024) > 1024) ? "MB" : "KB") : "B", ConsoleColor.DarkGreen);
+                            __color(String.Format("\t{0}  ", owner), ConsoleColor.Yellow);
+                            __color(String.Format("{0}{1} {2} {3}", (
+                                String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0].Length > 1 ? "" : " "),
+                                String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0],
+                                String.Format("{0:m}", info.LastWriteTime.Date).Remove(3),
+                                String.Format("{0:HH:mm}    ", info.LastWriteTime.ToLocalTime())), ConsoleColor.Blue);
+                            __color(info.Name, (Path.GetFileNameWithoutExtension(x).Length > 0) ? ConsoleColor.Magenta : ConsoleColor.Cyan);
+                            Console.WriteLine();
+                        }
+                    } else if (Directory.Exists(x)) {
+                        var info = new DirectoryInfo(x);
+                        if (!info.Attributes.ToString().Contains("Hidden")) {
+                            var owner = File.GetAccessControl(x).GetOwner(typeof(System.Security.Principal.NTAccount)).ToString().Split('\\')[1];
+                            owner = (owner.Length >= 10) ? owner.Remove(5) + "..." + owner.Remove(0, owner.Length - 2) : owner;
+                            var toApp = "";
+                            if (owner.Length < 10) for (int i = 0; i < 10 - owner.Length; i++) toApp += " ";
+                            owner += toApp;
+                            __color("   -", ConsoleColor.DarkGray);
+                            __color(String.Format("\t{0}  ", owner), ConsoleColor.Yellow);
+                            __color(String.Format("{0}{1} {2} {3}", (
+                                String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0].Length > 1 ? "" : " "),
+                                String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0],
+                                String.Format("{0:m}", info.LastWriteTime.Date).Remove(3),
+                                String.Format("{0:HH:mm}    ", info.LastWriteTime.ToLocalTime())), ConsoleColor.Blue);
+                            __color(info.Name, 
+                                (info.Name.StartsWith(".")) ? ConsoleColor.DarkCyan : (info.GetFiles().Length > 0 || info.GetDirectories().Length > 0) ? 
+                                ConsoleColor.White : ConsoleColor.DarkGray);
+                            __color((info.GetFiles().Length == 0 && info.GetDirectories().Length == 0) ? "  <empty>" : "", ConsoleColor.DarkRed);
+                            Console.WriteLine();
+                        }
+                    }
+                });
             }
             if (Directory.GetDirectories(_workingDirectory).Length == 0 && Directory.GetFiles(_workingDirectory).Length == 0) __color("No file" +
                 "s or directories here.\n", ConsoleColor.Yellow);
