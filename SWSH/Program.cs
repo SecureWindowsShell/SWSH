@@ -228,7 +228,8 @@ namespace SWSH {
                                 _command = _command.Remove(0, 3);
                                 if (_command.StartsWith("/")) pwd = _command;
                                 else if (_command.StartsWith("./")) pwd += "/" + _command.Remove(0, 2);
-                                else if (_command.StartsWith("..")) pwd = Regex.Replace(ssh.CreateCommand("cd " + pwd + "; dirname $(pwd)").Execute(), @"\t|\n|\r", "");
+                                else if (_command.StartsWith("..")) pwd = Regex.Replace(ssh.CreateCommand("cd " + pwd + "; dirname $(pwd)").Execute(), @"\t|" +
+                                    "\n|\r", "");
                                 else if (_command.Trim() == String.Empty) pwd = "~";
                                 else pwd += "/" + _command;
                             } else if (_command == "clear") Console.Clear();
@@ -396,7 +397,8 @@ namespace SWSH {
                     "erver data which includes nickname as well as the location, part after the colon (:), where the data is to be uploaded. Use flag '" +
                     "--dir' to upload directiories. Do not use absolute paths for local path, change working directory to navigate.");
             } else {
-                List<string> toupload = (_command.StartsWith("--dir")) ? _command.Replace("--dir", "").Trim().Split(' ').ToList() : _command.Trim().Split(' ').ToList();
+                List<string> toupload = (_command.StartsWith("--dir")) ? _command.Replace("--dir", "").Trim().Split(' ').ToList() : _command.Trim().Split(' ')
+                    .ToList();
                 try {
                     var serverData = toupload.Pop().Split(':');
                     var nickname = serverData[0];
@@ -472,8 +474,8 @@ namespace SWSH {
         private static string __version() {
             Console.Write("   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __"
                 + "  /  \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
-            Console.Write("\nRelease: {0}-{1}\n{2}", _codename, _version, "(c) Muhammad Muzzammil & Nabeel Omer\nSWSH is licensed under the GNU General Public License v" +
-                "3.0\n");
+            Console.Write("\nRelease: {0}-{1}\n{2}", _codename, _version, "(c) Muhammad Muzzammil & Nabeel Omer\nSWSH is licensed under the GNU General Publ" +
+                "ic License v3.0\n");
             return _codename + "-" + _version;
         }
         private static void __changeWorkingDir(string path) {
@@ -504,7 +506,8 @@ namespace SWSH {
                     .ComputeHash(File.ReadAllBytes(System.Reflection.Assembly.GetExecutingAssembly().Location)))
                     .Select((x) => x.ToString("x2"))
                     .Aggregate((x, y) => x + y)
-                    .Equals(new System.Net.WebClient().DownloadString("https://raw.githubusercontent.com/SecureWindowsShell/SWSH/master/checksum?" + new Random().Next())))
+                    .Equals(new System.Net.WebClient().DownloadString("https://raw.githubusercontent.com/SecureWindowsShell/SWSH/master/checksum?" +
+                    new Random().Next())))
                     throw new Exception();
 
             } catch (Exception) {
@@ -518,7 +521,8 @@ namespace SWSH {
                         .ComputeHash(File.ReadAllBytes(System.Reflection.Assembly.GetExecutingAssembly().Location)))
                         .Select((x) => x.ToString("x2"))
                         .Aggregate((x, y) => x + y));
-                    Console.WriteLine(new System.Net.WebClient().DownloadString("https://raw.githubusercontent.com/SecureWindowsShell/SWSH/master/checksum?" + new Random().Next()));
+                    Console.WriteLine(new System.Net.WebClient().DownloadString("https://raw.githubusercontent.com/SecureWindowsShell/SWSH/master/checksum?" +
+                        new Random().Next()));
                 }
             }
         }
