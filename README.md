@@ -57,7 +57,7 @@ Add features:
 - [x] Delete nicknames ```swsh --delete```
 - [x] Show all nicknames ```swsh --show```
 - [x] Show details about a nickname ```swsh --show [nickname]```
-- [ ] scp support
+- [x] ~scp~ upload support ```upload```
 - [x] Password support ```swsh -a -password```
 - [x] Edit nicknames ```swsh --edit [nickname]```
 - [x] Check existence of private key when adding a nickname
@@ -67,7 +67,7 @@ Add features:
 - [x] Detailed help ```swsh --help [command]```
 - [x] Check integrity of application
 - [ ] keygen for ssh
-- [ ] ```.swsh_history``` file to contain history of commands executed
+- [x] ```.swsh_history``` file to contain history of commands executed
 
 Fix:
 - [x] ```swsh --show``` not working. Issue #8
