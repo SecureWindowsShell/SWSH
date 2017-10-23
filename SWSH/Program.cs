@@ -16,15 +16,15 @@ using System.IO;
 using Renci.SshNet;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace SWSH {
-    class Program {
-        public const string _version = "1.2";
+    public static class Program {
+        public const string _version = "1.3";
         public static string _command = "", _codename = "beta", _mainDirectory = "swsh-data/",
             _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         static void Main(string[] args) {
-            Console.Title = "SWSH - " + _version;
-            __version();
+            Console.Title = "SWSH - " + __version();
             __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
             Console.Write("swsh --help or -h for help.\n\n");
             __start();
@@ -32,7 +32,7 @@ namespace SWSH {
         private static void __start() {
             while (true) {
                 try {
-                    __color(_workingDirectory.Replace('\\', '/').Remove(0, 2) + ":", ConsoleColor.DarkCyan);
+                    __color(_workingDirectory.Replace('\\', '/').Remove(0, 2).ToLower() + ":", ConsoleColor.DarkCyan);
                     __color("swsh> ", ConsoleColor.DarkGray);
                     _command = __getCommand();
                     if (_command.StartsWith("swsh")) {
@@ -49,6 +49,7 @@ namespace SWSH {
                         else __help();
                     } else if (_command == "ls") __ls();
                     else if (_command.StartsWith("cd")) __cd();
+                    else if (_command.StartsWith("upload")) __upload();
                     else __color("ERROR: SWSH -> " + _command + " -> unknown command.\n", ConsoleColor.Red);
                 } catch (Exception exp) {
                     __color("ERROR: ", ConsoleColor.Red);
@@ -195,6 +196,7 @@ namespace SWSH {
             Console.WriteLine("\texit                           -Exits.");
             Console.WriteLine("ls                                     -Lists all files and directories in working directory.");
             Console.WriteLine("cd [arg]                               -Changes directory to 'arg'. arg = directory name.");
+            Console.WriteLine("upload [args] [nickname]:[location]    -Uploads files and directories. 'upload -h' for help.");
             Console.WriteLine("\n\nNOTES:\n[1] * = Optional.");
         }
         private static void __connect() {
@@ -218,13 +220,15 @@ namespace SWSH {
                             __color(pwd, ConsoleColor.Green);
                             Console.Write(":/ $ ");
                             _command = __getCommand();
+                            ssh.CreateCommand(String.Format("echo \"[{0} UTC]\t=>\t{1}\" >> ~/.swsh_history", DateTime.UtcNow, _command)).Execute();
                             if (_command == "exit")
                                 break;
                             else if (_command.StartsWith("cd")) {
                                 _command = _command.Remove(0, 3);
                                 if (_command.StartsWith("/")) pwd = _command;
                                 else if (_command.StartsWith("./")) pwd += "/" + _command.Remove(0, 2);
-                                else if (_command.StartsWith("..")) pwd = Regex.Replace(ssh.CreateCommand("cd " + pwd + "; dirname $(pwd)").Execute(), @"\t|\n|\r", "");
+                                else if (_command.StartsWith("..")) pwd = Regex.Replace(ssh.CreateCommand("cd " + pwd + "; dirname $(pwd)").Execute(), @"\t|" +
+                                    "\n|\r", "");
                                 else if (_command.Trim() == String.Empty) pwd = "~";
                                 else pwd += "/" + _command;
                             } else if (_command == "clear") Console.Clear();
@@ -365,15 +369,59 @@ namespace SWSH {
             Console.Write("swsh --help or -h for help.\n\n");
         }
         private static void __ls() {
-            if (Directory.GetFiles(_workingDirectory).Length > 0) {
-                __color("files: \n", ConsoleColor.Cyan);
-                foreach (var file in Directory.GetFiles(_workingDirectory))
-                    Console.WriteLine(Path.GetFileName(file));
-            }
             if (Directory.GetDirectories(_workingDirectory).Length > 0) {
-                __color("\ndirectories: \n", ConsoleColor.DarkCyan);
-                foreach (var dir in Directory.GetDirectories(_workingDirectory))
-                    Console.WriteLine((dir.Replace(Path.GetDirectoryName(dir) + Path.DirectorySeparatorChar, "")).Replace('\\', '/'));
+                List<string> data = new List<string>();
+                Directory.GetDirectories(_workingDirectory).ToList().ForEach(dir => data.Add(dir));
+                Directory.GetFiles(_workingDirectory).ToList().ForEach(file => data.Add(file));
+                data.Sort();
+                Console.WriteLine("Size\tUser        Date Modified   Name\n====\t====        =============   ====");
+                data.ForEach(x => {
+                    if (File.Exists(x)) {
+                        var info = new FileInfo(x);
+                        if (!info.Attributes.ToString().Contains("Hidden")) {
+                            var owner = File.GetAccessControl(x).GetOwner(typeof(System.Security.Principal.NTAccount)).ToString().Split('\\')[1];
+                            var size = ((info.Length > 1024) ? (((info.Length / 1024) > 1024) ? (info.Length / 1024) / 1024 : info.Length / 1024) : 
+                            info.Length).ToString();
+                            var toApp = "";
+                            owner = (owner.Length >= 10) ? owner.Remove(5) + "..." + owner.Remove(0, owner.Length - 2) : owner;
+                            if (owner.Length < 10) for (int i = 0; i < 10 - owner.Length; i++) toApp += " ";
+                            owner += toApp;
+                            if (size.Length < 4) for (int i = 0; i < 3 - size.Length; i++) toApp += " ";
+                            size = toApp + size;
+                            __color(size, ConsoleColor.Green);
+                            __color((info.Length > 1024) ? (((info.Length / 1024) > 1024) ? "MB" : "KB") : "B", ConsoleColor.DarkGreen);
+                            __color(String.Format("\t{0}  ", owner), ConsoleColor.Yellow);
+                            __color(String.Format("{0}{1} {2} {3}", (
+                                String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0].Length > 1 ? "" : " "),
+                                String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0],
+                                String.Format("{0:m}", info.LastWriteTime.Date).Remove(3),
+                                String.Format("{0:HH:mm}    ", info.LastWriteTime.ToLocalTime())), ConsoleColor.Blue);
+                            __color(info.Name, (Path.GetFileNameWithoutExtension(x).Length > 0) ? ConsoleColor.Magenta : ConsoleColor.Cyan);
+                            Console.WriteLine();
+                        }
+                    } else if (Directory.Exists(x)) {
+                        var info = new DirectoryInfo(x);
+                        if (!info.Attributes.ToString().Contains("Hidden")) {
+                            var owner = File.GetAccessControl(x).GetOwner(typeof(System.Security.Principal.NTAccount)).ToString().Split('\\')[1];
+                            owner = (owner.Length >= 10) ? owner.Remove(5) + "..." + owner.Remove(0, owner.Length - 2) : owner;
+                            var toApp = "";
+                            if (owner.Length < 10) for (int i = 0; i < 10 - owner.Length; i++) toApp += " ";
+                            owner += toApp;
+                            __color("   -", ConsoleColor.DarkGray);
+                            __color(String.Format("\t{0}  ", owner), ConsoleColor.Yellow);
+                            __color(String.Format("{0}{1} {2} {3}", (
+                                String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0].Length > 1 ? "" : " "),
+                                String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0],
+                                String.Format("{0:m}", info.LastWriteTime.Date).Remove(3),
+                                String.Format("{0:HH:mm}    ", info.LastWriteTime.ToLocalTime())), ConsoleColor.Blue);
+                            __color(info.Name, 
+                                (info.Name.StartsWith(".")) ? ConsoleColor.DarkCyan : (info.GetFiles().Length > 0 || info.GetDirectories().Length > 0) ? 
+                                ConsoleColor.White : ConsoleColor.DarkGray);
+                            __color((info.GetFiles().Length == 0 && info.GetDirectories().Length == 0) ? "  <empty>" : "", ConsoleColor.DarkRed);
+                            Console.WriteLine();
+                        }
+                    }
+                });
             }
             if (Directory.GetDirectories(_workingDirectory).Length == 0 && Directory.GetFiles(_workingDirectory).Length == 0) __color("No file" +
                 "s or directories here.\n", ConsoleColor.Yellow);
@@ -385,11 +433,93 @@ namespace SWSH {
             else if (_command.StartsWith("/")) __changeWorkingDir(Path.GetPathRoot(_workingDirectory) + _command.Remove(0, 1));
             else __changeWorkingDir(_workingDirectory + "/" + _command);
         }
-        private static void __version() {
+        private static void __upload() {
+            _command = _command.Remove(0, 7);
+            if (_command == "-h") {
+                Console.WriteLine("upload [--dir]* [args] [nickname]:[location]\n\n'args' are seperated using spaces ( ) and last 'arg' will be treated as s" +
+                    "erver data which includes nickname as well as the location, part after the colon (:), where the data is to be uploaded. Use flag '" +
+                    "--dir' to upload directiories. Do not use absolute paths for local path, change working directory to navigate.");
+            } else {
+                List<string> toupload = (_command.StartsWith("--dir")) ? _command.Replace("--dir", "").Trim().Split(' ').ToList() : _command.Trim().Split(' ')
+                    .ToList();
+                try {
+                    var serverData = toupload.Pop().Split(':');
+                    var nickname = serverData[0];
+                    var location = serverData[1];
+                    try {
+                        if (File.Exists(__getNickname(nickname))) {
+                            ConnectionInfo ccinfo;
+                            if (File.ReadAllLines(_mainDirectory + nickname + ".swsh")[0] == "-password") {
+                                Console.Write("Password for {0}: ", nickname);
+                                ccinfo = __CreateConnectionInfoPassword(nickname, __getCommand());
+                            } else ccinfo = __CreateConnectionInfoKey(nickname);
+                            if (ccinfo != null) {
+                                if (_command.StartsWith("--dir"))
+                                    using (var sftp = new SftpClient(ccinfo)) {
+                                        _command = _command.Replace("--dir", "");
+                                        sftp.Connect();
+                                        toupload.ForEach(x => {
+                                            var path = _workingDirectory + "/" + x.Trim();
+                                            location = serverData[1] + ((serverData[1].EndsWith("/")) ? "" : "/") + x.Trim();
+                                            if (!sftp.Exists(location)) sftp.CreateDirectory(location);
+                                            __color("Uploading <directory>: " + x.Trim() + "\n", ConsoleColor.Yellow);
+                                            __uploadDir(sftp, path, location);
+                                            __color("Done.\n", ConsoleColor.Green);
+                                        });
+                                    } else
+                                    using (var scp = new ScpClient(ccinfo)) {
+                                        scp.Connect();
+                                        toupload.ForEach(x => {
+                                            var path = _workingDirectory + "/" + x.Trim();
+                                            if (File.Exists(path)) {
+                                                __color("Uploading <file>: " + x.Trim(), ConsoleColor.Yellow);
+                                                scp.Upload(new FileInfo(path), location);
+                                                __color(" -> Done\n", ConsoleColor.Green);
+                                            } else {
+                                                __color("ERROR: ", ConsoleColor.Red);
+                                                Console.WriteLine("SWSH -> {0} -> file does not exists", path.Replace('/', '\\'));
+                                            }
+                                        });
+                                    }
+                            }
+                        } else {
+                            __color("ERROR: ", ConsoleColor.Red);
+                            Console.WriteLine("SWSH -> {0} -> nickname does not exists", nickname);
+                        }
+                    } catch (Exception exp) { __color("ERROR: " + exp.Message + "\n", ConsoleColor.Red); }
+                } catch {
+                    __color("ERROR: ", ConsoleColor.Red);
+                    Console.WriteLine("SWSH -> upload {0} -> is not the correct syntax for this command", _command);
+                }
+            }
+        }
+        private static void __uploadDir(SftpClient client, string localPath, string remotePath) {
+            new DirectoryInfo(localPath).EnumerateFileSystemInfos().ToList().ForEach(x => {
+                if (x.Attributes.HasFlag(FileAttributes.Directory)) {
+                    string subPath = remotePath + "/" + x.Name;
+                    if (!client.Exists(subPath)) client.CreateDirectory(subPath);
+                    __uploadDir(client, x.FullName, remotePath + "/" + x.Name);
+                } else {
+                    using (Stream fileStream = new FileStream(x.FullName, FileMode.Open)) {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write("\tUploading <file>: {0} ({1:N0} bytes)", x, ((FileInfo)x).Length);
+                        client.UploadFile(fileStream, remotePath + "/" + x.Name);
+                        __color(" -> Done\n", ConsoleColor.Green);
+                    }
+                }
+            });
+        }
+        private static string Pop(this List<string> list) {
+            var retVal = list[list.Count - 1];
+            list.RemoveAt(list.Count - 1);
+            return retVal;
+        }
+        private static string __version() {
             Console.Write("   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __"
                 + "  /  \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
-            Console.Write("\nRelease: {0}-{1}\n{2}", _codename, _version, "(c) Muhammad Muzzammil & Nabeel Omer\nSWSH is licensed under the GNU General Public License v" +
-                "3.0\n");
+            Console.Write("\nRelease: {0}-{1}\n{2}", _codename, _version, "(c) Muhammad Muzzammil & Nabeel Omer\nSWSH is licensed under the GNU General Publ" +
+                "ic License v3.0\n");
+            return _codename + "-" + _version;
         }
         private static void __changeWorkingDir(string path) {
             path = path.Replace('\\', '/');
@@ -419,7 +549,8 @@ namespace SWSH {
                     .ComputeHash(File.ReadAllBytes(System.Reflection.Assembly.GetExecutingAssembly().Location)))
                     .Select((x) => x.ToString("x2"))
                     .Aggregate((x, y) => x + y)
-                    .Equals(new System.Net.WebClient().DownloadString("https://raw.githubusercontent.com/SecureWindowsShell/SWSH/master/checksum?" + new Random().Next())))
+                    .Equals(new System.Net.WebClient().DownloadString("https://raw.githubusercontent.com/SecureWindowsShell/SWSH/master/checksum?" +
+                    new Random().Next())))
                     throw new Exception();
 
             } catch (Exception) {
@@ -433,12 +564,17 @@ namespace SWSH {
                         .ComputeHash(File.ReadAllBytes(System.Reflection.Assembly.GetExecutingAssembly().Location)))
                         .Select((x) => x.ToString("x2"))
                         .Aggregate((x, y) => x + y));
-                    Console.WriteLine(new System.Net.WebClient().DownloadString("https://raw.githubusercontent.com/SecureWindowsShell/SWSH/master/checksum?" + new Random().Next()));
+                    Console.WriteLine(new System.Net.WebClient().DownloadString("https://raw.githubusercontent.com/SecureWindowsShell/SWSH/master/checksum?" +
+                        new Random().Next()));
                 }
             }
         }
         private static string __getNickname(string s) => _mainDirectory + s + ".swsh";
-        private static string __getCommand() => Console.ReadLine();
+        private static string __getCommand() {
+            var read = Console.ReadLine();
+            File.AppendAllText(".swsh_history", String.Format("[{0} UTC]\t=>\t{1}\n", DateTime.UtcNow, read));
+            return read;
+        }
         private static ConnectionInfo __CreateConnectionInfoKey(string nickname) {
             try {
                 if (File.Exists(_mainDirectory + nickname + ".swsh")) {
