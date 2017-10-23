@@ -25,7 +25,9 @@ namespace SWSH {
             _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         static void Main(string[] args) {
             Console.Title = "SWSH - " + __version();
-            __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
+            /* REMOVED FOR UNSTABLE BRANCH
+             * __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
+             */
             Console.Write("swsh --help or -h for help.\n\n");
             __start();
         }
