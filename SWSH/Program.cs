@@ -52,7 +52,7 @@ namespace SWSH {
                     } else if (_command == "ls") __ls();
                     else if (_command.StartsWith("cd")) __cd();
                     else if (_command.StartsWith("upload")) __upload();
-                    else __color("ERROR: SWSH -> " + _command + " -> unknown command.\n", ConsoleColor.Red);
+                    else if(_command.Trim() != "") __color("ERROR: SWSH -> " + _command + " -> unknown command.\n", ConsoleColor.Red);
                 } catch (Exception exp) {
                     __color("ERROR: ", ConsoleColor.Red);
                     Console.WriteLine(exp.Message);
