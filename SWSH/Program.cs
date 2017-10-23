@@ -20,8 +20,8 @@ using System.Collections.Generic;
 
 namespace SWSH {
     public static class Program {
-        public const string _version = "1.3";
-        public static string _command = "", _codename = "beta", _mainDirectory = "swsh-data/",
+        public const string _version = "1.4";
+        public static string _command = "", _codename = "unstable-beta", _mainDirectory = "swsh-data/",
             _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         static void Main(string[] args) {
             Console.Title = "SWSH - " + __version();
