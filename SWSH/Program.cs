@@ -222,6 +222,7 @@ namespace SWSH {
                             __color(pwd, ConsoleColor.Green);
                             Console.Write(":/ $ ");
                             _command = __getCommand();
+                            ssh.CreateCommand(String.Format("echo \"[{0} UTC]\t=>\t{1}\" >> ~/.swsh_history", DateTime.UtcNow, _command)).Execute();
                             if (_command == "exit")
                                 break;
                             else if (_command.StartsWith("cd")) {
@@ -571,7 +572,11 @@ namespace SWSH {
             }
         }
         private static string __getNickname(string s) => _mainDirectory + s + ".swsh";
-        private static string __getCommand() => Console.ReadLine();
+        private static string __getCommand() {
+            var read = Console.ReadLine();
+            File.AppendAllText(".swsh_history", String.Format("[{0} UTC]\t=>\t{1}\n", DateTime.UtcNow, read));
+            return read;
+        }
         private static ConnectionInfo __CreateConnectionInfoKey(string nickname) {
             try {
                 if (File.Exists(_mainDirectory + nickname + ".swsh")) {
