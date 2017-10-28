@@ -52,7 +52,7 @@ namespace SWSH {
                     } else if (_command == "ls") __ls();
                     else if (_command.StartsWith("cd")) __cd();
                     else if (_command.StartsWith("upload")) __upload();
-                    else if(_command.Trim() != "") __color("ERROR: SWSH -> " + _command + " -> unknown command.\n", ConsoleColor.Red);
+                    else if (_command.Trim() != "") __color("ERROR: SWSH -> " + _command + " -> unknown command.\n", ConsoleColor.Red);
                 } catch (Exception exp) {
                     __color("ERROR: ", ConsoleColor.Red);
                     Console.WriteLine(exp.Message);
@@ -382,7 +382,7 @@ namespace SWSH {
                         var info = new FileInfo(x);
                         if (!info.Attributes.ToString().Contains("Hidden")) {
                             var owner = File.GetAccessControl(x).GetOwner(typeof(System.Security.Principal.NTAccount)).ToString().Split('\\')[1];
-                            var size = ((info.Length > 1024) ? (((info.Length / 1024) > 1024) ? (info.Length / 1024) / 1024 : info.Length / 1024) : 
+                            var size = ((info.Length > 1024) ? (((info.Length / 1024) > 1024) ? (info.Length / 1024) / 1024 : info.Length / 1024) :
                             info.Length).ToString();
                             var toApp = "";
                             owner = (owner.Length >= 10) ? owner.Remove(5) + "..." + owner.Remove(0, owner.Length - 2) : owner;
@@ -416,8 +416,8 @@ namespace SWSH {
                                 String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0],
                                 String.Format("{0:m}", info.LastWriteTime.Date).Remove(3),
                                 String.Format("{0:HH:mm}    ", info.LastWriteTime.ToLocalTime())), ConsoleColor.Blue);
-                            __color(info.Name, 
-                                (info.Name.StartsWith(".")) ? ConsoleColor.DarkCyan : (info.GetFiles().Length > 0 || info.GetDirectories().Length > 0) ? 
+                            __color(info.Name,
+                                (info.Name.StartsWith(".")) ? ConsoleColor.DarkCyan : (info.GetFiles().Length > 0 || info.GetDirectories().Length > 0) ?
                                 ConsoleColor.White : ConsoleColor.DarkGray);
                             __color((info.GetFiles().Length == 0 && info.GetDirectories().Length == 0) ? "  <empty>" : "", ConsoleColor.DarkRed);
                             Console.WriteLine();
