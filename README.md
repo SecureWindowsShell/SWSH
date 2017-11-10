@@ -75,3 +75,7 @@ Fix:
 - [x] A connection attempt failed while using password. Issue #1
 ### Note: Public release will be made after it is fully tested.
 ### Note: SWSH can be downloaded from [here](https://github.com/muhammadmuzzammil1998/SWSH/releases/) if you want to give it a go.
+
+# License
+GPL v3<br>
+Copyright (C) 2017  Muhammad Muzzammil & Nabeel Omer
