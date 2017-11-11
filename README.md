@@ -68,6 +68,7 @@ Add features:
 - [x] Check integrity of application
 - [ ] keygen for ssh
 - [x] ```.swsh_history``` file to contain history of commands executed
+- [ ] Drop SSH.NET.
 
 Fix:
 - [x] ```swsh --show``` not working. Issue #8
