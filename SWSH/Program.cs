@@ -19,11 +19,17 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 
+<<<<<<< HEAD
 namespace SWSH
 {
     public static class Program
     {
         public const string _version = "1.4";
+=======
+namespace SWSH {
+    public static class Program {
+        public const string _version = "1.3";
+>>>>>>> 89eb954... Formatting changes
         public static string _command = "", _codename = "unstable-beta", _mainDirectory = "swsh-data/",
             _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         static void Main(string[] args)
@@ -73,7 +79,7 @@ namespace SWSH
         }
         private static void __keygen()
         {
-            __color("WARNING: SWSH currently requires 'ssh-keygen' to be installed to generate key pairs.", ConsoleColor.Yellow);
+            __color("WARNING: SWSH currently requires 'ssh-keygen' to be installed to generate key pairs.\n", ConsoleColor.Yellow);
             Console.Write("Enter the path to the ssh-keygen executable: ");
             var keygenpath = __getCommand();
 
@@ -94,12 +100,12 @@ namespace SWSH
                 process.WaitForExit();
                 if (process.ExitCode != 0)
                 {
-                    __color("WARNING: ssh-keygen exited with non zero code.", ConsoleColor.Yellow);
+                    __color("WARNING: ssh-keygen exited with non zero code.\n", ConsoleColor.Yellow);
                 }
             }
             else
             {
-                __color("Error: Executable does not exist.", ConsoleColor.Red);
+                __color("Error: Executable does not exist.\n", ConsoleColor.Red);
             }
         }
         private static void __addConnection()
