@@ -19,25 +19,15 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-<<<<<<< HEAD
-namespace SWSH
-{
-    public static class Program
-    {
-        public const string _version = "1.4";
-=======
 namespace SWSH {
     public static class Program {
         public const string _version = "1.3";
->>>>>>> 89eb954... Formatting changes
         public static string _command = "", _codename = "unstable-beta", _mainDirectory = "swsh-data/",
             _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         static void Main(string[] args)
         {
             Console.Title = "SWSH - " + __version();
-            /* REMOVED FOR UNSTABLE BRANCH
-             * __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
-             */
+            __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
             Console.Write("swsh --help or -h for help.\n\n");
             __start();
         }
@@ -100,12 +90,12 @@ namespace SWSH {
                 process.WaitForExit();
                 if (process.ExitCode != 0)
                 {
-                    __color("WARNING: ssh-keygen exited with non zero code.\n", ConsoleColor.Yellow);
+                    __color("WARNING: ssh-keygen exited with non zero code.", ConsoleColor.Yellow);
                 }
             }
             else
             {
-                __color("Error: Executable does not exist.\n", ConsoleColor.Red);
+                __color("Error: Executable does not exist.", ConsoleColor.Red);
             }
         }
         private static void __addConnection()
@@ -319,8 +309,7 @@ namespace SWSH {
                                 _command = _command.Remove(0, 3);
                                 if (_command.StartsWith("/")) pwd = _command;
                                 else if (_command.StartsWith("./")) pwd += "/" + _command.Remove(0, 2);
-                                else if (_command.StartsWith("..")) pwd = Regex.Replace(ssh.CreateCommand("cd " + pwd + "; dirname $(pwd)").Execute(), @"\t|" +
-                                    "\n|\r", "");
+                                else if (_command.StartsWith("..")) pwd = Regex.Replace(ssh.CreateCommand("cd " + pwd + "; dirname $(pwd)").Execute(), @"\t|\n|\r", "");
                                 else if (_command.Trim() == String.Empty) pwd = "~";
                                 else pwd += "/" + _command;
                             }
@@ -523,10 +512,9 @@ namespace SWSH {
                     if (File.Exists(x))
                     {
                         var info = new FileInfo(x);
-                        if (!info.Attributes.ToString().Contains("Hidden"))
-                        {
-                            var owner = File.GetAccessControl(x).GetOwner(typeof(System.Security.Principal.NTAccount)).ToString().Split('\\')[1];
-                            var size = ((info.Length > 1024) ? (((info.Length / 1024) > 1024) ? (info.Length / 1024) / 1024 : info.Length / 1024) :
+                        if (!info.Attributes.ToString().Contains("Hidden")) {
+                            var owner = "-";
+                            var size = ((info.Length > 1024) ? (((info.Length / 1024) > 1024) ? (info.Length / 1024) / 1024 : info.Length / 1024) : 
                             info.Length).ToString();
                             var toApp = "";
                             owner = (owner.Length >= 10) ? owner.Remove(5) + "..." + owner.Remove(0, owner.Length - 2) : owner;
@@ -549,9 +537,8 @@ namespace SWSH {
                     else if (Directory.Exists(x))
                     {
                         var info = new DirectoryInfo(x);
-                        if (!info.Attributes.ToString().Contains("Hidden"))
-                        {
-                            var owner = File.GetAccessControl(x).GetOwner(typeof(System.Security.Principal.NTAccount)).ToString().Split('\\')[1];
+                        if (!info.Attributes.ToString().Contains("Hidden")) {
+                            var owner = "-";
                             owner = (owner.Length >= 10) ? owner.Remove(5) + "..." + owner.Remove(0, owner.Length - 2) : owner;
                             var toApp = "";
                             if (owner.Length < 10) for (int i = 0; i < 10 - owner.Length; i++) toApp += " ";
@@ -563,8 +550,8 @@ namespace SWSH {
                                 String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0],
                                 String.Format("{0:m}", info.LastWriteTime.Date).Remove(3),
                                 String.Format("{0:HH:mm}    ", info.LastWriteTime.ToLocalTime())), ConsoleColor.Blue);
-                            __color(info.Name,
-                                (info.Name.StartsWith(".")) ? ConsoleColor.DarkCyan : (info.GetFiles().Length > 0 || info.GetDirectories().Length > 0) ?
+                            __color(info.Name, 
+                                (info.Name.StartsWith(".")) ? ConsoleColor.DarkCyan : (info.GetFiles().Length > 0 || info.GetDirectories().Length > 0) ? 
                                 ConsoleColor.White : ConsoleColor.DarkGray);
                             __color((info.GetFiles().Length == 0 && info.GetDirectories().Length == 0) ? "  <empty>" : "", ConsoleColor.DarkRed);
                             Console.WriteLine();
@@ -698,8 +685,8 @@ namespace SWSH {
         {
             Console.Write("   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __"
                 + "  /  \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
-            Console.Write("\nRelease: {0}-{1}\n{2}", _codename, _version, "(c) Muhammad Muzzammil & Nabeel Omer\nSWSH is licensed under the GNU General Publ" +
-                "ic License v3.0\n");
+            Console.Write("\nRelease: {0}-{1}\n{2}", _codename, _version, "(c) Muhammad Muzzammil & Nabeel Omer\nSWSH is licensed under the GNU General Public License v" +
+                "3.0\n");
             return _codename + "-" + _version;
         }
         private static void __changeWorkingDir(string path)
@@ -737,8 +724,7 @@ namespace SWSH {
                     .ComputeHash(File.ReadAllBytes(System.Reflection.Assembly.GetExecutingAssembly().Location)))
                     .Select((x) => x.ToString("x2"))
                     .Aggregate((x, y) => x + y)
-                    .Equals(new System.Net.WebClient().DownloadString("https://raw.githubusercontent.com/SecureWindowsShell/SWSH/master/checksum?" +
-                    new Random().Next())))
+                    .Equals(new System.Net.WebClient().DownloadString("https://raw.githubusercontent.com/SecureWindowsShell/SWSH/master/checksum?" + new Random().Next())))
                     throw new Exception();
 
             }
@@ -757,8 +743,7 @@ namespace SWSH {
                         .ComputeHash(File.ReadAllBytes(System.Reflection.Assembly.GetExecutingAssembly().Location)))
                         .Select((x) => x.ToString("x2"))
                         .Aggregate((x, y) => x + y));
-                    Console.WriteLine(new System.Net.WebClient().DownloadString("https://raw.githubusercontent.com/SecureWindowsShell/SWSH/master/checksum?" +
-                        new Random().Next()));
+                    Console.WriteLine(new System.Net.WebClient().DownloadString("https://raw.githubusercontent.com/SecureWindowsShell/SWSH/master/checksum?" + new Random().Next()));
                 }
             }
         }
