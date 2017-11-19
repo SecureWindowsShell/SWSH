@@ -89,7 +89,7 @@ namespace SWSH
                 process.WaitForExit();
                 if (process.ExitCode != 0)
                 {
-                    __color("WARNING: ssh-keygen exited with non zero code.", ConsoleColor.Yellow);
+                    __color("WARNING: ssh-keygen exited with a non zero code.", ConsoleColor.Yellow);
                 }
             }
             else
