@@ -19,10 +19,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace SWSH
-{
-    public static class Program
-    {
+namespace SWSH {
+    public static class Program {
         public const string _version = "1.3";
         public static string _command = "", _codename = "unstable-beta", _mainDirectory = "swsh-data/",
             _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
@@ -42,19 +40,22 @@ namespace SWSH
                     __color(_workingDirectory.Replace('\\', '/').Remove(0, 2).ToLower() + ":", ConsoleColor.DarkCyan);
                     __color("swsh> ", ConsoleColor.DarkGray);
                     _command = __getCommand();
-                    if (_command == "version" || _command == "v") __version();
-                    else if (_command.StartsWith("add") || _command.StartsWith("a")) __addConnection();
-                    else if (_command.StartsWith("help") || _command.StartsWith("h")) __interactiveHelp();
-                    else if (_command.StartsWith("connect") || _command.StartsWith("c")) __connect();
-                    else if (_command.StartsWith("show")) __show();
-                    else if (_command.StartsWith("delete")) __delete();
-                    else if (_command.StartsWith("edit")) __edit();
-                    else if (_command.StartsWith("keygen")) __keygen();
-                    else if (_command == "clear") __clear();
-                    else if (_command == "exit") break;
-                    else __help();
-
-                    if (_command == "ls") __ls();
+                    if (_command.StartsWith("swsh"))
+                    {
+                        _command = _command.Replace("swsh", "").Trim();
+                        if (_command == "--version" || _command == "-v") __version();
+                        else if (_command.StartsWith("--add") || _command.StartsWith("-a")) __addConnection();
+                        else if (_command.StartsWith("--help") || _command.StartsWith("-h")) __interactiveHelp();
+                        else if (_command.StartsWith("--connect") || _command.StartsWith("-c")) __connect();
+                        else if (_command.StartsWith("--show")) __show();
+                        else if (_command.StartsWith("--delete")) __delete();
+                        else if (_command.StartsWith("--edit")) __edit();
+                        else if (_command.StartsWith("--keygen")) __keygen();
+                        else if (_command == "clear") __clear();
+                        else if (_command == "exit") break;
+                        else __help();
+                    }
+                    else if (_command == "ls") __ls();
                     else if (_command.StartsWith("cd")) __cd();
                     else if (_command.StartsWith("upload")) __upload();
                     else if (_command.Trim() != "") __color("ERROR: SWSH -> " + _command + " -> unknown command.\n", ConsoleColor.Red);
@@ -511,10 +512,9 @@ namespace SWSH
                     if (File.Exists(x))
                     {
                         var info = new FileInfo(x);
-                        if (!info.Attributes.ToString().Contains("Hidden"))
-                        {
+                        if (!info.Attributes.ToString().Contains("Hidden")) {
                             var owner = "-";
-                            var size = ((info.Length > 1024) ? (((info.Length / 1024) > 1024) ? (info.Length / 1024) / 1024 : info.Length / 1024) :
+                            var size = ((info.Length > 1024) ? (((info.Length / 1024) > 1024) ? (info.Length / 1024) / 1024 : info.Length / 1024) : 
                             info.Length).ToString();
                             var toApp = "";
                             owner = (owner.Length >= 10) ? owner.Remove(5) + "..." + owner.Remove(0, owner.Length - 2) : owner;
@@ -537,8 +537,7 @@ namespace SWSH
                     else if (Directory.Exists(x))
                     {
                         var info = new DirectoryInfo(x);
-                        if (!info.Attributes.ToString().Contains("Hidden"))
-                        {
+                        if (!info.Attributes.ToString().Contains("Hidden")) {
                             var owner = "-";
                             owner = (owner.Length >= 10) ? owner.Remove(5) + "..." + owner.Remove(0, owner.Length - 2) : owner;
                             var toApp = "";
@@ -551,8 +550,8 @@ namespace SWSH
                                 String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0],
                                 String.Format("{0:m}", info.LastWriteTime.Date).Remove(3),
                                 String.Format("{0:HH:mm}    ", info.LastWriteTime.ToLocalTime())), ConsoleColor.Blue);
-                            __color(info.Name,
-                                (info.Name.StartsWith(".")) ? ConsoleColor.DarkCyan : (info.GetFiles().Length > 0 || info.GetDirectories().Length > 0) ?
+                            __color(info.Name, 
+                                (info.Name.StartsWith(".")) ? ConsoleColor.DarkCyan : (info.GetFiles().Length > 0 || info.GetDirectories().Length > 0) ? 
                                 ConsoleColor.White : ConsoleColor.DarkGray);
                             __color((info.GetFiles().Length == 0 && info.GetDirectories().Length == 0) ? "  <empty>" : "", ConsoleColor.DarkRed);
                             Console.WriteLine();
