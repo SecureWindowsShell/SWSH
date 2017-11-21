@@ -71,6 +71,7 @@ Add features:
 - [ ] Drop SSH.NET.
 
 Fix:
+- [ ] Update README. Issue #10
 - [x] ```swsh --show``` not working. Issue #8
 - [x] Make ```cd ..``` work. Issue #2
 - [x] A connection attempt failed while using password. Issue #1
