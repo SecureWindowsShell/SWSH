@@ -54,28 +54,7 @@ namespace SWSH
                         else if (_command.StartsWith("--show")) __show();
                         else if (_command.StartsWith("--delete")) __delete();
                         else if (_command.StartsWith("--edit")) __edit();
-                        else if (_command.StartsWith("--keygen"))
-                        {
-                            if (File.Exists("swsh-keygen.exe"))
-                            {
-
-                                ProcessStartInfo p = new ProcessStartInfo()
-                                {
-                                    FileName = "swsh-keygen.exe",
-                                    Arguments = $"-pub=" + Environment.CurrentDirectory + "/public.key -pri=" + Environment.CurrentDirectory + "/private.key",
-                                    RedirectStandardOutput = true,
-                                    UseShellExecute = false,
-                                    CreateNoWindow = true,
-                                };
-                                var process = new Process();
-                                process.StartInfo = p;
-                                process.Start();
-                                process.WaitForExit();
-                                if (process.ExitCode != 0) __color("WARNING: swsh-keygen exited with non zero code.", ConsoleColor.Yellow);
-                                Console.WriteLine(Environment.CurrentDirectory);
-                            }
-                            else __color("ERROR: swsh-keygen.exe missing, make sure you are running the latest build.", ConsoleColor.Red);
-                        }
+                        else if (_command.StartsWith("--keygen")) __keygen();
                         else if (_command == "clear") __clear();
                         else if (_command == "exit") break;
                         else __help();
@@ -486,6 +465,28 @@ namespace SWSH
                 __color("ERROR: ", ConsoleColor.Red);
                 Console.WriteLine("SWSH -> {0} -> nickname does not exists", data[1]);
             }
+        }
+        private static void __keygen()
+        {
+            if (File.Exists("swsh-keygen.exe"))
+            {
+
+                ProcessStartInfo p = new ProcessStartInfo()
+                {
+                    FileName = "swsh-keygen.exe",
+                    Arguments = $"-pub=" + Environment.CurrentDirectory + "/public.key -pri=" + Environment.CurrentDirectory + "/private.key",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                };
+                var process = new Process();
+                process.StartInfo = p;
+                process.Start();
+                process.WaitForExit();
+                if (process.ExitCode != 0) __color("WARNING: swsh-keygen exited with non zero code.", ConsoleColor.Yellow);
+                Console.WriteLine(Environment.CurrentDirectory);
+            }
+            else __color("ERROR: swsh-keygen.exe missing, make sure you are running the latest build.", ConsoleColor.Red);
         }
         private static void __clear()
         {
