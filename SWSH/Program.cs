@@ -468,23 +468,50 @@ namespace SWSH
         }
         private static void __keygen()
         {
+            string privateFile, publicFile;
+            __color("exit", ConsoleColor.Red);
+            Console.Write(" or ");
+            __color("-e", ConsoleColor.Red);
+            Console.Write(" to cancel.\n");
+            do
+            {
+                __color("Enter path to save private key (swsh.private):\t", ConsoleColor.Yellow);
+                privateFile = __getCommand();
+                if (privateFile == String.Empty) privateFile = "swsh.private";
+                else if (privateFile == "-e" || privateFile == "exit") return;
+            } while (!isWritable(privateFile));
+            do
+            {
+                __color("Enter path to save public key (swsh.public):\t", ConsoleColor.Yellow);
+                publicFile = __getCommand();
+                if (publicFile == String.Empty) publicFile = "swsh.public";
+                else if (publicFile == "-e" || privateFile == "exit") return;
+            } while (!isWritable(publicFile));
+            bool isWritable(string path)
+            {
+                if (File.Exists(path))
+                {
+                    __color("File exists: " + new FileInfo(path).FullName + "\n\n\nOverwrite? (y/n): ", ConsoleColor.Red);
+                    if (__getCommand().ToUpper() == "Y") return true;
+                    else return false;
+                }
+                else return true;
+            }
             if (File.Exists("swsh-keygen.exe"))
             {
-
-                ProcessStartInfo p = new ProcessStartInfo()
+                var keygenProcess = new Process();
+                keygenProcess.StartInfo = new ProcessStartInfo()
                 {
                     FileName = "swsh-keygen.exe",
-                    Arguments = $"-pub=" + Environment.CurrentDirectory + "/public.key -pri=" + Environment.CurrentDirectory + "/private.key",
+                    Arguments = $"-pub=" + new FileInfo(publicFile).FullName + " -pri=" + new FileInfo(privateFile).FullName,
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
-                    CreateNoWindow = true,
+                    CreateNoWindow = true
                 };
-                var process = new Process();
-                process.StartInfo = p;
-                process.Start();
-                process.WaitForExit();
-                if (process.ExitCode != 0) __color("WARNING: swsh-keygen exited with non zero code.", ConsoleColor.Yellow);
-                Console.WriteLine(Environment.CurrentDirectory);
+                keygenProcess.Start();
+                keygenProcess.WaitForExit();
+                __color("Your public key:\n\n" + File.ReadAllLines(publicFile)[0] + "\n", ConsoleColor.Green);
+                if (keygenProcess.ExitCode != 0) __color("WARNING: swsh-keygen exited with non zero code.", ConsoleColor.Yellow);
             }
             else __color("ERROR: swsh-keygen.exe missing, make sure you are running the latest build.", ConsoleColor.Red);
         }
