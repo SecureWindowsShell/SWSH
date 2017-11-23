@@ -11,6 +11,8 @@ notifications:
 platform:
   - Any CPU
 
+image: Visual Studio 2017
+
 configuration:
   - Debug
   - Release
