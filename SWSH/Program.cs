@@ -510,8 +510,12 @@ namespace SWSH
                 };
                 keygenProcess.Start();
                 keygenProcess.WaitForExit();
+                if (keygenProcess.ExitCode != 0)
+                {
+                    __color("WARNING: swsh-keygen exited with non zero code.", ConsoleColor.Yellow);
+                    return;
+                }
                 __color("Your public key:\n\n" + File.ReadAllLines(publicFile)[0] + "\n", ConsoleColor.Green);
-                if (keygenProcess.ExitCode != 0) __color("WARNING: swsh-keygen exited with non zero code.", ConsoleColor.Yellow);
             }
             else __color("ERROR: swsh-keygen.exe missing, make sure you are running the latest build.", ConsoleColor.Red);
         }
