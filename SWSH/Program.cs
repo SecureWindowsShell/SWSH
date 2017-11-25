@@ -160,6 +160,14 @@ namespace SWSH
             String[] data = new String[] { key, usr, svr };
             if (!Directory.Exists(_mainDirectory)) Directory.CreateDirectory(_mainDirectory);
             File.AppendAllLines(__getNickname(nkn), data);
+            void __checkexit(string keyword)
+            {
+                if (keyword == "exit" || keyword == "-e")
+                {
+                    __color("Aborted.\n", ConsoleColor.Yellow);
+                    __start();
+                }
+            }
         }
         private static void __interactiveHelp()
         {
@@ -726,14 +734,6 @@ namespace SWSH
             {
                 __color("ERROR: ", ConsoleColor.Red);
                 Console.WriteLine("SWSH -> {0} -> path does not exists", path);
-            }
-        }
-        private static void __checkexit(string keyword)
-        {
-            if (keyword == "exit" || keyword == "-e")
-            {
-                __color("Aborted.\n", ConsoleColor.Yellow);
-                __start();
             }
         }
         private static void __color(string message, ConsoleColor cc)
