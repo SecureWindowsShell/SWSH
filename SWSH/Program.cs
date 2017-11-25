@@ -79,87 +79,80 @@ namespace SWSH
             __color("-e", ConsoleColor.Red);
             Console.Write(" to cancel.\n");
 
-            var key = "";
-            if (_command.StartsWith("-password")) key = "-password";
+            String[] data = new String[4] /*{ key, username, server }*/;
+            if (_command.StartsWith("-password")) data[0] = "-password";
             else
             {
                 while (true)
                 {
                     Console.Write("Enter path to private key: ");
-                    key = __getCommand();
-                    if (key.Trim() == String.Empty)
+                    data[0] = __getCommand();
+                    if (data[0].Trim() == String.Empty)
                     {
                         __color("ERROR: ", ConsoleColor.Red);
-                        Console.Write("SWSH -> key path should not be empty!\n", key);
+                        Console.Write("SWSH -> key path should not be empty!\n", data[0]);
                     }
                     else
                     {
-                        __checkexit(key);
-                        if (!File.Exists(key))
+                        __checkexit(data[0]);
+                        if (!File.Exists(data[0]))
                         {
                             __color("ERROR: ", ConsoleColor.Red);
-                            Console.Write("SWSH -> {0} -> file is non existent.\n", key);
+                            Console.Write("SWSH -> {0} -> file is non existent.\n", data[0]);
                         }
-                        else
-                        {
-                            break;
-                        }
+                        else break;
                     }
                 }
             }
 
-            var usr = "";
             while (true)
             {
                 Console.Write("Username: ");
-                usr = __getCommand();
-                __checkexit(usr);
-                if (usr.Trim() == String.Empty)
+                data[1] = __getCommand();
+                __checkexit(data[1]);
+                if (data[1].Trim() == String.Empty)
                 {
                     __color("ERROR: ", ConsoleColor.Red);
                     Console.Write("SWSH -> username should not be empty!\n");
                 }
                 else break;
             }
-
-            var svr = "";
+            
             while (true)
             {
                 Console.Write("Server: ");
-                svr = __getCommand();
-                __checkexit(svr);
-                if (svr.Trim() == String.Empty)
+                data[2] = __getCommand();
+                __checkexit(data[2]);
+                if (data[2].Trim() == String.Empty)
                 {
                     __color("ERROR: ", ConsoleColor.Red);
                     Console.Write("SWSH -> IP address or domain name should not be empty!\n");
                 }
                 else break;
             }
-
-            var nkn = "";
+            
             while (true)
             {
                 Console.Write("Unique Nickname: ");
-                nkn = __getCommand();
-                __checkexit(nkn);
-                if (nkn.Trim() == string.Empty)
+                data[3] = __getCommand();
+                __checkexit(data[3]);
+                if (data[3].Trim() == string.Empty)
                 {
                     __color("ERROR: ", ConsoleColor.Red);
                     Console.Write("SWSH -> nickname should not be empty!\n");
                 }
-                else if (File.Exists(_mainDirectory + nkn + ".swsh"))
+                else if (File.Exists(_mainDirectory + data[3] + ".swsh"))
                 {
                     __color("ERROR: ", ConsoleColor.Red);
-                    Console.WriteLine("SWSH -> {0} -> nickname exists", nkn);
+                    Console.WriteLine("SWSH -> {0} -> nickname exists", data[3]);
                 }
                 else
                 {
                     break;
                 }
             }
-            String[] data = new String[] { key, usr, svr };
             if (!Directory.Exists(_mainDirectory)) Directory.CreateDirectory(_mainDirectory);
-            File.AppendAllLines(__getNickname(nkn), data);
+            File.AppendAllLines(__getNickname(data[3]), data.Except(new string[] { data[3] }));
             void __checkexit(string keyword)
             {
                 if (keyword == "exit" || keyword == "-e")
