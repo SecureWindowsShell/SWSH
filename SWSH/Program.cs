@@ -500,14 +500,16 @@ namespace SWSH
             }
             if (File.Exists("swsh-keygen.exe"))
             {
-                var keygenProcess = new Process();
-                keygenProcess.StartInfo = new ProcessStartInfo()
+                var keygenProcess = new Process
                 {
-                    FileName = "swsh-keygen.exe",
-                    Arguments = $"-pub={new FileInfo(publicFile).FullName} -pri={new FileInfo(privateFile).FullName}",
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
+                    StartInfo = new ProcessStartInfo()
+                    {
+                        FileName = "swsh-keygen.exe",
+                        Arguments = $"-pub={new FileInfo(publicFile).FullName} -pri={new FileInfo(privateFile).FullName}",
+                        RedirectStandardOutput = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    }
                 };
                 keygenProcess.Start();
                 keygenProcess.WaitForExit();
