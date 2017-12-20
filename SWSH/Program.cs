@@ -478,7 +478,7 @@ namespace SWSH
         }
         private static void __keygen()
         {
-            if (!__checkHash(false)) return;
+            if (!__checkHash(true)) return;
             string privateFile, publicFile;
             __color("exit", ConsoleColor.Red);
             Console.Write(" or ");
