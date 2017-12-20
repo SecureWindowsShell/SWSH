@@ -117,7 +117,7 @@ namespace SWSH
                 }
                 else break;
             }
-            
+
             while (true)
             {
                 Console.Write("Server: ");
@@ -130,7 +130,7 @@ namespace SWSH
                 }
                 else break;
             }
-            
+
             while (true)
             {
                 Console.Write("Unique Nickname: ");
@@ -219,7 +219,8 @@ namespace SWSH
                     case "--keygen":
                         {
                             Console.WriteLine("Syntax: swsh --keygen");
-                            Console.WriteLine("Generates SSH RSA key pair. Requires swsh-keygen.exe.\n\nDefault values are provided in parentheses.\nUsage: swsh --keygen");
+                            Console.WriteLine("Generates SSH RSA key pair. Requires swsh-keygen.exe.\n\nDefault values are provided in parentheses.\nUsage: " +
+                                "swsh --keygen");
                             break;
                         }
                     case "-h":
@@ -528,7 +529,8 @@ namespace SWSH
                 }
                 __color($"Your public key:\n\n{File.ReadAllLines(publicFile)[0]}\n", ConsoleColor.Green);
             }
-            else __color("ERROR: The binary 'swsh-keygen.exe' was not found. Are you sure it's installed? See: https://github.com/SecureWindowsShell/SWSH/tree/unstable/swsh-keygen#swsh-keygen", ConsoleColor.Red);
+            else __color("ERROR: The binary 'swsh-keygen.exe' was not found. Are you sure it's installed? See: https://github.com/SecureWindowsShell/SWSH/tr" +
+                "ee/unstable/swsh-keygen#swsh-keygen", ConsoleColor.Red);
         }
         private static void __clear()
         {
@@ -725,7 +727,8 @@ namespace SWSH
         {
             Console.Write("   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __"
                 + "  /  \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
-            Console.Write($"\nRelease: {_codename}-{_version}\n(c) Muhammad Muzzammil & Nabeel Omer\nSWSH is licensed under the GNU General Public License v3.0\n");
+            Console.Write($"\nRelease: {_codename}-{_version}\n(c) Muhammad Muzzammil & Nabeel Omer\nSWSH is licensed under the GNU General Public License v" +
+                $"3.0\n");
             return $"{_codename}-{_version}";
         }
         private static void __changeWorkingDir(string path)
