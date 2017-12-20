@@ -216,6 +216,12 @@ namespace SWSH
                             Console.WriteLine("Edits nickname, use one argument at a time.\nUsage: swsh --edit myserver -user newUSER");
                             break;
                         }
+                    case "--keygen":
+                        {
+                            Console.WriteLine("Syntax: swsh --keygen");
+                            Console.WriteLine("Generates SSH RSA key pair. Requires swsh-keygen.exe.\n\nDefault values are provided in parentheses.\nUsage: swsh --keygen");
+                            break;
+                        }
                     case "-h":
                     case "--help":
                         {
@@ -239,6 +245,7 @@ namespace SWSH
             Console.WriteLine("\t-c --connect [nickname]        -Connects to Server over SSH.");
             Console.WriteLine("\t   --delete  [nickname]        -Deletes connection's nickname.");
             Console.WriteLine("\t   --edit    [nickname] [arg]  -Edits nickname, use one argument at a time.");
+            Console.WriteLine("\t   --keygen                    -Generates SSH RSA key pair.");
             Console.WriteLine("\t-h --help    [command]*        -Displays this help or command details.");
             Console.WriteLine("\tclear                          -Clears the console.");
             Console.WriteLine("\texit                           -Exits.");
