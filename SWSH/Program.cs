@@ -749,14 +749,14 @@ namespace SWSH
         }
         private static bool __checkHash(bool ignore)
         {
-            bool compareHash(string path, string hash) => !calcHash(path).Equals(hash.Trim());
+            bool compareHash(string path, string hash) => !computeHash(path).Equals(hash.Trim());
 
-            string calcHash(string path) => new List<byte>(new System.Security.Cryptography.SHA1CryptoServiceProvider()
+            string computeHash(string path) => new List<byte>(new System.Security.Cryptography.SHA1CryptoServiceProvider()
                     .ComputeHash(File.ReadAllBytes(path)))
                     .Select((x) => x.ToString("x2"))
                     .Aggregate((x, y) => x + y);
 
-            string offiHash(string uri) => new System.Net.WebClient().DownloadString($"{uri}?" + new Random().Next());
+            string getHash(string uri) => new System.Net.WebClient().DownloadString($"{uri}?" + new Random().Next());
 
             string
                 error = "ERROR: Checksum Mismatch! This executable may be out of date or malicious!\n",
@@ -767,7 +767,7 @@ namespace SWSH
 
             try
             {
-                if (compareHash(swshlocation, offiHash(checksumfile).Split(' ')[0]) && compareHash(keygenlocation, offiHash(checksumfile).Split(' ')[1]))
+                if (compareHash(swshlocation, getHash(checksumfile).Split(' ')[0]) && compareHash(keygenlocation, getHash(checksumfile).Split(' ')[1]))
                     throw new Exception();
                 return true;
             }
@@ -779,7 +779,7 @@ namespace SWSH
                     Console.Read();
                     Environment.Exit(500);
                 }
-                else { Console.WriteLine($"SWSH:\t{calcHash(swshlocation)}\nkeygen:\t{calcHash(keygenlocation)}"); }
+                else { Console.WriteLine($"SWSH:\t{computeHash(swshlocation)}\nkeygen:\t{computeHash(keygenlocation)}"); }
                 return false;
             }
         }
