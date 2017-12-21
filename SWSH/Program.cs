@@ -478,38 +478,38 @@ namespace SWSH
         }
         private static void __keygen()
         {
+            if (!__checkHash(true)) return;
+            string privateFile, publicFile;
+            __color("exit", ConsoleColor.Red);
+            Console.Write(" or ");
+            __color("-e", ConsoleColor.Red);
+            Console.Write(" to cancel.\n");
+            do
+            {
+                __color("Enter path to save private key (swsh.private):\t", ConsoleColor.Yellow);
+                privateFile = __getCommand();
+                if (privateFile == String.Empty) privateFile = "swsh.private";
+                else if (privateFile == "-e" || privateFile == "exit") return;
+            } while (!isWritable(privateFile));
+            do
+            {
+                __color("Enter path to save public key (swsh.public):\t", ConsoleColor.Yellow);
+                publicFile = __getCommand();
+                if (publicFile == String.Empty) publicFile = "swsh.public";
+                else if (publicFile == "-e" || privateFile == "exit") return;
+            } while (!isWritable(publicFile));
+            bool isWritable(string path)
+            {
+                if (File.Exists(path))
+                {
+                    __color($"File exists: {new FileInfo(path).FullName}\n\n\nOverwrite? (y/n): ", ConsoleColor.Red);
+                    if (__getCommand().ToUpper() == "Y") return true;
+                    else return false;
+                }
+                else return true;
+            }
             if (File.Exists("swsh-keygen.exe"))
             {
-                if (!__checkHash(true)) return;
-                string privateFile, publicFile;
-                __color("exit", ConsoleColor.Red);
-                Console.Write(" or ");
-                __color("-e", ConsoleColor.Red);
-                Console.Write(" to cancel.\n");
-                do
-                {
-                    __color("Enter path to save private key (swsh.private):\t", ConsoleColor.Yellow);
-                    privateFile = __getCommand();
-                    if (privateFile == String.Empty) privateFile = "swsh.private";
-                    else if (privateFile == "-e" || privateFile == "exit") return;
-                } while (!isWritable(privateFile));
-                do
-                {
-                    __color("Enter path to save public key (swsh.public):\t", ConsoleColor.Yellow);
-                    publicFile = __getCommand();
-                    if (publicFile == String.Empty) publicFile = "swsh.public";
-                    else if (publicFile == "-e" || privateFile == "exit") return;
-                } while (!isWritable(publicFile));
-                bool isWritable(string path)
-                {
-                    if (File.Exists(path))
-                    {
-                        __color($"File exists: {new FileInfo(path).FullName}\n\n\nOverwrite? (y/n): ", ConsoleColor.Red);
-                        if (__getCommand().ToUpper() == "Y") return true;
-                        else return false;
-                    }
-                    else return true;
-                }
                 var keygenProcess = new Process
                 {
                     StartInfo = new ProcessStartInfo()
@@ -531,7 +531,7 @@ namespace SWSH
                 __color($"Your public key:\n\n{File.ReadAllLines(publicFile)[0]}\n", ConsoleColor.Green);
             }
             else __color($"ERROR: The binary 'swsh-keygen.exe' was not found. Are you sure it's installed?\nSee: https://github.com/SecureWindowsShell/SWSH/" +
-                $"tree/{branch}/swsh-keygen#swsh-keygen\n", ConsoleColor.Red);
+                $"tree/{branch}/swsh-keygen#swsh-keygen", ConsoleColor.Red);
         }
         private static void __clear()
         {
