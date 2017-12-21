@@ -66,7 +66,7 @@ Add features:
 - [x] Clear console ```clear```
 - [x] Detailed help ```swsh --help [command]```
 - [x] Check integrity of application
-- [ ] keygen for ssh
+- [x] keygen for ssh
 - [x] ```.swsh_history``` file to contain history of commands executed
 - [ ] Drop SSH.NET.
 
