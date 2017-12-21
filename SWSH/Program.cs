@@ -762,13 +762,13 @@ namespace SWSH
             string
                 error = "ERROR: Checksum Mismatch! This executable may be out of date or malicious!\n",
                 github = "https://raw.githubusercontent.com/SecureWindowsShell/",
-                checksumfile = $"{github}SWSH/${branch}/checksum",
+                checksumfile = $"{github}SWSH/{branch}/checksum",
                 swshlocation = System.Reflection.Assembly.GetExecutingAssembly().Location,
                 keygenlocation = "swsh-keygen.exe";
 
             try
             {
-                if (compareHash(swshlocation, getHash(checksumfile).Split(' ')[0]) && compareHash(keygenlocation, getHash(checksumfile).Split(' ')[1]))
+                if (compareHash(swshlocation, getHash(checksumfile).Split(' ')[0]) || compareHash(keygenlocation, getHash(checksumfile).Split(' ')[1]))
                     throw new Exception();
                 return true;
             }
