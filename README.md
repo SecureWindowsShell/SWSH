@@ -7,19 +7,13 @@ SWSH is a SSH like console application for Windows.
 **If you are not using a [prebuilt SWSH binary](https://github.com/SecureWindowsShell/SWSH/releases), you will see SWSH complain about a checksum mismatch and exit, use `--IgnoreChecksumMismatch` to stop it from exiting.**
 
 ![SWSH just doing its thing](.images/cdls.PNG)
-*SWSH just doing its thing. Version: beta-1.4.*
+*SWSH beta-1.4 just doing its thing*
 
 # Nicknames
-SSH connections are saved as **nicknames**, each should be unique.
-Nicknames contains the data such as SSH private key, username and host in following structure:
-```
-nickname.swsh
-└──C:\path\to\ssh\private.key
-└──username
-└──host
-```
+SSH connections are saved as **nicknames**, each nickname has to be unique.
+
 # Making a nickname with Key
-To add a new nickname run ```swsh -a``` or ```swsh --add``` and fill the asked details like:
+To add a new nickname run ```swsh -a``` or ```swsh --add``` and follow the prompts:
 ```
 Path to private key: C:\path\to\ssh\private.key
 Username: root
@@ -27,16 +21,16 @@ Server: my.server.ssh
 Unique Nickname: server.ssh
 ```
 # Making a nickname with Password
-To add a new nickname run ```swsh -a -password``` or ```swsh --add -password``` and fill the asked details like:
+To add a new nickname run ```swsh -a -password``` or ```swsh --add -password``` and follow the prompts:
 ```
 Username: root
 Server: my.server.ssh
 Unique Nickname: server.ssh
 ```
 # Connection to server
-To connect, you must create add it first using ```swsh -a``` or ```swsh --add```. After that, run ```swsh -c nickname``` or ```swsh --connect nickname``` to connect.
+To connect, you must first add a connection: ```swsh -a``` or ```swsh --add```. After that, you can connect: ```swsh -c nickname``` or ```swsh --connect nickname```.
 
-If done properly, output would be similar to this (you will be asked for password if you didn't add key):
+If done properly, output would be similar to the following (you will be asked for a password if you didn't add a key):
 ```
 Waiting for response from usr@host...
 Connected to usr@host...
