@@ -3,8 +3,8 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/s8ingehivcjcp084/branch/master?svg=true)](https://ci.appveyor.com/project/muhammadmuzzammil1998/swsh/branch/master)
   		  
 SWSH is a SSH like console application for Windows.
- 
-**If you are not using [a binary that we built](https://github.com/muhammadmuzzammil1998/SWSH/releases/) or are using an older version of SWSH you will get an error about checksum mismatches, this happens because we only upload the checksum for the latest version of SWSH. Use the flag `--IgnoreChecksumMismatch` to prevent SWSH from exiting on checksum mismatches.**
+
+**If you are not using a [prebuilt SWSH binary](https://github.com/SecureWindowsShell/SWSH/releases), you will see SWSH complain about a checksum mismatch and exit, use `--IgnoreChecksumMismatch` to stop it from exiting.**
 
 ![SWSH just doing its thing](.images/cdls.PNG)
 *SWSH just doing its thing. Version: beta-1.4.*
@@ -42,24 +42,23 @@ Waiting for response from usr@host...
 Connected to usr@host...
 ~:/ $ 
 ```
-For more, see our [documentation](DOCUMENTATION.md)
+For more, see our [documentation](DOCUMENTATION.md).
 
 # Future
 > “The best way to predict your future is to create it.” ~***Abraham Lincoln***
 
-Feel free to contribute this project and add a feature :)
+Feel free to contribute to this project.
 
-Below are some items I am trying to add or fix in SWSH:
+Below are some things we are trying to add or fix in SWSH:
 
-Add features:
+Features:
 - [x] Delete nicknames ```swsh --delete```
 - [x] Show all nicknames ```swsh --show```
 - [x] Show details about a nickname ```swsh --show [nickname]```
-- [x] ~scp~ upload support ```upload```
+- [x] File upload support ```upload```
 - [x] Password support ```swsh -a -password```
 - [x] Edit nicknames ```swsh --edit [nickname]```
 - [x] Check existence of private key when adding a nickname
-- [x] ~Custom directory to save data~ (nah, not gonna work...) 
 - [x] Ability to manipulate current working directory on Windows side ```cd``` ```ls```
 - [x] Clear console ```clear```
 - [x] Detailed help ```swsh --help [command]```
@@ -68,12 +67,11 @@ Add features:
 - [x] ```.swsh_history``` file to contain history of commands executed
 - [ ] Drop SSH.NET.
 
-Fix:
+Fixes:
 - [x] Update README. Issue #10
 - [x] ```swsh --show``` not working. Issue #8
 - [x] Make ```cd ..``` work. Issue #2
 - [x] A connection attempt failed while using password. Issue #1
-### Note: SWSH can be downloaded from [here](https://github.com/muhammadmuzzammil1998/SWSH/releases/) if you want to give it a go.
 
 # License
 GPL v3<br>
