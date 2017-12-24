@@ -4,16 +4,10 @@
   		  
 SWSH is a SSH like console application for Windows.
  
-**If you are not using [a binary that we built](https://github.com/SecureWindowsShell/SWSH/releases/tag/beta-1.4) or are using an older version of SWSH you will get an error about checksum mismatches, this happens because we only upload the checksum for the latest version of SWSH. Use the flag `--IgnoreChecksumMismatch` to prevent SWSH from exiting on checksum mismatches.**
+**If you are not using [a binary that we built](https://github.com/muhammadmuzzammil1998/SWSH/releases/) or are using an older version of SWSH you will get an error about checksum mismatches, this happens because we only upload the checksum for the latest version of SWSH. Use the flag `--IgnoreChecksumMismatch` to prevent SWSH from exiting on checksum mismatches.**
 
 ![SWSH just doing its thing](.images/cdls.PNG)
-*SWSH just doing its thing*
-
-# Run
-Download the executable from the website (will be available after a proper release) or build it your self from source.
-
-# Commands
-Commands and their functions can be found in-app by running ```swsh -h```.
+*SWSH just doing its thing. Version: beta-1.4.*
 
 # Nicknames
 SSH connections are saved as **nicknames**, each should be unique.
@@ -48,6 +42,8 @@ Waiting for response from usr@host...
 Connected to usr@host...
 ~:/ $ 
 ```
+For more, see our [documentation](DOCUMENTATION.md)
+
 # Future
 > “The best way to predict your future is to create it.” ~***Abraham Lincoln***
 
@@ -77,7 +73,6 @@ Fix:
 - [x] ```swsh --show``` not working. Issue #8
 - [x] Make ```cd ..``` work. Issue #2
 - [x] A connection attempt failed while using password. Issue #1
-### Note: Public release will be made after it is fully tested.
 ### Note: SWSH can be downloaded from [here](https://github.com/muhammadmuzzammil1998/SWSH/releases/) if you want to give it a go.
 
 # License
