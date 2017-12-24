@@ -778,7 +778,15 @@ namespace SWSH
                     Console.Read();
                     Environment.Exit(500);
                 }
-                else { Console.WriteLine($"SWSH:\t{computeHash(swshlocation)}\nkeygen:\t{computeHash(keygenlocation)}"); }
+                else
+                {
+                    if (!File.Exists(keygenlocation))
+                    {
+                        __color("Warning: Could not find swsh-keygen.exe. All features may not be available.\n", ConsoleColor.Yellow);
+                        return false;
+                    }
+                    Console.WriteLine($"SWSH:\t{computeHash(swshlocation)}\nkeygen:\t{computeHash(keygenlocation)}");
+                }
                 return false;
             }
         }
