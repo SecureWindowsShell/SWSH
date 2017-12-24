@@ -772,9 +772,9 @@ namespace SWSH
             }
             catch (Exception)
             {
-                __color(error, ConsoleColor.Red);
                 if (!ignore)
                 {
+                    __color(error, ConsoleColor.Red);
                     Console.Read();
                     Environment.Exit(500);
                 }
@@ -785,7 +785,6 @@ namespace SWSH
                         __color("Warning: Could not find swsh-keygen.exe. All features may not be available.\n", ConsoleColor.Yellow);
                         return false;
                     }
-                    Console.WriteLine($"SWSH:\t{computeHash(swshlocation)}\nkeygen:\t{computeHash(keygenlocation)}");
                 }
                 return false;
             }
