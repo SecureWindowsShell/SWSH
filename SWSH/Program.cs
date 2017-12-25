@@ -285,7 +285,6 @@ namespace SWSH
                         new System.Threading.Thread(() => {
                             while(true) {
                                 Console.WriteLine(actual.ReadLine());
-                                Console.Write("\b");
                             }
                         }).Start();
 
