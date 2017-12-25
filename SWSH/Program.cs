@@ -25,8 +25,7 @@ namespace SWSH
     {
         public const string _version = "1.4";
         public static string _command = "", _codename = "beta", _mainDirectory = "swsh-data/",
-            _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-            branch = !_codename.StartsWith("unstable") ? "master" : "unstable";
+            _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         static void Main(string[] args)
         {
             Console.Title = $"SWSH - {__version()}";
@@ -529,7 +528,7 @@ namespace SWSH
                 __color($"Your public key:\n\n{File.ReadAllLines(publicFile)[0]}\n", ConsoleColor.Green);
             }
             else __color($"ERROR: The binary 'swsh-keygen.exe' was not found. Are you sure it's installed?\nSee: https://github.com/SecureWindowsShell/SWSH/" +
-                $"tree/{branch}/swsh-keygen#swsh-keygen", ConsoleColor.Red);
+                $"tree/master/swsh-keygen#swsh-keygen", ConsoleColor.Red);
         }
         private static void __clear()
         {
@@ -760,7 +759,7 @@ namespace SWSH
             string
                 error = "ERROR: Checksum Mismatch! This executable may be out of date or malicious!\n",
                 github = "https://raw.githubusercontent.com/SecureWindowsShell/",
-                checksumfile = $"{github}SWSH/{branch}/checksum",
+                checksumfile = $"{github}SWSH/master/checksum",
                 swshlocation = System.Reflection.Assembly.GetExecutingAssembly().Location,
                 keygenlocation = "swsh-keygen.exe";
 
