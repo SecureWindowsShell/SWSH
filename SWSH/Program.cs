@@ -1,4 +1,4 @@
-﻿/*
+/*
     Copyright (C) 2017  Muhammad Muzzammil & Nabeel Omer
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -261,8 +261,9 @@ namespace SWSH
             {
                 if (File.ReadAllLines(_mainDirectory + nickname + ".swsh")[0] == "-password")
                 {
-                    Console.Write($"Password for {nickname}: ");
-                    ccinfo = __CreateConnectionInfoPassword(nickname, __getCommand());
+                    ReadLine.PasswordMode = true;
+                    ccinfo = __CreateConnectionInfoPassword(nickname, ReadLine.Read($"Password for {nickname}: ", ""));
+                    ReadLine.PasswordMode = false;
                 }
                 else ccinfo = __CreateConnectionInfoKey(nickname);
                 if (ccinfo != null)
