@@ -272,41 +272,29 @@ namespace SWSH
                     {
                         ssh.Connect();
                         __color($"Connected to {ccinfo.Username}@{ccinfo.Host}...\n", ConsoleColor.Green);
-                        string pwd = " ", home = "";
-                        home = pwd = ssh.CreateCommand("echo $HOME").Execute();
-                        while (true)
-                        {
-                            pwd = Regex.Replace(ssh.CreateCommand($"cd {pwd}; pwd").Execute(), @"\t|\n|\r", "");
-                            if (pwd == Regex.Replace(home, @"\t|\n|\r", "")) pwd = "~";
-                            __color(pwd, ConsoleColor.Green);
-                            Console.Write(":/ $ ");
-                            _command = __getCommand();
-                            ssh.CreateCommand(String.Format($"echo \"[{DateTime.UtcNow} UTC]\t=>\t{_command}\" >> ~/.swsh_history")).Execute();
-                            if (_command == "exit")
-                                break;
-                            else if (_command.StartsWith("cd"))
-                            {
-                                _command = _command.Remove(0, 3);
-                                if (_command.StartsWith("/")) pwd = _command;
-                                else if (_command.StartsWith("./")) pwd += $"/{_command.Remove(0, 2)}";
-                                else if (_command.StartsWith("..")) pwd = Regex.Replace(ssh.CreateCommand($"cd {pwd}; dirname $(pwd)").Execute(), @"\t|" +
-                                    "\n|\r", "");
-                                else if (_command.Trim() == String.Empty) pwd = "~";
-                                else pwd += $"/{_command}";
+                        string terminalName = "swsh"; // TODO: Initialize to an appropriate value
+                        uint columns = 80; // TODO: Initialize to an appropriate value
+                        uint rows = 160; // TODO: Initialize to an appropriate value
+                        uint width = 80; // TODO: Initialize to an appropriate value
+                        uint height = 160; // TODO: Initialize to an appropriate value
+                        int bufferSize = 500; // TODO: Initialize to an appropriate value
+                        IDictionary<Renci.SshNet.Common.TerminalModes, uint> terminalModeValues = null; // TODO: Initialize to an appropriate value
+                        var actual = ssh.CreateShellStream(terminalName, columns, rows, width, height, bufferSize, terminalModeValues);
+                        //Read Thread
+                        new System.Threading.Thread(() => {
+                            while(true) {
+                                Console.WriteLine(actual.ReadLine());
+                                Console.Write("\b");
                             }
-                            else if (_command == "clear") Console.Clear();
-                            else if (_command.StartsWith("swsh"))
-                            {
-                                __color("ERROR: ", ConsoleColor.Red);
-                                Console.Write("SWSH -> can't execute swsh while in connection\n");
+                        }).Start();
+
+                        //Write Thread
+                        new System.Threading.Thread(() => {
+                            while(true) {
+                                actual.WriteLine(Console.ReadLine());
                             }
-                            else
-                            {
-                                var result = ssh.CreateCommand($"cd {pwd}; {_command}").Execute();
-                                Console.Write(result);
-                            }
-                        }
-                        ssh.Disconnect();
+                        }).Start();
+                        while(true);
                     }
                     __color($"Connection to {ccinfo.Username}@{ccinfo.Host}, closed.\n", ConsoleColor.Yellow);
                 }
