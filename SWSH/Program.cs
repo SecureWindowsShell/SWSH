@@ -754,7 +754,7 @@ namespace SWSH
                     .Select((x) => x.ToString("x2"))
                     .Aggregate((x, y) => x + y);
 
-            string getHash(string uri) => new System.Net.WebClient().DownloadString($"{uri}?" + new Random().Next());
+            string getHash(string uri) => new System.Net.WebClient().DownloadString($"{uri}?{new Random().Next()}");
 
             string
                 error = "ERROR: Checksum Mismatch! This executable may be out of date or malicious!\n",
