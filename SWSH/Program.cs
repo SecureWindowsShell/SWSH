@@ -1,4 +1,4 @@
-﻿/*
+/*
     Copyright (C) 2017  Muhammad Muzzammil & Nabeel Omer
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -774,7 +774,6 @@ namespace SWSH
                 if (!ignore)
                 {
                     __color(error, ConsoleColor.Red);
-                    Console.Read();
                     Environment.Exit(500);
                 }
                 else
@@ -784,6 +783,9 @@ namespace SWSH
                         __color("Warning: Could not find swsh-keygen.exe. All features may not be available.\n", ConsoleColor.Yellow);
                         return false;
                     }
+#if DebugConfig
+                    Console.WriteLine($"SWSH:\t{computeHash(swshlocation)}\nkeygen:\t{computeHash(keygenlocation)}");
+#endif
                 }
                 return false;
             }
