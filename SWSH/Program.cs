@@ -1,4 +1,4 @@
-/*
+﻿/*
     Copyright (C) 2017  Muhammad Muzzammil & Nabeel Omer
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ namespace SWSH
     public static class Program
     {
         public const string _version = "1.4";
-        public static string _command = "", _codename = "beta", _mainDirectory = $"{Directory.GetCurrentDirectory()}/swsh-data/";
+        public static string _command = "", _codename = "beta", _mainDirectory = "swsh-data/";
         static void Main(string[] args)
         {
             Directory.SetCurrentDirectory(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
