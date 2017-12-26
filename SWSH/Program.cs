@@ -785,7 +785,7 @@ namespace SWSH
         private static string __getCommand()
         {
             var read = Console.ReadLine();
-            File.AppendAllText(".swsh_history", $"[{DateTime.UtcNow} UTC]\t=>\t{read}\n");
+            File.AppendAllText($"{_mainDirectory}/.swsh_history", $"[{DateTime.UtcNow} UTC]\t=>\t{read}\n");
             return read;
         }
         private static ConnectionInfo __CreateConnectionInfoKey(string nickname)
