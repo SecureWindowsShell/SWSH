@@ -1,4 +1,4 @@
-﻿/*
+/*
     Copyright (C) 2017  Muhammad Muzzammil & Nabeel Omer
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -538,7 +538,7 @@ namespace SWSH
             if (Directory.GetCurrentDirectory().Length > 0)
             {
                 List<string> data = new List<string>();
-                Directory.GetFiles(Directory.GetCurrentDirectory()).ToList().ForEach(dir => data.Add(dir));
+                Directory.GetDirectories(Directory.GetCurrentDirectory()).ToList().ForEach(dir => data.Add(dir));
                 Directory.GetFiles(Directory.GetCurrentDirectory()).ToList().ForEach(file => data.Add(file));
                 data.Sort();
                 Console.WriteLine("Size\tUser        Date Modified   Name\n====\t====        =============   ====");
