@@ -1,4 +1,4 @@
-/*
+﻿/*
     Copyright (C) 2017  Muhammad Muzzammil & Nabeel Omer
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ namespace SWSH
                     if (_command.StartsWith("swsh"))
                     {
                         _command = _command.Replace("swsh", "").Trim();
-                        if (_command == "--version" || _command == "-v") __version();
+                        if (_command == "version" || _command == "v") __version();
                         else if (_command.StartsWith("--add") || _command.StartsWith("-a")) __addConnection();
                         else if (_command.StartsWith("--help") || _command.StartsWith("-h")) __interactiveHelp();
                         else if (_command.StartsWith("--connect") || _command.StartsWith("-c")) __connect();
