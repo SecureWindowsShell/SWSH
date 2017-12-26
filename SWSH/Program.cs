@@ -274,13 +274,16 @@ namespace SWSH
                         var keepgoing = true;
                         ssh.Connect();
                         __color($"Connected to {ccinfo.Username}@{ccinfo.Host}...\n", ConsoleColor.Green);
-                        string terminalName = "swsh"; // TODO: Initialize to an appropriate value
-                        uint columns = 80; // TODO: Initialize to an appropriate value
-                        uint rows = 160; // TODO: Initialize to an appropriate value
-                        uint width = 80; // TODO: Initialize to an appropriate value
-                        uint height = 160; // TODO: Initialize to an appropriate value
-                        int bufferSize = 500; // TODO: Initialize to an appropriate value
-                        IDictionary<Renci.SshNet.Common.TerminalModes, uint> terminalModeValues = null; // TODO: Initialize to an appropriate value
+
+                        //xterm compatibility?
+                        string terminalName = "xterm-256color";
+                        uint columns = 80;
+                        uint rows = 160;
+                        uint width = 80;
+                        uint height = 160;
+                        // arbitrarily chosen
+                        int bufferSize = 500;
+                        IDictionary<Renci.SshNet.Common.TerminalModes, uint> terminalModeValues = null;
                         var actual = ssh.CreateShellStream(terminalName, columns, rows, width, height, bufferSize, terminalModeValues);
                         //Read Thread
                         new System.Threading.Thread(() =>
