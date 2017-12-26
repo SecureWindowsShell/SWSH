@@ -24,10 +24,9 @@ namespace SWSH
     public static class Program
     {
         public const string _version = "1.4";
-        public static string _command = "", _codename = "beta", _mainDirectory = "swsh-data/";
+        public static string _command = "", _codename = "beta", _mainDirectory = $"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/swsh-data/";
         static void Main(string[] args)
         {
-            Directory.SetCurrentDirectory(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
             Console.Title = $"SWSH - {__version()}";
              __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
             Console.Write("swsh --help or -h for help.\n\n");
