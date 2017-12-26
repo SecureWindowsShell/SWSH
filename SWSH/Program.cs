@@ -271,6 +271,7 @@ namespace SWSH
                     Console.Write($"Waiting for response from {ccinfo.Username}@{ccinfo.Host}...\n");
                     using (var ssh = new SshClient(ccinfo))
                     {
+                        var keepgoing = true;
                         ssh.Connect();
                         __color($"Connected to {ccinfo.Username}@{ccinfo.Host}...\n", ConsoleColor.Green);
                         string terminalName = "swsh"; // TODO: Initialize to an appropriate value
@@ -282,19 +283,25 @@ namespace SWSH
                         IDictionary<Renci.SshNet.Common.TerminalModes, uint> terminalModeValues = null; // TODO: Initialize to an appropriate value
                         var actual = ssh.CreateShellStream(terminalName, columns, rows, width, height, bufferSize, terminalModeValues);
                         //Read Thread
-                        new System.Threading.Thread(() => {
-                            while(true) {
+                        new System.Threading.Thread(() =>
+                        {
+                            while (actual.CanRead)
+                            {
                                 Console.WriteLine(actual.ReadLine());
                             }
+                            keepgoing = false;
                         }).Start();
 
                         //Write Thread
-                        new System.Threading.Thread(() => {
-                            while(true) {
+                        new System.Threading.Thread(() =>
+                        {
+                            while (actual.CanWrite)
+                            {
                                 actual.WriteLine(Console.ReadLine());
                             }
+                            keepgoing = false;
                         }).Start();
-                        while(true);
+                        while (keepgoing) ;
                     }
                     __color($"Connection to {ccinfo.Username}@{ccinfo.Host}, closed.\n", ConsoleColor.Yellow);
                 }
