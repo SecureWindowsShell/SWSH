@@ -602,15 +602,8 @@ namespace SWSH
         private static void __cd()
         {
             _command = _command.Remove(0, 3);
-            try
-            {
                 Directory.SetCurrentDirectory(_command);
             }
-            catch (Exception e)
-            {
-                __color($"Error: {e.Message}", ConsoleColor.DarkYellow);
-            }
-        }
         private static void __upload()
         {
             _command = _command.Remove(0, 7);
