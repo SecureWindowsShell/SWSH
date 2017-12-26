@@ -1,4 +1,4 @@
-﻿/*
+/*
     Copyright (C) 2017  Muhammad Muzzammil & Nabeel Omer
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,10 +24,10 @@ namespace SWSH
     public static class Program
     {
         public const string _version = "1.4";
-        public static string _command = "", _codename = "beta", _mainDirectory = "swsh-data/";
+        public static string _command = "", _codename = "beta", _mainDirectory = "swsh-data/",
+            _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         static void Main(string[] args)
         {
-            Directory.SetCurrentDirectory(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
             Console.Title = $"SWSH - {__version()}";
              __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
             Console.Write("swsh --help or -h for help.\n\n");
@@ -39,7 +39,7 @@ namespace SWSH
             {
                 try
                 {
-                    __color($"{Directory.GetCurrentDirectory()}:", ConsoleColor.DarkCyan);
+                    __color($"{_workingDirectory.Replace('\\', '/').Remove(0, 2).ToLower()}:", ConsoleColor.DarkCyan);
                     __color("swsh> ", ConsoleColor.DarkGray);
                     _command = __getCommand();
                     if (_command.StartsWith("swsh"))
@@ -536,11 +536,11 @@ namespace SWSH
         }
         private static void __ls()
         {
-            if (Directory.GetCurrentDirectory().Length > 0)
+            if (Directory.GetDirectories(_workingDirectory).Length > 0)
             {
                 List<string> data = new List<string>();
-                Directory.GetFiles(Directory.GetCurrentDirectory()).ToList().ForEach(dir => data.Add(dir));
-                Directory.GetFiles(Directory.GetCurrentDirectory()).ToList().ForEach(file => data.Add(file));
+                Directory.GetDirectories(_workingDirectory).ToList().ForEach(dir => data.Add(dir));
+                Directory.GetFiles(_workingDirectory).ToList().ForEach(file => data.Add(file));
                 data.Sort();
                 Console.WriteLine("Size\tUser        Date Modified   Name\n====\t====        =============   ====");
                 data.ForEach(x =>
@@ -597,20 +597,16 @@ namespace SWSH
                     }
                 });
             }
-            if (Directory.GetFiles(Directory.GetCurrentDirectory()).Length == 0 && Directory.GetFiles(Directory.GetCurrentDirectory()).Length == 0) __color("No file" +
+            if (Directory.GetDirectories(_workingDirectory).Length == 0 && Directory.GetFiles(_workingDirectory).Length == 0) __color("No file" +
                 "s or directories here.\n", ConsoleColor.Yellow);
         }
         private static void __cd()
         {
             _command = _command.Remove(0, 3);
-            try
-            {
-                Directory.SetCurrentDirectory(_command);
-            }
-            catch (Exception e)
-            {
-                __color($"Error: {e.Message}", ConsoleColor.DarkYellow);
-            }
+            if (_command == "..") __changeWorkingDir(Path.GetDirectoryName(_workingDirectory));
+            else if (_command.StartsWith("./")) __changeWorkingDir($"{_workingDirectory}/{_command.Remove(0, 2)}");
+            else if (_command.StartsWith("/")) __changeWorkingDir(Path.GetPathRoot(_workingDirectory) + _command.Remove(0, 1));
+            else __changeWorkingDir($"{_workingDirectory}/{_command}");
         }
         private static void __upload()
         {
@@ -650,7 +646,7 @@ namespace SWSH
                                         sftp.Connect();
                                         toupload.ForEach(x =>
                                         {
-                                            var path = $"{Directory.GetCurrentDirectory()}/{x.Trim()}";
+                                            var path = $"{_workingDirectory}/{x.Trim()}";
                                             location = serverData[1] + ((serverData[1].EndsWith("/")) ? "" : "/") + x.Trim();
                                             if (!sftp.Exists(location)) sftp.CreateDirectory(location);
                                             __color($"Uploading <directory>: {x.Trim()}\n", ConsoleColor.Yellow);
@@ -664,7 +660,7 @@ namespace SWSH
                                         scp.Connect();
                                         toupload.ForEach(x =>
                                         {
-                                            var path = $"{Directory.GetCurrentDirectory()}/{x.Trim()}";
+                                            var path = $"{_workingDirectory}/{x.Trim()}";
                                             if (File.Exists(path))
                                             {
                                                 __color($"Uploading <file>: {x.Trim()}", ConsoleColor.Yellow);
@@ -730,6 +726,16 @@ namespace SWSH
             Console.Write($"\nRelease: {_codename}-{_version}\n(c) Muhammad Muzzammil & Nabeel Omer\nSWSH is licensed under the GNU General Public License v" +
                 $"3.0\n");
             return $"{_codename}-{_version}";
+        }
+        private static void __changeWorkingDir(string path)
+        {
+            path = path.Replace('\\', '/');
+            if (Directory.Exists(path)) _workingDirectory = path;
+            else
+            {
+                __color("ERROR: ", ConsoleColor.Red);
+                Console.WriteLine($"SWSH -> {path} -> path does not exists");
+            }
         }
         private static void __color(string message, ConsoleColor cc)
         {
