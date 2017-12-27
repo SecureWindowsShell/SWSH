@@ -791,7 +791,9 @@ namespace SWSH
 
             ReadLine.AutoCompletionHandler = (data, length) =>
             {
-                return list.Where(x =>  x.StartsWith(data)).ToArray();
+                var tList = new List<string>();
+                list.Where(x => x.StartsWith(data)).ToList().ForEach(y => tList.Add(y.Remove(0, length)));
+                return tList.ToArray();
             };
             var read = ReadLine.Read();
             File.AppendAllText(".swsh_history", $"[{DateTime.UtcNow} UTC]\t=>\t{read}\n");
