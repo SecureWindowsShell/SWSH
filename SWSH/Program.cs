@@ -29,7 +29,7 @@ namespace SWSH
         static void Main(string[] args)
         {
             Console.Title = $"SWSH - {__version()}";
-            if (!_codename.StartsWith("unstable")) __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
+            __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
             Console.Write("swsh --help or -h for help.\n\n");
             __start();
         }
@@ -772,7 +772,7 @@ namespace SWSH
             string getHash(string uri) => new System.Net.WebClient().DownloadString($"{uri}?" + new Random().Next());
 
             string
-                error = "ERROR: Checksum Mismatch! This executable may be out of date or malicious!\n",
+                error = "ERROR: Checksum Mismatch! This executable *may* be out of date or malicious!\n",
                 github = "https://raw.githubusercontent.com/SecureWindowsShell/",
                 checksumfile = $"{github}SWSH/master/checksum",
                 swshlocation = System.Reflection.Assembly.GetExecutingAssembly().Location,
@@ -786,13 +786,22 @@ namespace SWSH
             }
             catch (Exception)
             {
-                __color(error, ConsoleColor.Red);
+                if (!File.Exists(keygenlocation))
+                {
+                    __color("Warning: Could not find swsh-keygen.exe. All features will not be available.\n", ConsoleColor.Yellow);
+                }
                 if (!ignore)
                 {
+                    __color(error, ConsoleColor.Red);
                     Console.Read();
                     Environment.Exit(500);
                 }
-                else { Console.WriteLine($"SWSH:\t{computeHash(swshlocation)}\nkeygen:\t{computeHash(keygenlocation)}"); }
+                else
+                {
+#if DebugConfig
+                    Console.WriteLine($"SWSH:\t{computeHash(swshlocation)}\nkeygen:\t{computeHash(keygenlocation)}");
+#endif
+                }
                 return false;
             }
         }
