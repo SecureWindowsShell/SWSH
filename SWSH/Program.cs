@@ -29,7 +29,7 @@ namespace SWSH
         static void Main(string[] args)
         {
             Console.Title = $"SWSH - {__version()}";
-             __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
+            if (!_codename.StartsWith("unstable")) __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
             Console.Write("swsh --help or -h for help.\n\n");
             __start();
         }
