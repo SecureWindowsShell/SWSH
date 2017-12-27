@@ -1,4 +1,4 @@
-﻿/*
+/*
     Copyright (C) 2017  Muhammad Muzzammil & Nabeel Omer
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -275,7 +275,8 @@ namespace SWSH
                         ssh.Connect();
                         __color($"Connected to {ccinfo.Username}@{ccinfo.Host}...\n", ConsoleColor.Green);
 
-                        //xterm compatibility?
+                        // https://github.com/sshnet/SSH.NET/issues/363
+                        // xterm compatibility?
                         string terminalName = "xterm-256color";
                         uint columns = 80;
                         uint rows = 160;
