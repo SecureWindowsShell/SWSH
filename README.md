@@ -60,6 +60,7 @@ Features:
 - [x] keygen for ssh ```swsh --keygen```
 - [x] ```.swsh_history``` file to contain history of commands executed
 - [ ] Drop SSH.NET.
+- [ ] Tab completion.
 - [ ] Change commands to a better format. Issue #13
 - [ ] Include swsh-keygen as a library. Issue #11
 
