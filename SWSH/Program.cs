@@ -23,13 +23,14 @@ namespace SWSH
 {
     public static class Program
     {
+        public static bool keygenstatus;
         public const string _version = "1.5";
         public static string _command = "", _codename = "unstable-beta", _mainDirectory = "swsh-data/",
             _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         static void Main(string[] args)
         {
             Console.Title = $"SWSH - {__version()}";
-            __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
+            keygenstatus = __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
             Console.Write("swsh --help or -h for help.\n\n");
             __start();
         }
@@ -490,6 +491,11 @@ namespace SWSH
         }
         private static void __keygen()
         {
+            if (!keygenstatus)
+            {
+                __color("Key generation is unavailable.\n", ConsoleColor.DarkBlue);
+                return;
+            }
             if (File.Exists("swsh-keygen.exe"))
             {
                 if (!__checkHash(true)) return;
