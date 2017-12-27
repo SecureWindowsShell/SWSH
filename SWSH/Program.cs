@@ -1,4 +1,4 @@
-/*
+﻿/*
     Copyright (C) 2017  Muhammad Muzzammil & Nabeel Omer
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,7 +25,8 @@ namespace SWSH
     {
         public const string _version = "1.4";
         public static string _command = "", _codename = "beta", _mainDirectory = "swsh-data/",
-            _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+            branch = !_codename.StartsWith("unstable") ? "master" : "unstable";
         static void Main(string[] args)
         {
             Console.Title = $"SWSH - {__version()}";
@@ -261,9 +262,8 @@ namespace SWSH
             {
                 if (File.ReadAllLines(_mainDirectory + nickname + ".swsh")[0] == "-password")
                 {
-                    ReadLine.PasswordMode = true;
-                    ccinfo = __CreateConnectionInfoPassword(nickname, ReadLine.Read($"Password for {nickname}: ", ""));
-                    ReadLine.PasswordMode = false;
+                    Console.Write($"Password for {nickname}: ");
+                    ccinfo = __CreateConnectionInfoPassword(nickname, __getCommand());
                 }
                 else ccinfo = __CreateConnectionInfoKey(nickname);
                 if (ccinfo != null)
@@ -271,40 +271,43 @@ namespace SWSH
                     Console.Write($"Waiting for response from {ccinfo.Username}@{ccinfo.Host}...\n");
                     using (var ssh = new SshClient(ccinfo))
                     {
-                        var keepgoing = true;
                         ssh.Connect();
                         __color($"Connected to {ccinfo.Username}@{ccinfo.Host}...\n", ConsoleColor.Green);
-
-                        //xterm compatibility?
-                        string terminalName = "xterm-256color";
-                        uint columns = 80;
-                        uint rows = 160;
-                        uint width = 80;
-                        uint height = 160;
-                        // arbitrarily chosen
-                        int bufferSize = 500;
-                        IDictionary<Renci.SshNet.Common.TerminalModes, uint> terminalModeValues = null;
-                        var actual = ssh.CreateShellStream(terminalName, columns, rows, width, height, bufferSize, terminalModeValues);
-                        //Read Thread
-                        new System.Threading.Thread(() =>
+                        string pwd = " ", home = "";
+                        home = pwd = ssh.CreateCommand("echo $HOME").Execute();
+                        while (true)
                         {
-                            while (actual.CanRead)
+                            pwd = Regex.Replace(ssh.CreateCommand($"cd {pwd}; pwd").Execute(), @"\t|\n|\r", "");
+                            if (pwd == Regex.Replace(home, @"\t|\n|\r", "")) pwd = "~";
+                            __color(pwd, ConsoleColor.Green);
+                            Console.Write(":/ $ ");
+                            _command = __getCommand();
+                            ssh.CreateCommand(String.Format($"echo \"[{DateTime.UtcNow} UTC]\t=>\t{_command}\" >> ~/.swsh_history")).Execute();
+                            if (_command == "exit")
+                                break;
+                            else if (_command.StartsWith("cd"))
                             {
-                                Console.WriteLine(actual.ReadLine());
+                                _command = _command.Remove(0, 3);
+                                if (_command.StartsWith("/")) pwd = _command;
+                                else if (_command.StartsWith("./")) pwd += $"/{_command.Remove(0, 2)}";
+                                else if (_command.StartsWith("..")) pwd = Regex.Replace(ssh.CreateCommand($"cd {pwd}; dirname $(pwd)").Execute(), @"\t|" +
+                                    "\n|\r", "");
+                                else if (_command.Trim() == String.Empty) pwd = "~";
+                                else pwd += $"/{_command}";
                             }
-                            keepgoing = false;
-                        }).Start();
-
-                        //Write Thread
-                        new System.Threading.Thread(() =>
-                        {
-                            while (actual.CanWrite)
+                            else if (_command == "clear") Console.Clear();
+                            else if (_command.StartsWith("swsh"))
                             {
-                                actual.WriteLine(Console.ReadLine());
+                                __color("ERROR: ", ConsoleColor.Red);
+                                Console.Write("SWSH -> can't execute swsh while in connection\n");
                             }
-                            keepgoing = false;
-                        }).Start();
-                        while (keepgoing) ;
+                            else
+                            {
+                                var result = ssh.CreateCommand($"cd {pwd}; {_command}").Execute();
+                                Console.Write(result);
+                            }
+                        }
+                        ssh.Disconnect();
                     }
                     __color($"Connection to {ccinfo.Username}@{ccinfo.Host}, closed.\n", ConsoleColor.Yellow);
                 }
@@ -526,7 +529,7 @@ namespace SWSH
                 __color($"Your public key:\n\n{File.ReadAllLines(publicFile)[0]}\n", ConsoleColor.Green);
             }
             else __color($"ERROR: The binary 'swsh-keygen.exe' was not found. Are you sure it's installed?\nSee: https://github.com/SecureWindowsShell/SWSH/" +
-                $"tree/master/swsh-keygen#swsh-keygen", ConsoleColor.Red);
+                $"tree/{branch}/swsh-keygen#swsh-keygen", ConsoleColor.Red);
         }
         private static void __clear()
         {
@@ -752,12 +755,12 @@ namespace SWSH
                     .Select((x) => x.ToString("x2"))
                     .Aggregate((x, y) => x + y);
 
-            string getHash(string uri) => new System.Net.WebClient().DownloadString($"{uri}?{new Random().Next()}");
+            string getHash(string uri) => new System.Net.WebClient().DownloadString($"{uri}?" + new Random().Next());
 
             string
                 error = "ERROR: Checksum Mismatch! This executable may be out of date or malicious!\n",
                 github = "https://raw.githubusercontent.com/SecureWindowsShell/",
-                checksumfile = $"{github}SWSH/master/checksum",
+                checksumfile = $"{github}SWSH/{branch}/checksum",
                 swshlocation = System.Reflection.Assembly.GetExecutingAssembly().Location,
                 keygenlocation = "swsh-keygen.exe";
 
@@ -769,22 +772,13 @@ namespace SWSH
             }
             catch (Exception)
             {
+                __color(error, ConsoleColor.Red);
                 if (!ignore)
                 {
-                    __color(error, ConsoleColor.Red);
+                    Console.Read();
                     Environment.Exit(500);
                 }
-                else
-                {
-                    if (!File.Exists(keygenlocation))
-                    {
-                        __color("Warning: Could not find swsh-keygen.exe. All features may not be available.\n", ConsoleColor.Yellow);
-                        return false;
-                    }
-#if DebugConfig
-                    Console.WriteLine($"SWSH:\t{computeHash(swshlocation)}\nkeygen:\t{computeHash(keygenlocation)}");
-#endif
-                }
+                else { Console.WriteLine($"SWSH:\t{computeHash(swshlocation)}\nkeygen:\t{computeHash(keygenlocation)}"); }
                 return false;
             }
         }
