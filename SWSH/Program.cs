@@ -261,8 +261,9 @@ namespace SWSH
             {
                 if (File.ReadAllLines(_mainDirectory + nickname + ".swsh")[0] == "-password")
                 {
-                    Console.Write($"Password for {nickname}: ");
-                    ccinfo = __CreateConnectionInfoPassword(nickname, __getCommand());
+                    ReadLine.PasswordMode = true;
+                    ccinfo = __CreateConnectionInfoPassword(nickname, ReadLine.Read($"Password for {nickname}: ", ""));
+                    ReadLine.PasswordMode = false;
                 }
                 else ccinfo = __CreateConnectionInfoKey(nickname);
                 if (ccinfo != null)
@@ -270,43 +271,56 @@ namespace SWSH
                     Console.Write($"Waiting for response from {ccinfo.Username}@{ccinfo.Host}...\n");
                     using (var ssh = new SshClient(ccinfo))
                     {
+                        var keepgoing = true;
                         ssh.Connect();
                         __color($"Connected to {ccinfo.Username}@{ccinfo.Host}...\n", ConsoleColor.Green);
-                        string pwd = " ", home = "";
-                        home = pwd = ssh.CreateCommand("echo $HOME").Execute();
-                        while (true)
+
+                        //xterm compatibility?
+                        string terminalName = "xterm-256color";
+                        uint columns = 80;
+                        uint rows = 160;
+                        uint width = 80;
+                        uint height = 160;
+                        // arbitrarily chosen
+                        int bufferSize = 500;
+                        IDictionary<Renci.SshNet.Common.TerminalModes, uint> terminalModeValues = null;
+                        var actual = ssh.CreateShellStream(terminalName, columns, rows, width, height, bufferSize, terminalModeValues);
+                        //Read Thread
+                        new System.Threading.Thread(() =>
                         {
-                            pwd = Regex.Replace(ssh.CreateCommand($"cd {pwd}; pwd").Execute(), @"\t|\n|\r", "");
-                            if (pwd == Regex.Replace(home, @"\t|\n|\r", "")) pwd = "~";
-                            __color(pwd, ConsoleColor.Green);
-                            Console.Write(":/ $ ");
-                            _command = __getCommand();
-                            ssh.CreateCommand(String.Format($"echo \"[{DateTime.UtcNow} UTC]\t=>\t{_command}\" >> ~/.swsh_history")).Execute();
-                            if (_command == "exit")
-                                break;
-                            else if (_command.StartsWith("cd"))
+                            while (actual.CanRead)
                             {
-                                _command = _command.Remove(0, 3);
-                                if (_command.StartsWith("/")) pwd = _command;
-                                else if (_command.StartsWith("./")) pwd += $"/{_command.Remove(0, 2)}";
-                                else if (_command.StartsWith("..")) pwd = Regex.Replace(ssh.CreateCommand($"cd {pwd}; dirname $(pwd)").Execute(), @"\t|" +
-                                    "\n|\r", "");
-                                else if (_command.Trim() == String.Empty) pwd = "~";
-                                else pwd += $"/{_command}";
+                                try
+                                {
+                                    Console.WriteLine(actual.ReadLine());
+                                }
+                                catch (Exception)
+                                {
+                                    keepgoing = false;
+                                    return;
+                                }
                             }
-                            else if (_command == "clear") Console.Clear();
-                            else if (_command.StartsWith("swsh"))
+                            keepgoing = false;
+                        }).Start();
+
+                        //Write Thread
+                        new System.Threading.Thread(() =>
+                        {
+                            while (actual.CanWrite)
                             {
-                                __color("ERROR: ", ConsoleColor.Red);
-                                Console.Write("SWSH -> can't execute swsh while in connection\n");
+                                try
+                                {
+                                    actual.WriteLine(Console.ReadLine());
+                                }
+                                catch (Exception)
+                                {
+                                    keepgoing = false;
+                                    return;
+                                }
                             }
-                            else
-                            {
-                                var result = ssh.CreateCommand($"cd {pwd}; {_command}").Execute();
-                                Console.Write(result);
-                            }
-                        }
-                        ssh.Disconnect();
+                            keepgoing = false;
+                        }).Start();
+                        while (keepgoing) ;
                     }
                     __color($"Connection to {ccinfo.Username}@{ccinfo.Host}, closed.\n", ConsoleColor.Yellow);
                 }
