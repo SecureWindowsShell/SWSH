@@ -798,7 +798,16 @@ namespace SWSH
         private static string __getNickname(string s) => $"{_mainDirectory}{s}.swsh";
         private static string __getCommand()
         {
-            var read = Console.ReadLine();
+            var list = new List<string>();
+            var commands = new string[] { "--version", "--add", "--show", "--connect", "--delete", "--edit", "--keygen", "--help", "clear", "exit", "upload" };
+            foreach (var i in Directory.GetDirectories(_workingDirectory)) list.Add("cd " + new DirectoryInfo(i).Name.ToLower());
+            foreach (var i in commands) list.Add("swsh " + i);
+
+            ReadLine.AutoCompletionHandler = (data, length) =>
+            {
+                return list.Where(x =>  x.StartsWith(data)).ToArray();
+            };
+            var read = ReadLine.Read();
             File.AppendAllText(".swsh_history", $"[{DateTime.UtcNow} UTC]\t=>\t{read}\n");
             return read;
         }
