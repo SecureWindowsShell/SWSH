@@ -33,6 +33,18 @@ namespace SWSH
             Console.Title = $"SWSH - {__version()}";
             if (!_codename.StartsWith("unstable")) _keygenstatus = __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
             Console.Write("swsh --help or -h for help.\n\n");
+            try
+            {
+                var handle = ExternalFunctions.GetStdHandle(-11);
+                ExternalFunctions.GetConsoleMode(handle, out var mode);
+                ExternalFunctions.SetConsoleMode(handle, mode | 0x4);
+                ExternalFunctions.GetConsoleMode(handle, out mode);
+            }
+            catch (Exception exp)
+            {
+                __color("ERROR: ", ConsoleColor.Red);
+                Console.WriteLine(exp.Message);
+            }
             __start();
         }
         private static void __start()
@@ -295,17 +307,6 @@ namespace SWSH
                             {
                                 try
                                 {
-                                    try
-                                    {
-                                        var handle = ExternalFunctions.GetStdHandle(-11);
-                                        ExternalFunctions.GetConsoleMode(handle, out var mode);
-                                        ExternalFunctions.SetConsoleMode(handle, mode | 0x4);
-                                        ExternalFunctions.GetConsoleMode(handle, out mode);
-                                    }
-                                    catch (Exception exp)
-                                    {
-                                        __color(exp.Message, ConsoleColor.Red);
-                                    }
                                     Console.WriteLine(actual.ReadLine());
                                 }
                                 catch (Exception)
