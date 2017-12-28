@@ -384,7 +384,7 @@ namespace SWSH
                 {
                     if (File.Exists(file))
                     {
-                        Console.Write("Details of {_command}:\n");
+                        Console.Write($"Details of {_command}:\n");
                         var data = File.ReadAllLines(file);
                         for (int i = 0; i < _command.Length + 12; i++) Console.Write("=");
                         Console.Write($"\nPath to key: {data[0]}\nUsername: {data[1]}\nHost: {data[2]}\nStatus: ");
