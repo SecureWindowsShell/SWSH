@@ -276,7 +276,7 @@ namespace SWSH
                         var keepgoing = true;
                         ssh.Connect();
                         __color($"Connected to {ccinfo.Username}@{ccinfo.Host}...\n", ConsoleColor.Green);
-
+                        
                         // https://github.com/sshnet/SSH.NET/issues/363
                         // xterm compatibility?
                         string terminalName = "xterm-256color";
@@ -295,6 +295,17 @@ namespace SWSH
                             {
                                 try
                                 {
+                                    try
+                                    {
+                                        var handle = ExternalFunctions.GetStdHandle(-11);
+                                        ExternalFunctions.GetConsoleMode(handle, out var mode);
+                                        ExternalFunctions.SetConsoleMode(handle, mode | 0x4);
+                                        ExternalFunctions.GetConsoleMode(handle, out mode);
+                                    }
+                                    catch (Exception exp)
+                                    {
+                                        __color(exp.Message, ConsoleColor.Red);
+                                    }
                                     Console.WriteLine(actual.ReadLine());
                                 }
                                 catch (Exception)
@@ -305,7 +316,6 @@ namespace SWSH
                             }
                             keepgoing = false;
                         }).Start();
-
                         //Write Thread
                         new System.Threading.Thread(() =>
                         {
