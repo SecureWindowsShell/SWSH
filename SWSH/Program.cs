@@ -30,7 +30,7 @@ namespace SWSH
         static void Main(string[] args)
         {
             Console.Title = $"SWSH - {__version()}";
-            keygenstatus = __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
+            if (!_codename.StartsWith("unstable")) _keygenstatus = __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
             Console.Write("swsh --help or -h for help.\n\n");
             __start();
         }
@@ -801,12 +801,6 @@ namespace SWSH
                     __color(error, ConsoleColor.Red);
                     Console.Read();
                     Environment.Exit(500);
-                }
-                else
-                {
-#if DebugConfig
-                    Console.WriteLine($"SWSH:\t{computeHash(swshlocation)}\nkeygen:\t{computeHash(keygenlocation)}");
-#endif
                 }
                 return false;
             }
