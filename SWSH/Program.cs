@@ -26,7 +26,8 @@ namespace SWSH
         public static bool _keygenstatus;
         public const string _version = "1.5";
         public static string _command = "", _codename = "unstable-beta", _mainDirectory = "swsh-data/",
-            _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+            _swsh_history = Environment.GetFolderPath((Environment.SpecialFolder)40) + "\\.swsh_history";
         static void Main(string[] args)
         {
             Console.Title = $"SWSH - {__version()}";
@@ -829,7 +830,7 @@ namespace SWSH
                 return tList.ToArray();
             };
             var read = ReadLine.Read();
-            File.AppendAllText(".swsh_history", $"[{DateTime.UtcNow} UTC]\t=>\t{read}\n");
+            File.AppendAllText(_swsh_history, $"[{DateTime.UtcNow} UTC]\t=>\t{read}\n");
             return read;
         }
         private static ConnectionInfo __CreateConnectionInfoKey(string nickname)
