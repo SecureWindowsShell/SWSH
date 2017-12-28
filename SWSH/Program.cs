@@ -813,9 +813,18 @@ namespace SWSH
             foreach (var i in Directory.GetDirectories(_workingDirectory)) list.Add("cd " + new DirectoryInfo(i).Name.ToLower());
             foreach (var i in commands) list.Add("swsh " + i);
 
+            bool requiresNickname(string data)
+            {
+                foreach (var i in new List<string>() { "--show", "--connect", "--delete", "--edit" })
+                    if (i == data.Split(' ')[1]) return true;
+                return false;
+            }
+
             ReadLine.AutoCompletionHandler = (data, length) =>
             {
                 var tList = new List<string>();
+                if (data.StartsWith("swsh "))
+                    if (requiresNickname(data)) Directory.GetFiles(_mainDirectory).ToList().ForEach(x => { tList.Add(Path.GetFileNameWithoutExtension(x)); });
                 list.Where(x => x.StartsWith(data)).ToList().ForEach(y => tList.Add(y.Remove(0, length)));
                 return tList.ToArray();
             };
