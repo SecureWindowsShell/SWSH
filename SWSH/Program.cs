@@ -23,7 +23,7 @@ namespace SWSH
 {
     public static class Program
     {
-        public static bool keygenstatus;
+        public static bool _keygenstatus;
         public const string _version = "1.5";
         public static string _command = "", _codename = "unstable-beta", _mainDirectory = "swsh-data/",
             _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
@@ -491,7 +491,7 @@ namespace SWSH
         }
         private static void __keygen()
         {
-            if (!keygenstatus)
+            if (!_keygenstatus)
             {
                 __color("Key generation is unavailable.\n", ConsoleColor.DarkBlue);
                 return;
