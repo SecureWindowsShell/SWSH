@@ -263,7 +263,7 @@ namespace SWSH
                 if (File.ReadAllLines(_mainDirectory + nickname + ".swsh")[0] == "-password")
                 {
                     ReadLine.PasswordMode = true;
-                    ccinfo = __CreateConnectionInfoPassword(nickname, ReadLine.Read($"Password for {nickname}: ", ""));
+                    ccinfo = __CreateConnectionInfoPassword(nickname, ReadLine.Read($"Password for {nickname}: "));
                     ReadLine.PasswordMode = false;
                 }
                 else ccinfo = __CreateConnectionInfoKey(nickname);
