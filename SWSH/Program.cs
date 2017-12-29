@@ -838,7 +838,7 @@ namespace SWSH
                 if (data.StartsWith("swsh "))
                     if (requiresNickname(data))
                         Directory.GetFiles(_mainDirectory).ToList()
-                        .Where(x=> Path.GetFileNameWithoutExtension(x).Contains(data.Split(' ')[2])).ToList()
+                        .Where(x => Path.GetFileNameWithoutExtension(x).Contains(data.Split(' ')[2])).ToList()
                         .ForEach(x => { tList.Add(Path.GetFileNameWithoutExtension(x)); });
                 list.Where(x => x.Contains(data)).ToList().ForEach(y => tList.Add(y.Remove(0, length)));
                 return tList.ToArray();
