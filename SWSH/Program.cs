@@ -26,10 +26,10 @@ namespace SWSH
         public static bool _keygenstatus;
         public const string _version = "1.5";
         public static string _command = "", _codename = "unstable-beta", _mainDirectory = "swsh-data/",
-            _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
             _swsh_history = Environment.GetFolderPath((Environment.SpecialFolder)40) + "/.swsh_history";
         static void Main(string[] args)
         {
+            Directory.SetCurrentDirectory(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
             Console.Title = $"SWSH - {__version()}";
             if (!_codename.StartsWith("unstable")) _keygenstatus = __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
             Console.Write("swsh --help or -h for help.\n\n");
@@ -53,7 +53,7 @@ namespace SWSH
             {
                 try
                 {
-                    __color($"{_workingDirectory.Replace('\\', '/').Remove(0, 2).ToLower()}:", ConsoleColor.DarkCyan);
+                    __color($"{Directory.GetCurrentDirectory()}:", ConsoleColor.DarkCyan);
                     __color("swsh> ", ConsoleColor.DarkGray);
                     _command = __getCommand();
                     if (_command.StartsWith("swsh"))
@@ -571,11 +571,11 @@ namespace SWSH
         }
         private static void __ls()
         {
-            if (Directory.GetDirectories(_workingDirectory).Length > 0)
+            if (Directory.GetDirectories(Directory.GetCurrentDirectory()).Length > 0)
             {
                 List<string> data = new List<string>();
-                Directory.GetDirectories(_workingDirectory).ToList().ForEach(dir => data.Add(dir));
-                Directory.GetFiles(_workingDirectory).ToList().ForEach(file => data.Add(file));
+                Directory.GetDirectories(Directory.GetCurrentDirectory()).ToList().ForEach(dir => data.Add(dir));
+                Directory.GetFiles(Directory.GetCurrentDirectory()).ToList().ForEach(file => data.Add(file));
                 data.Sort();
                 Console.WriteLine("Size\tUser        Date Modified   Name\n====\t====        =============   ====");
                 data.ForEach(x =>
@@ -632,16 +632,13 @@ namespace SWSH
                     }
                 });
             }
-            if (Directory.GetDirectories(_workingDirectory).Length == 0 && Directory.GetFiles(_workingDirectory).Length == 0) __color("No file" +
+            if (Directory.GetDirectories(Directory.GetCurrentDirectory()).Length == 0 && Directory.GetFiles(Directory.GetCurrentDirectory()).Length == 0) __color("No file" +
                 "s or directories here.\n", ConsoleColor.Yellow);
         }
         private static void __cd()
         {
             _command = _command.Remove(0, 3);
-            if (_command == "..") __changeWorkingDir(Path.GetDirectoryName(_workingDirectory));
-            else if (_command.StartsWith("./")) __changeWorkingDir($"{_workingDirectory}/{_command.Remove(0, 2)}");
-            else if (_command.StartsWith("/")) __changeWorkingDir(Path.GetPathRoot(_workingDirectory) + _command.Remove(0, 1));
-            else __changeWorkingDir($"{_workingDirectory}/{_command}");
+            Directory.SetCurrentDirectory(_command);
         }
         private static void __upload()
         {
@@ -681,7 +678,7 @@ namespace SWSH
                                         sftp.Connect();
                                         toupload.ForEach(x =>
                                         {
-                                            var path = $"{_workingDirectory}/{x.Trim()}";
+                                            var path = $"{Directory.GetCurrentDirectory()}/{x.Trim()}";
                                             location = serverData[1] + ((serverData[1].EndsWith("/")) ? "" : "/") + x.Trim();
                                             if (!sftp.Exists(location)) sftp.CreateDirectory(location);
                                             __color($"Uploading <directory>: {x.Trim()}\n", ConsoleColor.Yellow);
@@ -695,7 +692,7 @@ namespace SWSH
                                         scp.Connect();
                                         toupload.ForEach(x =>
                                         {
-                                            var path = $"{_workingDirectory}/{x.Trim()}";
+                                            var path = $"{Directory.GetCurrentDirectory()}/{x.Trim()}";
                                             if (File.Exists(path))
                                             {
                                                 __color($"Uploading <file>: {x.Trim()}", ConsoleColor.Yellow);
@@ -762,16 +759,6 @@ namespace SWSH
                 $"3.0\n");
             return $"{_codename}-{_version}";
         }
-        private static void __changeWorkingDir(string path)
-        {
-            path = path.Replace('\\', '/');
-            if (Directory.Exists(path)) _workingDirectory = path;
-            else
-            {
-                __color("ERROR: ", ConsoleColor.Red);
-                Console.WriteLine($"SWSH -> {path} -> path does not exists");
-            }
-        }
         private static void __color(string message, ConsoleColor cc)
         {
             Console.ForegroundColor = cc;
@@ -822,7 +809,7 @@ namespace SWSH
         {
             var list = new List<string>();
             var commands = new string[] { "--version", "--add", "--show", "--connect", "--delete", "--edit", "--keygen", "--help", "clear", "exit", "upload" };
-            foreach (var i in Directory.GetDirectories(_workingDirectory)) list.Add("cd " + new DirectoryInfo(i).Name.ToLower());
+            foreach (var i in Directory.GetDirectories(Directory.GetCurrentDirectory())) list.Add("cd " + new DirectoryInfo(i).Name.ToLower());
             foreach (var i in commands) list.Add("swsh " + i);
 
             bool requiresNickname(string data)
