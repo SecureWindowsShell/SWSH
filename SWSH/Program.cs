@@ -827,7 +827,7 @@ namespace SWSH
 
             bool requiresNickname(string data)
             {
-                foreach (var i in new List<string>() { "--show", "--connect", "--delete", "--edit" })
+                foreach (var i in new List<string>() { "--show", "--connect", "--delete", "--edit", "-c" })
                     if (i == data.Split(' ')[1]) return true;
                 return false;
             }
@@ -836,8 +836,11 @@ namespace SWSH
             {
                 var tList = new List<string>();
                 if (data.StartsWith("swsh "))
-                    if (requiresNickname(data)) Directory.GetFiles(_mainDirectory).ToList().ForEach(x => { tList.Add(Path.GetFileNameWithoutExtension(x)); });
-                list.Where(x => x.StartsWith(data)).ToList().ForEach(y => tList.Add(y.Remove(0, length)));
+                    if (requiresNickname(data))
+                        Directory.GetFiles(_mainDirectory).ToList()
+                        .Where(x=> Path.GetFileNameWithoutExtension(x).Contains(data.Split(' ')[2])).ToList()
+                        .ForEach(x => { tList.Add(Path.GetFileNameWithoutExtension(x)); });
+                list.Where(x => x.Contains(data)).ToList().ForEach(y => tList.Add(y.Remove(0, length)));
                 return tList.ToArray();
             };
             var read = ReadLine.Read();
