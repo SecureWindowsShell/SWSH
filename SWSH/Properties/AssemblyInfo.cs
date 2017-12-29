@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SWSH")]
 [assembly: AssemblyDescription("Licensed under the GNU GPL v3")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Halcyon Inc")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("SWSH")]
-[assembly: AssemblyCopyright("Copyright © 2017 Muhammad Muzzammil & Nabeel Omer")]
+[assembly: AssemblyCopyright("Copyright © 2017 Muhammad Muzzammil")]
 [assembly: AssemblyTrademark("SWSH")]
 [assembly: AssemblyCulture("")]
 

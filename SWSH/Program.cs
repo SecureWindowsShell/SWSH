@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright (C) 2017  Muhammad Muzzammil & Nabeel Omer
+    Copyright (C) 2017  Muhammad Muzzammil
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -726,8 +726,7 @@ namespace SWSH
         {
             Console.Write("   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __"
                 + "  /  \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
-            Console.Write($"\nRelease: {_codename}-{_version}\n(c) Muhammad Muzzammil & Nabeel Omer\nSWSH is licensed under the GNU General Public License v" +
-                $"3.0\n");
+            Console.Write($"\nRelease: {_codename}-{_version}\n(c) Muhammad Muzzammil\nSWSH is licensed under the GNU General Public License v3.0\n");
             return $"{_codename}-{_version}";
         }
         private static void __changeWorkingDir(string path)

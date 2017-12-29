@@ -72,6 +72,6 @@ Fixes:
 
 # License
 GPL v3<br>
-Copyright (C) 2017  Muhammad Muzzammil & Nabeel Omer
+Copyright (C) 2017  Muhammad Muzzammil
 
  
