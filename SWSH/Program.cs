@@ -23,7 +23,7 @@ namespace SWSH
 {
     public static class Program
     {
-        public const string _version = "1.4";
+        public const string _version = "1.4.1";
         public static string _command = "", _codename = "beta", _mainDirectory = "swsh-data/",
             _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
             branch = !_codename.StartsWith("unstable") ? "master" : "unstable";
