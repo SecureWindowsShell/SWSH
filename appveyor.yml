@@ -6,7 +6,6 @@ notifications:
   - provider: Email
     to:
       - muhammadmuzzammil.cs@gmail.com
-      - nabeelkomer@gmail.com
 
 platform:
   - Any CPU
