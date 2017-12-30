@@ -324,6 +324,7 @@ namespace SWSH
                             {
                                 try
                                 {
+                                    actual.WriteLine("");
                                     actual.WriteLine(Console.ReadLine());
                                 }
                                 catch (Exception)
