@@ -2,7 +2,7 @@
 
 ### This branch is **unstable**.
 
-## Changes to expect in beta 1.5
+## Changes to expect in beta 2
 - [x] Tab completion.
 - [x] ~Change commands to a better format. Issue #13~ (No need to do this because of tab completion)
 - [ ] Include swsh-keygen as a library. Issue #11
