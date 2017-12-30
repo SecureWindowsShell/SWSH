@@ -24,7 +24,7 @@ namespace SWSH
     public static class Program
     {
         public static bool _keygenstatus;
-        public const string _version = "1.5";
+        public const string _version = "2";
         public static string _command = "", _codename = "unstable-beta", _mainDirectory = "swsh-data/",
             _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
             _swsh_history = Environment.GetFolderPath((Environment.SpecialFolder)40) + "/.swsh_history";
