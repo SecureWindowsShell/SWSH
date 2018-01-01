@@ -325,7 +325,9 @@ namespace SWSH
                                 try
                                 {
                                     actual.WriteLine("");
-                                    actual.WriteLine(Console.ReadLine());
+                                    var input = Console.ReadLine();
+                                    Console.Write("\b\r\b\r");
+                                    actual.WriteLine(input);
                                 }
                                 catch (Exception)
                                 {
