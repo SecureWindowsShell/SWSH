@@ -289,14 +289,11 @@ namespace SWSH
                         ssh.Connect();
                         __color($"Connected to {ccinfo.Username}@{ccinfo.Host}...\n", ConsoleColor.Green);
                         
-                        // https://github.com/sshnet/SSH.NET/issues/363
-                        // xterm compatibility?
                         string terminalName = "xterm-256color";
                         uint columns = 80;
                         uint rows = 160;
                         uint width = 80;
                         uint height = 160;
-                        // arbitrarily chosen
                         int bufferSize = 500;
                         IDictionary<Renci.SshNet.Common.TerminalModes, uint> terminalModeValues = null;
                         var actual = ssh.CreateShellStream(terminalName, columns, rows, width, height, bufferSize, terminalModeValues);
