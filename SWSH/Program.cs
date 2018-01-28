@@ -304,7 +304,7 @@ namespace SWSH
                                     Console.WriteLine(actual.ReadLine());
                         });
                         //Write Thread
-                        var write = new System.Threading.Thread(() =>
+                        new System.Threading.Thread(() =>
                         {
                             if (actual.CanWrite)
                                 while (true)
@@ -334,9 +334,8 @@ namespace SWSH
                                         break;
                                     }
                                 }
-                        });
+                        }).Start();
                         read.Start();
-                        write.Start();
                         while (true) ;
                     }
                 }
