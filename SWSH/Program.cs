@@ -164,7 +164,7 @@ namespace SWSH
                 }
             }
             if (!Directory.Exists(_mainDirectory)) Directory.CreateDirectory(_mainDirectory);
-            File.AppendAllLines(__getNickname(data[3]), data.Except(new string[] { data[3] }));
+            File.AppendAllLines(__getNickname(data[3]), data.Take(data.Count() - 1).ToArray());
             void __checkexit(string keyword)
             {
                 if (keyword == "exit" || keyword == "-e")
