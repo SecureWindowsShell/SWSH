@@ -285,7 +285,6 @@ namespace SWSH
                     Console.Write($"Waiting for response from {ccinfo.Username}@{ccinfo.Host}...\n");
                     using (var ssh = new SshClient(ccinfo))
                     {
-                        var keepgoing = true;
                         ssh.Connect();
                         __color($"Connected to {ccinfo.Username}@{ccinfo.Host}...\n", ConsoleColor.Green);
 
@@ -301,9 +300,8 @@ namespace SWSH
                         var read = new System.Threading.Thread(() =>
                         {
                             if (actual.CanRead)
-                                while (keepgoing)
+                                while (true)
                                     Console.WriteLine(actual.ReadLine());
-                            keepgoing = false;
                         });
                         //Write Thread
                         var write = new System.Threading.Thread(() =>
