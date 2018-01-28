@@ -288,7 +288,7 @@ namespace SWSH
                         var keepgoing = true;
                         ssh.Connect();
                         __color($"Connected to {ccinfo.Username}@{ccinfo.Host}...\n", ConsoleColor.Green);
-                        
+
                         string terminalName = "xterm-256color";
                         uint columns = (uint)Console.BufferWidth;
                         uint rows = (uint)Console.BufferHeight;
@@ -298,45 +298,38 @@ namespace SWSH
                         IDictionary<Renci.SshNet.Common.TerminalModes, uint> terminalModeValues = null;
                         var actual = ssh.CreateShellStream(terminalName, columns, rows, width, height, bufferSize, terminalModeValues);
                         //Read Thread
-                        new System.Threading.Thread(() =>
+                        var read = new System.Threading.Thread(() =>
                         {
-                            while (actual.CanRead)
-                            {
-                                try
-                                {
+                            if (actual.CanRead)
+                                while (keepgoing)
                                     Console.WriteLine(actual.ReadLine());
-                                }
-                                catch (Exception)
-                                {
-                                    keepgoing = false;
-                                    return;
-                                }
-                            }
                             keepgoing = false;
-                        }).Start();
+                        });
                         //Write Thread
-                        new System.Threading.Thread(() =>
+                        var write = new System.Threading.Thread(() =>
                         {
-                            while (actual.CanWrite)
-                            {
-                                try
+                            if (actual.CanWrite)
+                                while (true)
                                 {
                                     actual.WriteLine("");
                                     var input = Console.ReadLine();
                                     Console.Write("\b\r\b\r");
                                     actual.WriteLine(input);
+                                    if (input == "exit")
+                                    {
+                                        actual.Dispose();
+                                        __clear();
+                                        read.Abort();
+                                        __color($"Connection to {ccinfo.Username}@{ccinfo.Host}, closed.\n", ConsoleColor.Yellow);
+                                        ssh.Disconnect();
+                                        break;
+                                    }
                                 }
-                                catch (Exception)
-                                {
-                                    keepgoing = false;
-                                    return;
-                                }
-                            }
-                            keepgoing = false;
-                        }).Start();
-                        while (keepgoing) ;
+                        });
+                        read.Start();
+                        write.Start();
+                        while (true) ;
                     }
-                    __color($"Connection to {ccinfo.Username}@{ccinfo.Host}, closed.\n", ConsoleColor.Yellow);
                 }
             }
             else
