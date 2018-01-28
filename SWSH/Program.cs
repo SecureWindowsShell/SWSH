@@ -311,16 +311,28 @@ namespace SWSH
                             if (actual.CanWrite)
                                 while (true)
                                 {
-                                    actual.WriteLine("");
-                                    var input = Console.ReadLine();
-                                    Console.Write("\b\r\b\r");
-                                    actual.WriteLine(input);
-                                    if (input == "exit")
+                                    try
                                     {
-                                        actual.Dispose();
-                                        __clear();
-                                        read.Abort();
+                                        actual.WriteLine("");
+                                        var input = Console.ReadLine();
+                                        Console.Write("\b\r\b\r");
+                                        actual.WriteLine(input);
+                                        if (input == "exit")
+                                        {
+                                            actual.Dispose();
+                                            __clear();
+                                            read.Abort();
+                                            throw new Exception();
+                                        }
+                                    }
+                                    catch (Exception)
+                                    {
                                         __color($"Connection to {ccinfo.Username}@{ccinfo.Host}, closed.\n", ConsoleColor.Yellow);
+                                        __color("(E)xit SWSH - Any other key to reload SWSH: ", ConsoleColor.Blue);
+                                        var key = Console.ReadKey();
+                                        if (key.Key != ConsoleKey.E)
+                                            Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                                        Environment.Exit(0);
                                         ssh.Disconnect();
                                         break;
                                     }
