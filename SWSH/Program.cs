@@ -318,7 +318,6 @@ namespace SWSH
                                         if (input == "exit")
                                         {
                                             actual.Dispose();
-                                            __clear();
                                             read.Abort();
                                             throw new Exception();
                                         }
