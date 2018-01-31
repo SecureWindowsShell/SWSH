@@ -56,7 +56,6 @@ namespace SWSH {
             return text;
         }
     }
-
     internal class KeyHandler {
         private int _cursorPos;
         private int _cursorLimit;
@@ -71,72 +70,55 @@ namespace SWSH {
         private IConsole Console2;
 
         private bool IsStartOfLine() => _cursorPos == 0;
-
         private bool IsEndOfLine() => _cursorPos == _cursorLimit;
-
         private bool IsStartOfBuffer() => Console2.CursorLeft == 0;
-
         private bool IsEndOfBuffer() => Console2.CursorLeft == Console2.BufferWidth - 1;
         private bool IsInAutoCompleteMode() => _completions != null;
-
         private void MoveCursorLeft() {
             if (IsStartOfLine())
                 return;
-
             if (IsStartOfBuffer())
                 Console2.SetCursorPosition(Console2.BufferWidth - 1, Console2.CursorTop - 1);
             else
                 Console2.SetCursorPosition(Console2.CursorLeft - 1, Console2.CursorTop);
-
             _cursorPos--;
         }
-
         private void MoveCursorHome() {
             while (!IsStartOfLine())
                 MoveCursorLeft();
         }
-
         private string BuildKeyInput() {
             return (_keyInfo.Modifiers != ConsoleModifiers.Control && _keyInfo.Modifiers != ConsoleModifiers.Shift) ?
                 _keyInfo.Key.ToString() : _keyInfo.Modifiers.ToString() + _keyInfo.Key.ToString();
         }
-
         private void MoveCursorRight() {
             if (IsEndOfLine())
                 return;
-
             if (IsEndOfBuffer())
                 Console2.SetCursorPosition(0, Console2.CursorTop + 1);
             else
                 Console2.SetCursorPosition(Console2.CursorLeft + 1, Console2.CursorTop);
-
             _cursorPos++;
         }
-
         private void MoveCursorEnd() {
             while (!IsEndOfLine())
                 MoveCursorRight();
         }
-
         private void ClearLine() {
             MoveCursorEnd();
             while (!IsStartOfLine())
                 Backspace();
         }
-
         private void WriteNewString(string str) {
             ClearLine();
             foreach (char character in str)
                 WriteChar(character);
         }
-
         private void WriteString(string str) {
             foreach (char character in str)
                 WriteChar(character);
         }
-
         private void WriteChar() => WriteChar(_keyInfo.KeyChar);
-
         private void WriteChar(char c) {
             if (IsEndOfLine()) {
                 _text.Append(c);
@@ -151,14 +133,11 @@ namespace SWSH {
                 Console2.SetCursorPosition(left, top);
                 MoveCursorRight();
             }
-
             _cursorLimit++;
         }
-
         private void Backspace() {
             if (IsStartOfLine())
                 return;
-
             MoveCursorLeft();
             int index = _cursorPos;
             _text.Remove(index, 1);
@@ -169,7 +148,6 @@ namespace SWSH {
             Console2.SetCursorPosition(left, top);
             _cursorLimit--;
         }
-
         private void StartAutoComplete() {
             while (_cursorPos > _completionStart)
                 Backspace();
@@ -178,7 +156,6 @@ namespace SWSH {
 
             WriteString(_completions[_completionsIndex]);
         }
-
         private void NextAutoComplete() {
             while (_cursorPos > _completionStart)
                 Backspace();
@@ -190,7 +167,6 @@ namespace SWSH {
 
             WriteString(_completions[_completionsIndex]);
         }
-
         private void PreviousAutoComplete() {
             while (_cursorPos > _completionStart)
                 Backspace();
@@ -202,14 +178,12 @@ namespace SWSH {
 
             WriteString(_completions[_completionsIndex]);
         }
-
         private void PrevHistory() {
             if (_historyIndex > 0) {
                 _historyIndex--;
                 WriteNewString(_history[_historyIndex]);
             }
         }
-
         private void NextHistory() {
             if (_historyIndex < _history.Count) {
                 _historyIndex++;
@@ -219,18 +193,15 @@ namespace SWSH {
                     WriteNewString(_history[_historyIndex]);
             }
         }
-
         private void ResetAutoComplete() {
             _completions = null;
             _completionsIndex = 0;
         }
-
         public string Text {
             get {
                 return _text.ToString();
             }
         }
-
         public KeyHandler(IConsole console, List<string> history, Func<string, int, string[]> autoCompleteHandler) {
             Console2 = console;
 
@@ -298,7 +269,6 @@ namespace SWSH {
                 }
             };
         }
-
         public void Handle(ConsoleKeyInfo keyInfo) {
             _keyInfo = keyInfo;
 
@@ -312,7 +282,6 @@ namespace SWSH {
             action.Invoke();
         }
     }
-
     internal interface IConsole {
         int CursorLeft { get; }
         int CursorTop { get; }
@@ -323,32 +292,22 @@ namespace SWSH {
         void Write(string value);
         void WriteLine(string value);
     }
-
     internal class Console2 : IConsole {
         public int CursorLeft => Console.CursorLeft;
-
         public int CursorTop => Console.CursorTop;
-
         public int BufferWidth => Console.BufferWidth;
-
         public int BufferHeight => Console.BufferHeight;
-
         public bool PasswordMode { get; set; }
-
         public void SetBufferSize(int width, int height) => Console.SetBufferSize(width, height);
-
         public void SetCursorPosition(int left, int top) {
             if (!PasswordMode)
                 Console.SetCursorPosition(left, top);
         }
-
         public void Write(string value) {
             if (PasswordMode)
                 value = new String(default(char), value.Length);
-
             Console.Write(value);
         }
-
         public void WriteLine(string value) => Console.WriteLine(value);
     }
 }
