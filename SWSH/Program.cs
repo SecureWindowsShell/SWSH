@@ -443,8 +443,8 @@ namespace SWSH {
                     return;
                 }
                 __color($"Your public key:\n\n{File.ReadAllLines(publicFile)[0]}\n", ConsoleColor.Green);
-            } else __color($"ERROR: The binary 'swsh-keygen.exe' was not found. Are you sure it's installed?\nSee: https://github.com/SecureWindowsShell/SWSH/" +
-                  $"tree/master/swsh-keygen#swsh-keygen", ConsoleColor.Red);
+            } else __color($"ERROR: The binary 'swsh-keygen.exe' was not found. Are you sure it's installed?\nSee: https://github.com/SecureWindowsShell/SWS" +
+                $"H/tree/master/swsh-keygen#swsh-keygen", ConsoleColor.Red);
         }
         private static void __clear() {
             Console.Clear();
