@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace SWSH
-{
-    class ExternalFunctions
-    {
+namespace SWSH {
+    class ExternalFunctions {
         private const string Kernel32 = "kernel32.dll";
         [DllImport(Kernel32, EntryPoint = "SetConsoleMode", SetLastError = true)]
         internal static extern bool SetConsoleMode(IntPtr hConsoleHandle, int mode);
