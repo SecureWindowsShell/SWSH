@@ -11,6 +11,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 using System;
 using System.IO;
 using Renci.SshNet;
@@ -20,12 +21,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace SWSH {
+
     public static class Program {
+
         public static bool _keygenstatus;
         public const string _version = "2";
         public static string _command = "", _codename = "unstable-beta", _mainDirectory = "swsh-data/",
             _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
             _swsh_history = Environment.GetFolderPath((Environment.SpecialFolder)40) + "/.swsh_history";
+
         static void Main(string[] args) {
             Console.Title = $"SWSH - {__version()}";
             if (!_codename.StartsWith("unstable")) _keygenstatus = __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
@@ -41,6 +45,7 @@ namespace SWSH {
             }
             __start();
         }
+
         private static void __start() {
             while (true) {
                 try {
@@ -70,6 +75,7 @@ namespace SWSH {
                 }
             }
         }
+
         private static void __addConnection() {
             _command = (_command.StartsWith("--")) ? _command.Replace("--add", "").Trim() : _command.Replace("-a", "").Trim();
             __color("exit", ConsoleColor.Red);
@@ -139,6 +145,7 @@ namespace SWSH {
                 }
             }
         }
+
         private static void __interactiveHelp() {
             _command = (_command.StartsWith("--help") ? _command.Remove(0, 6).Trim() : _command.Remove(0, 2)).Trim();
             if (_command.Length > 0) {
@@ -202,6 +209,7 @@ namespace SWSH {
                 }
             } else __help();
         }
+
         private static void __help() {
             Console.Write("swsh [command] [arg]\n");
             Console.WriteLine("\t-v --version:                  -Check the version of swsh.");
@@ -219,6 +227,7 @@ namespace SWSH {
             Console.WriteLine("upload [args] [nickname]:[location]    -Uploads files and directories. 'upload -h' for help.");
             Console.WriteLine("\n\nNOTES:\n[1] * = Optional.");
         }
+
         private static void __connect() {
             ConnectionInfo ccinfo;
             string nickname = (_command.StartsWith("--connect")) ? _command.Remove(0, 10) : _command.Remove(0, 3);
@@ -282,6 +291,7 @@ namespace SWSH {
                 Console.Write($"SWSH -> {nickname} -> nickname does not exists\n");
             }
         }
+
         private static void __show() {
             _command = _command.Remove(0, 6);
             if (_command.Trim() == string.Empty) {
@@ -334,6 +344,7 @@ namespace SWSH {
                 }
             }
         }
+
         private static void __delete() {
             try {
                 if (File.Exists(__getNickname(_command.Replace("--delete", "").Trim()))) {
@@ -357,6 +368,7 @@ namespace SWSH {
                 Console.WriteLine(exp.Message);
             }
         }
+
         private static void __edit() {
             _command = _command.Remove(0, 6);
             String[] data = _command.Split(' ');
@@ -396,6 +408,7 @@ namespace SWSH {
                 Console.WriteLine($"SWSH -> {data[1]} -> nickname does not exists");
             }
         }
+
         private static void __keygen() {
             if (!_keygenstatus) {
                 __color("Key generation is unavailable.\n", ConsoleColor.DarkBlue);
@@ -446,11 +459,13 @@ namespace SWSH {
             } else __color($"ERROR: The binary 'swsh-keygen.exe' was not found. Are you sure it's installed?\nSee: https://github.com/SecureWindowsShell/SWS" +
                 $"H/tree/master/swsh-keygen#swsh-keygen", ConsoleColor.Red);
         }
+
         private static void __clear() {
             Console.Clear();
             __version();
             Console.Write("swsh --help or -h for help.\n\n");
         }
+
         private static void __ls() {
             if (Directory.GetDirectories(_workingDirectory).Length > 0) {
                 List<string> data = new List<string>();
@@ -509,6 +524,7 @@ namespace SWSH {
             if (Directory.GetDirectories(_workingDirectory).Length == 0 && Directory.GetFiles(_workingDirectory).Length == 0) __color("No file" +
                 "s or directories here.\n", ConsoleColor.Yellow);
         }
+
         private static void __cd() {
             _command = _command.Remove(0, 3);
             if (_command == "..") __changeWorkingDir(Path.GetDirectoryName(_workingDirectory));
@@ -516,6 +532,7 @@ namespace SWSH {
             else if (_command.StartsWith("/")) __changeWorkingDir(Path.GetPathRoot(_workingDirectory) + _command.Remove(0, 1));
             else __changeWorkingDir($"{_workingDirectory}/{_command}");
         }
+
         private static void __upload() {
             _command = _command.Remove(0, 7);
             if (_command == "-h") {
@@ -576,6 +593,7 @@ namespace SWSH {
                 }
             }
         }
+
         private static void __uploadDir(SftpClient client, string localPath, string remotePath) {
             new DirectoryInfo(localPath).EnumerateFileSystemInfos().ToList().ForEach(x => {
                 if (x.Attributes.HasFlag(FileAttributes.Directory)) {
@@ -592,17 +610,20 @@ namespace SWSH {
                 }
             });
         }
+
         private static string Pop(this List<string> list) {
             var retVal = list[list.Count - 1];
             list.RemoveAt(list.Count - 1);
             return retVal;
         }
+
         private static string __version() {
             Console.Write("   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __"
                 + "  /  \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
             Console.Write($"\nRelease: {_codename}-{_version}\n(c) Muhammad Muzzammil\nSWSH is licensed under the GNU General Public License v3.0\n");
             return $"{_codename}-{_version}";
         }
+
         private static void __changeWorkingDir(string path) {
             path = path.Replace('\\', '/');
             if (Directory.Exists(path)) _workingDirectory = path;
@@ -611,11 +632,13 @@ namespace SWSH {
                 Console.WriteLine($"SWSH -> {path} -> path does not exists");
             }
         }
+
         private static void __color(string message, ConsoleColor cc) {
             Console.ForegroundColor = cc;
             Console.Write(message);
             Console.ResetColor();
         }
+
         private static bool __checkHash(bool ignore) {
             bool compareHash(string path, string hash) => !computeHash(path).Equals(hash.Trim());
 
@@ -649,7 +672,9 @@ namespace SWSH {
                 return false;
             }
         }
+
         private static string __getNickname(string s) => $"{_mainDirectory}{s}.swsh";
+
         private static string __getCommand() {
             var list = new List<string>();
             var commands = new string[] { "--version", "--add", "--show", "--connect", "--delete", "--edit", "--keygen", "--help", "clear", "exit", "upload" };
@@ -676,6 +701,7 @@ namespace SWSH {
             File.AppendAllText(_swsh_history, $"[{DateTime.UtcNow} UTC]\t=>\t{read}\n");
             return read;
         }
+
         private static ConnectionInfo __CreateConnectionInfoKey(string nickname) {
             try {
                 if (File.Exists(__getNickname(nickname))) {
@@ -697,6 +723,7 @@ namespace SWSH {
             } catch (Exception exp) { __color($"ERROR: {exp.Message}\n", ConsoleColor.Red); }
             return null;
         }
+
         private static ConnectionInfo __CreateConnectionInfoPassword(string nickname, string password) {
             try {
                 if (File.Exists(__getNickname(nickname))) {
