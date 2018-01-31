@@ -208,64 +208,64 @@ namespace SWSH {
             _historyIndex = history.Count;
             _history = history;
             _text = new StringBuilder();
-            _keyActions = new Dictionary<string, Action>();
+            _keyActions = new Dictionary<string, Action> {
+                ["LeftArrow"] = MoveCursorLeft,
+                ["Home"] = MoveCursorHome,
+                ["End"] = MoveCursorEnd,
+                ["ControlA"] = MoveCursorHome,
+                ["ControlB"] = MoveCursorLeft,
+                ["RightArrow"] = MoveCursorRight,
+                ["ControlF"] = MoveCursorRight,
+                ["ControlE"] = MoveCursorEnd,
+                ["Backspace"] = Backspace,
+                ["ControlH"] = Backspace,
+                ["ControlL"] = ClearLine,
+                ["UpArrow"] = PrevHistory,
+                ["ControlP"] = PrevHistory,
+                ["DownArrow"] = NextHistory,
+                ["ControlN"] = NextHistory,
+                ["ControlU"] = () => {
+                    while (!IsStartOfLine())
+                        Backspace();
+                },
+                ["ControlK"] = () => {
+                    int pos = _cursorPos;
+                    MoveCursorEnd();
+                    while (_cursorPos > pos)
+                        Backspace();
+                },
+                ["ControlW"] = () => {
+                    while (!IsStartOfLine() && _text[_cursorPos - 1] != ' ')
+                        Backspace();
+                },
 
-            _keyActions["LeftArrow"] = MoveCursorLeft;
-            _keyActions["Home"] = MoveCursorHome;
-            _keyActions["End"] = MoveCursorEnd;
-            _keyActions["ControlA"] = MoveCursorHome;
-            _keyActions["ControlB"] = MoveCursorLeft;
-            _keyActions["RightArrow"] = MoveCursorRight;
-            _keyActions["ControlF"] = MoveCursorRight;
-            _keyActions["ControlE"] = MoveCursorEnd;
-            _keyActions["Backspace"] = Backspace;
-            _keyActions["ControlH"] = Backspace;
-            _keyActions["ControlL"] = ClearLine;
-            _keyActions["UpArrow"] = PrevHistory;
-            _keyActions["ControlP"] = PrevHistory;
-            _keyActions["DownArrow"] = NextHistory;
-            _keyActions["ControlN"] = NextHistory;
-            _keyActions["ControlU"] = () => {
-                while (!IsStartOfLine())
-                    Backspace();
-            };
-            _keyActions["ControlK"] = () => {
-                int pos = _cursorPos;
-                MoveCursorEnd();
-                while (_cursorPos > pos)
-                    Backspace();
-            };
-            _keyActions["ControlW"] = () => {
-                while (!IsStartOfLine() && _text[_cursorPos - 1] != ' ')
-                    Backspace();
-            };
+                ["Tab"] = () => {
+                    if (IsInAutoCompleteMode()) {
+                        NextAutoComplete();
+                    } else {
+                        if (autoCompleteHandler == null || !IsEndOfLine())
+                            return;
 
-            _keyActions["Tab"] = () => {
-                if (IsInAutoCompleteMode()) {
-                    NextAutoComplete();
-                } else {
-                    if (autoCompleteHandler == null || !IsEndOfLine())
-                        return;
+                        char[] anyOf = new char[] { ' ', '.', '/', '\\', ':' };
+                        string text = _text.ToString();
 
-                    char[] anyOf = new char[] { ' ', '.', '/', '\\', ':' };
-                    string text = _text.ToString();
+                        _completionStart = text.LastIndexOfAny(anyOf);
+                        _completionStart = _completionStart == -1 ? 0 : _completionStart + 1;
 
-                    _completionStart = text.LastIndexOfAny(anyOf);
-                    _completionStart = _completionStart == -1 ? 0 : _completionStart + 1;
+                        _completions = autoCompleteHandler.Invoke(text, _completionStart);
+                        _completions = _completions?.Length == 0 ? null : _completions;
 
-                    _completions = autoCompleteHandler.Invoke(text, _completionStart);
-                    _completions = _completions?.Length == 0 ? null : _completions;
+                        if (_completions == null)
+                            return;
 
-                    if (_completions == null)
-                        return;
+                        StartAutoComplete();
+                    }
+                },
 
-                    StartAutoComplete();
-                }
-            };
-
-            _keyActions["ShiftTab"] = () => {
-                if (IsInAutoCompleteMode()) {
-                    PreviousAutoComplete();
+                ["ShiftTab"] = () => {
+                    if (IsInAutoCompleteMode()) {
+                        PreviousAutoComplete();
+                    }
                 }
             };
         }
