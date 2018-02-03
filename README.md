@@ -45,7 +45,6 @@ Feel free to contribute to this project.
 
 Below are some things we are trying to add or fix in SWSH:
 
-Features:
 - [x] Delete nicknames ```swsh --delete```
 - [x] Show all nicknames ```swsh --show```
 - [x] Show details about a nickname ```swsh --show [nickname]```
@@ -59,16 +58,10 @@ Features:
 - [x] Check integrity of application
 - [x] keygen for ssh ```swsh --keygen```
 - [x] ```.swsh_history``` file to contain history of commands executed
+- [x] Tab completion.
+- [x] Better terminal.
+- [x] New Logo.
 - [ ] Drop SSH.NET.
-- [ ] Tab completion.
-- [ ] Change commands to a better format. Issue #13
-- [ ] Include swsh-keygen as a library. Issue #11
-
-Fixes:
-- [x] Update README. Issue #10
-- [x] ```swsh --show``` not working. Issue #8
-- [x] Make ```cd ..``` work. Issue #2
-- [x] A connection attempt failed while using password. Issue #1
 
 # License
 GPL v3<br>
