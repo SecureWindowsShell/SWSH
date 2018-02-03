@@ -6,7 +6,7 @@ SWSH is a SSH like console application for Windows.
 
 **If you are not using a [prebuilt SWSH binary](https://github.com/SecureWindowsShell/SWSH/releases), you will see SWSH complain about a checksum mismatch and exit, use `--IgnoreChecksumMismatch` to stop it from exiting.**
 
-![SWSH just doing its thing](.images/cdls.PNG)
+![SWSH just doing its thing](https://raw.githubusercontent.com/muhammadmuzzammil1998/SWSH/c173fa908f0287cde2a03b25c72b933df6448277/.images/cdls.PNG)
 *SWSH (beta) just doing its thing*
 
 # Nicknames
