@@ -1,4 +1,4 @@
-<img src=".images/ascii-swsh.png" width="auto" height="100px"/>
+<img src=".images/github banner.png" width="auto" height="100px"/>
 
 ### This branch is **unstable**.
 
