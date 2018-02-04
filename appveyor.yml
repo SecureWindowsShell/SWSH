@@ -1,17 +1,13 @@
-before_build:
-  - nuget restore
-
-
-notifications:
-  - provider: Email
-    to:
-      - muhammadmuzzammil.cs@gmail.com
-
-platform:
-  - Any CPU
-
+version: '{build}'
 image: Visual Studio 2017
-
-configuration:
-  - Debug
-  - Release
+before_build:
+- cmd: nuget restore
+build:
+  verbosity: minimal
+notifications:
+- provider: Email
+  to:
+  - swsh@muzzammil.xyz
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: true

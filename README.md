@@ -1,6 +1,6 @@
 <img src=".images/github banner.png"/>
 
-[![Build status](https://ci.appveyor.com/api/projects/status/s8ingehivcjcp084/branch/master?svg=true)](https://ci.appveyor.com/project/muhammadmuzzammil1998/swsh/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/1f2uc16tue6h0r0l/branch/master?svg=true)](https://ci.appveyor.com/project/muhammadmuzzammil1998/swsh/branch/master)
   		  
 SWSH is a SSH like console application for Windows.
 
