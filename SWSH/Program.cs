@@ -56,12 +56,12 @@ namespace SWSH {
                         else if (_command.StartsWith("--delete")) __delete();
                         else if (_command.StartsWith("--edit")) __edit();
                         else if (_command.StartsWith("--keygen")) __keygen();
-                        else if (_command == "clear") __clear();
-                        else if (_command == "exit") break;
                         else __help();
                     } else if (_command == "ls") __ls();
                     else if (_command.StartsWith("cd")) __cd();
                     else if (_command.StartsWith("upload")) __upload();
+                    else if (_command == "clear") __clear();
+                    else if (_command == "exit") Environment.Exit(0);
                     else if (_command.Trim() != "") __color($"ERROR: SWSH -> {_command} -> unknown command.\n", ConsoleColor.Red);
                 } catch (Exception exp) {
                     __color("ERROR: ", ConsoleColor.Red);
