@@ -266,9 +266,8 @@ namespace SWSH {
                                         var key = Console.ReadKey();
                                         if (key.Key != ConsoleKey.E)
                                             Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                                        Environment.Exit(0);
                                         ssh.Disconnect();
-                                        break;
+                                        Environment.Exit(0);
                                     }
                                 }
                         }).Start();
