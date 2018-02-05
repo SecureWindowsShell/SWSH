@@ -224,7 +224,10 @@ namespace SWSH {
             if (File.Exists(_mainDirectory + nickname + ".swsh")) {
                 if (File.ReadAllLines(_mainDirectory + nickname + ".swsh")[0] == "-password") {
                     Console.Write($"Password for {nickname}: ");
-                    ccinfo = __CreateConnectionInfoPassword(nickname, __getCommand());
+                    ReadLine.PasswordMode = true;
+                    ccinfo = __CreateConnectionInfoPassword(nickname, ReadLine.Read());
+                    ReadLine.GetHistory().Pop();
+                    ReadLine.PasswordMode = false;
                 } else ccinfo = __CreateConnectionInfoKey(nickname);
                 if (ccinfo != null) {
                     Console.Write($"Waiting for response from {ccinfo.Username}@{ccinfo.Host}...\n");
