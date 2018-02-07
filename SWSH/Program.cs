@@ -28,7 +28,7 @@ namespace SWSH {
         static void Main(string[] args) {
             Console.Title = $"SWSH - {__version()}";
             if (!_codename.StartsWith("unstable")) _keygenstatus = __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
-            Console.Write("swsh --help or -h for help.\n\n");
+            Console.Write("Use `help` command for help.\n\n");
             try {
                 var handle = ExternalFunctions.GetStdHandle(-11);
                 ExternalFunctions.GetConsoleMode(handle, out var mode);
@@ -47,17 +47,19 @@ namespace SWSH {
                     __color("swsh> ", ConsoleColor.DarkGray);
                     _command = __getCommand();
                     if (_command.StartsWith("swsh")) {
-                        _command = _command.Replace("swsh", "").Trim();
-                        if (_command == "--version" || _command == "-v") __version();
-                        else if (_command.StartsWith("--add") || _command.StartsWith("-a")) __addConnection();
-                        else if (_command.StartsWith("--help") || _command.StartsWith("-h")) __interactiveHelp();
-                        else if (_command.StartsWith("--connect") || _command.StartsWith("-c")) __connect();
-                        else if (_command.StartsWith("--show")) __show();
-                        else if (_command.StartsWith("--delete")) __delete();
-                        else if (_command.StartsWith("--edit")) __edit();
-                        else if (_command.StartsWith("--keygen")) __keygen();
-                        else __help();
-                    } else if (_command == "ls") __ls();
+                        __color("WARNING:\nThis type of commands is depreciated and will stop working in future.\nPlease take a look at our latest documenta" +
+                            "tion or use `help` command.\n", ConsoleColor.Yellow);
+                        if (_command.StartsWith("swsh --")) _command = _command.Remove(0, 7);
+                    }
+                    if (_command == "version") __version();
+                    else if (_command.StartsWith("add")) __addConnection();
+                    else if (_command.StartsWith("help")) __interactiveHelp();
+                    else if (_command.StartsWith("connect")) __connect();
+                    else if (_command.StartsWith("show")) __show();
+                    else if (_command.StartsWith("delete")) __delete();
+                    else if (_command.StartsWith("edit")) __edit();
+                    else if (_command.StartsWith("keygen")) __keygen();
+                    else if (_command == "ls") __ls();
                     else if (_command.StartsWith("cd")) __cd();
                     else if (_command.StartsWith("upload")) __upload();
                     else if (_command == "clear") __clear();
@@ -70,7 +72,7 @@ namespace SWSH {
             }
         }
         private static void __addConnection() {
-            _command = (_command.StartsWith("--")) ? _command.Replace("--add", "").Trim() : _command.Replace("-a", "").Trim();
+            _command = _command.Remove(0, 3).Trim();
             __color("exit", ConsoleColor.Red);
             Console.Write(" or ");
             __color("-e", ConsoleColor.Red);
@@ -139,60 +141,56 @@ namespace SWSH {
             }
         }
         private static void __interactiveHelp() {
-            _command = (_command.StartsWith("--help") ? _command.Remove(0, 6).Trim() : _command.Remove(0, 2)).Trim();
+            _command = _command.Remove(0, 4).Trim();
             if (_command.Length > 0) {
                 var title = $"Help for {_command}";
                 Console.WriteLine(title);
                 for (int i = 0; i < title.Length; i++) Console.Write("=");
                 Console.WriteLine();
                 switch (_command) {
-                    case "-v":
-                    case "--version": {
-                            Console.WriteLine("Syntax: swsh --version");
-                            Console.WriteLine("Checks the version of swsh.\n\nUsage: swsh --version\n");
+                    case "version": {
+                            Console.WriteLine("Syntax: version");
+                            Console.WriteLine("Checks the version of swsh.\n\nUsage: version\n");
                             break;
                         }
-                    case "-a":
-                    case "--add": {
-                            Console.WriteLine("Syntax: (swsh --add/swsh -a) [-password]");
+                    case "add": {
+                            Console.WriteLine("Syntax: add [-password]");
                             Console.WriteLine("Add a new connection either using private key or password.\n\nUsage to add using private "
-                                + "key: swsh --add\nUsage to add using a password: swsh --add -password\n\nYou'll be asked for password "
+                                + "key: add\nUsage to add using a password: add -password\n\nYou'll be asked for password "
                                 + "each time as SWSH doesn't store them.\n");
                             break;
                         }
-                    case "--show": {
-                            Console.WriteLine("Syntax: swsh --show [nickname]");
-                            Console.WriteLine("Show nicknames if no arguments have passed. If nickname is provided, shows details of a n"
-                                + "ickname.\nUsage to check all nicknames: swsh --show\nUsage to check a nickname: swsh --show myserver");
+                    case "show": {
+                            Console.WriteLine("Syntax: show [nickname]");
+                            Console.WriteLine("Show nicknames if no arguments are given. If nickname is provided, shows details of a n"
+                                + "ickname.\nUsage to check all nicknames: show\nUsage to check a nickname: show myserver");
                             break;
                         }
-                    case "-c":
-                    case "--connect": {
-                            Console.WriteLine("Syntax: (swsh --connect/swsh -c) [nickname]");
-                            Console.WriteLine("Connects to Server over SSH.\nUsage: swsh --connect myserver");
+                    case "connect": {
+                            Console.WriteLine("Syntax: connect [nickname]");
+                            Console.WriteLine("Connects to Server over SSH.\nUsage: connect myserver");
                             break;
                         }
-                    case "--delete": {
-                            Console.WriteLine("Syntax: swsh --delete [nickname]");
-                            Console.WriteLine("Deletes connection's nickname.\nUsage: swsh --delete myserver");
+                    case "delete": {
+                            Console.WriteLine("Syntax: delete [nickname]");
+                            Console.WriteLine("Deletes connection's nickname.\nUsage: delete myserver");
                             break;
                         }
-                    case "--edit": {
-                            Console.WriteLine("Syntax: swsh --edit [nickname] [arg]");
+                    case "edit": {
+                            Console.WriteLine("Syntax: edit [nickname] [arg]");
                             Console.WriteLine("arg:\n\t-user [newUserName]\n\t-key [newKey]\n\t-server [newServer]");
-                            Console.WriteLine("Edits nickname, use one argument at a time.\nUsage: swsh --edit myserver -user newUSER");
+                            Console.WriteLine("Edits nickname, use one argument at a time.\nUsage: edit myserver -user newUSER");
                             break;
                         }
-                    case "--keygen": {
-                            Console.WriteLine("Syntax: swsh --keygen");
+                    case "keygen": {
+                            Console.WriteLine("Syntax: keygen");
                             Console.WriteLine("Generates SSH RSA key pair. Requires swsh-keygen.exe.\n\nDefault values are provided in parentheses.\nUsage: " +
-                                "swsh --keygen");
+                                "keygen");
                             break;
                         }
-                    case "-h":
-                    case "--help": {
-                            Console.WriteLine("Syntax: (swsh --help/swsh -h) [command]");
-                            Console.WriteLine("Displays this help or command details.\nUsage: swsh --help -h");
+                    case "help": {
+                            Console.WriteLine("Syntax: help [command]");
+                            Console.WriteLine("Displays this help or command details.\nUsage: help add");
                             break;
                         }
                     default:
@@ -202,25 +200,23 @@ namespace SWSH {
             } else __help();
         }
         private static void __help() {
-            Console.Write("swsh [command] [arg]\n");
-            Console.WriteLine("\t-v --version:                  -Check the version of swsh.");
-            Console.WriteLine("\t-a --add     [-password]*      -Add a new connection either using private key or password (-password).");
-            Console.WriteLine("\t   --show    [nickname]*       -Show nicknames/Details of a nickname.");
-            Console.WriteLine("\t-c --connect [nickname]        -Connects to Server over SSH.");
-            Console.WriteLine("\t   --delete  [nickname]        -Deletes connection's nickname.");
-            Console.WriteLine("\t   --edit    [nickname] [arg]  -Edits nickname, use one argument at a time.");
-            Console.WriteLine("\t   --keygen                    -Generates SSH RSA key pair.");
-            Console.WriteLine("\t-h --help    [command]*        -Displays this help or command details.");
-            Console.WriteLine("\tclear                          -Clears the console.");
-            Console.WriteLine("\texit                           -Exits.");
+            Console.WriteLine("version                                -Check the version of swsh.");
+            Console.WriteLine("add     [-password]                    -Add a new connection either using private key or password (-password).");
+            Console.WriteLine("show    [nickname]                     -Show nicknames/Details of a nickname.");
+            Console.WriteLine("connect [nickname]                     -Connects to Server over SSH.");
+            Console.WriteLine("delete  [nickname]                     -Deletes connection's nickname.");
+            Console.WriteLine("edit    [nickname] [arg]               -Edits nickname, use one argument at a time.");
+            Console.WriteLine("keygen                                 -Generates SSH RSA key pair.");
+            Console.WriteLine("help    [command]                      -Displays this help or command details.");
+            Console.WriteLine("clear                                  -Clears the console.");
+            Console.WriteLine("exit                                   -Exits.");
             Console.WriteLine("ls                                     -Lists all files and directories in working directory.");
             Console.WriteLine("cd [arg]                               -Changes directory to 'arg'. arg = directory name.");
             Console.WriteLine("upload [args] [nickname]:[location]    -Uploads files and directories. 'upload -h' for help.");
-            Console.WriteLine("\n\nNOTES:\n[1] * = Optional.");
         }
         private static void __connect() {
             ConnectionInfo ccinfo;
-            string nickname = (_command.StartsWith("--connect")) ? _command.Remove(0, 10) : _command.Remove(0, 3);
+            string nickname = _command.Remove(0, 8);
             if (File.Exists(_mainDirectory + nickname + ".swsh")) {
                 if (File.ReadAllLines(_mainDirectory + nickname + ".swsh")[0] == "-password") {
                     Console.Write($"Password for {nickname}: ");
@@ -284,7 +280,7 @@ namespace SWSH {
             }
         }
         private static void __show() {
-            _command = _command.Remove(0, 6);
+            _command = _command.Remove(0, 4);
             if (_command.Trim() == string.Empty) {
                 if (Directory.Exists(_mainDirectory) && Directory.GetFiles(_mainDirectory).Length > 0) {
                     foreach (var file in Directory.GetFiles(_mainDirectory)) {
@@ -337,21 +333,21 @@ namespace SWSH {
         }
         private static void __delete() {
             try {
-                if (File.Exists(__getNickname(_command.Replace("--delete", "").Trim()))) {
+                if (File.Exists(__getNickname(_command.Remove(0, 6).Trim()))) {
                     __color("Are you sure you want to delete this nickname? (y/n): ", ConsoleColor.Red);
                     var ans = __getCommand().ToUpper();
                     if (ans == "Y") {
                         Console.Write("Type the nickname to confirm: ");
                         var name = __getCommand();
-                        if (name != _command.Replace("--delete", "").Trim()) __color("Aborted.\n", ConsoleColor.Yellow);
+                        if (name != _command.Remove(0, 6).Trim()) __color("Aborted.\n", ConsoleColor.Yellow);
                         else {
-                            File.Delete(__getNickname(_command.Replace("--delete", "").Trim()));
+                            File.Delete(__getNickname(_command.Remove(0, 6).Trim()));
                             __color("Deleted.\n", ConsoleColor.Green);
                         }
                     } else __color("Aborted.\n", ConsoleColor.Yellow);
                 } else {
                     __color("ERROR: ", ConsoleColor.Red);
-                    Console.WriteLine($"SWSH -> {_command.Replace("--delete", "").Trim()} -> nickname does not exists");
+                    Console.WriteLine($"SWSH -> {_command.Remove(0, 6).Trim()} -> nickname does not exists");
                 }
             } catch (Exception exp) {
                 __color("ERROR: ", ConsoleColor.Red);
@@ -359,7 +355,7 @@ namespace SWSH {
             }
         }
         private static void __edit() {
-            _command = _command.Remove(0, 6);
+            _command = _command.Remove(0, 4);
             String[] data = _command.Split(' ');
             if (File.Exists(__getNickname(data[1]))) {
                 string[] arrLine = File.ReadAllLines(__getNickname(data[1]));
@@ -507,8 +503,8 @@ namespace SWSH {
                     }
                 });
             }
-            if (Directory.GetDirectories(_workingDirectory).Length == 0 && Directory.GetFiles(_workingDirectory).Length == 0) __color("No file" +
-                "s or directories here.\n", ConsoleColor.Yellow);
+            if (Directory.GetDirectories(_workingDirectory).Length == 0 && Directory.GetFiles(_workingDirectory).Length == 0) __color("No files or directori" +
+                "es here.\n", ConsoleColor.Yellow);
         }
         private static void __cd() {
             _command = _command.Remove(0, 3);
@@ -521,8 +517,8 @@ namespace SWSH {
             _command = _command.Remove(0, 7);
             if (_command == "-h") {
                 Console.WriteLine("upload [--dir]* [args] [nickname]:[location]\n\n'args' are seperated using spaces ( ) and last 'arg' will be treated as s" +
-                    "erver data which includes nickname as well as the location, part after the colon (:), where the data is to be uploaded. Use flag '" +
-                    "--dir' to upload directiories. Do not use absolute paths for local path, change working directory to navigate.");
+                    "erver data which includes nickname as well as the location, part after the colon (:), where the data is to be uploaded. Use flag '--dir" +
+                    "' to upload directiories. Do not use absolute paths for local path, change working directory to navigate.");
             } else {
                 List<string> toupload = (_command.StartsWith("--dir")) ? _command.Replace("--dir", "").Trim().Split(' ').ToList() : _command.Trim().Split(' ')
                     .ToList();
@@ -599,8 +595,8 @@ namespace SWSH {
             return retVal;
         }
         private static string __version() {
-            Console.Write("   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __"
-                + "  /  \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
+            Console.Write("   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __  / " +
+                " \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
             Console.Write($"\nRelease: {_codename}-{_version}\n(c) Muhammad Muzzammil\nSWSH is licensed under the GNU General Public License v3.0\n");
             return $"{_codename}-{_version}";
         }
@@ -653,26 +649,26 @@ namespace SWSH {
         private static string __getNickname(string s) => $"{_mainDirectory}{s}.swsh";
         private static string __getCommand() {
             var list = new List<string>();
-            var commands = new string[] { "--version", "--add", "--show", "--connect", "--delete", "--edit", "--keygen", "--help", "clear", "exit", "upload" };
+            var commands = new string[] { "version", "add", "show", "connect", "delete", "edit", "keygen", "help", "clear", "exit", "upload" };
+            foreach (var i in commands) list.Add(i);
             foreach (var i in Directory.GetDirectories(_workingDirectory)) list.Add("cd " + new DirectoryInfo(i).Name.ToLower());
-            foreach (var i in commands) list.Add("swsh " + i);
 
             bool requiresNickname(string data) {
-                foreach (var i in new List<string>() { "--show", "--connect", "--delete", "--edit", "-c" })
-                    if (i == data.Split(' ')[1]) return true;
+                foreach (var i in new List<string>() { "show", "connect", "delete", "edit" })
+                    if (data.StartsWith(i)) return true;
                 return false;
             }
-
-            ReadLine.AutoCompletionHandler = (data, length) => {
-                var tList = new List<string>();
-                if (data.StartsWith("swsh "))
+            try {
+                ReadLine.AutoCompletionHandler = (data, length) => {
+                    var tList = new List<string>();
                     if (requiresNickname(data))
                         Directory.GetFiles(_mainDirectory).ToList()
-                        .Where(x => Path.GetFileNameWithoutExtension(x).Contains(data.Split(' ')[2])).ToList()
+                        .Where(x => Path.GetFileNameWithoutExtension(x).Contains(data.Split(' ')[1])).ToList()
                         .ForEach(x => { tList.Add(Path.GetFileNameWithoutExtension(x)); });
-                list.Where(x => x.Contains(data)).ToList().ForEach(y => tList.Add(y.Remove(0, length)));
-                return tList.ToArray();
-            };
+                    list.Where(x => x.Contains(data)).ToList().ForEach(y => tList.Add(y.Remove(0, length)));
+                    return tList.ToArray();
+                };
+            } catch (IndexOutOfRangeException) { }
             var read = ReadLine.Read();
             File.AppendAllText(_swsh_history, $"[{DateTime.UtcNow} UTC]\t=>\t{read}\n");
             return read;
