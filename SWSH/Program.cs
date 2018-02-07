@@ -356,7 +356,7 @@ namespace SWSH {
             }
         }
         private static void __edit() {
-            _command = _command.Remove(0, 6);
+            _command = _command.Remove(0, 4);
             String[] data = _command.Split(' ');
             if (File.Exists(__getNickname(data[1]))) {
                 string[] arrLine = File.ReadAllLines(__getNickname(data[1]));
