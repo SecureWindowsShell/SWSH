@@ -281,7 +281,7 @@ namespace SWSH {
             }
         }
         private static void __show() {
-            _command = _command.Remove(0, 6);
+            _command = _command.Remove(0, 4);
             if (_command.Trim() == string.Empty) {
                 if (Directory.Exists(_mainDirectory) && Directory.GetFiles(_mainDirectory).Length > 0) {
                     foreach (var file in Directory.GetFiles(_mainDirectory)) {
