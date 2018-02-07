@@ -644,26 +644,26 @@ namespace SWSH {
         private static string __getNickname(string s) => $"{_mainDirectory}{s}.swsh";
         private static string __getCommand() {
             var list = new List<string>();
-            var commands = new string[] { "--version", "--add", "--show", "--connect", "--delete", "--edit", "--keygen", "--help", "clear", "exit", "upload" };
+            var commands = new string[] { "version", "add", "show", "connect", "delete", "edit", "keygen", "help", "clear", "exit", "upload" };
+            foreach (var i in commands) list.Add(i);
             foreach (var i in Directory.GetDirectories(_workingDirectory)) list.Add("cd " + new DirectoryInfo(i).Name.ToLower());
-            foreach (var i in commands) list.Add("swsh " + i);
 
             bool requiresNickname(string data) {
-                foreach (var i in new List<string>() { "--show", "--connect", "--delete", "--edit", "-c" })
-                    if (i == data.Split(' ')[1]) return true;
+                foreach (var i in new List<string>() { "show", "connect", "delete", "edit" })
+                    if (data.StartsWith(i)) return true;
                 return false;
             }
-
-            ReadLine.AutoCompletionHandler = (data, length) => {
-                var tList = new List<string>();
-                if (data.StartsWith("swsh "))
+            try {
+                ReadLine.AutoCompletionHandler = (data, length) => {
+                    var tList = new List<string>();
                     if (requiresNickname(data))
                         Directory.GetFiles(_mainDirectory).ToList()
-                        .Where(x => Path.GetFileNameWithoutExtension(x).Contains(data.Split(' ')[2])).ToList()
+                        .Where(x => Path.GetFileNameWithoutExtension(x).Contains(data.Split(' ')[1])).ToList()
                         .ForEach(x => { tList.Add(Path.GetFileNameWithoutExtension(x)); });
-                list.Where(x => x.Contains(data)).ToList().ForEach(y => tList.Add(y.Remove(0, length)));
-                return tList.ToArray();
-            };
+                    list.Where(x => x.Contains(data)).ToList().ForEach(y => tList.Add(y.Remove(0, length)));
+                    return tList.ToArray();
+                };
+            } catch (IndexOutOfRangeException) { }
             var read = ReadLine.Read();
             File.AppendAllText(_swsh_history, $"[{DateTime.UtcNow} UTC]\t=>\t{read}\n");
             return read;
