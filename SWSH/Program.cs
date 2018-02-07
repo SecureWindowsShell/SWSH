@@ -334,21 +334,21 @@ namespace SWSH {
         }
         private static void __delete() {
             try {
-                if (File.Exists(__getNickname(_command.Replace("--delete", "").Trim()))) {
+                if (File.Exists(__getNickname(_command.Remove(0, 6).Trim()))) {
                     __color("Are you sure you want to delete this nickname? (y/n): ", ConsoleColor.Red);
                     var ans = __getCommand().ToUpper();
                     if (ans == "Y") {
                         Console.Write("Type the nickname to confirm: ");
                         var name = __getCommand();
-                        if (name != _command.Replace("--delete", "").Trim()) __color("Aborted.\n", ConsoleColor.Yellow);
+                        if (name != _command.Remove(0, 6).Trim()) __color("Aborted.\n", ConsoleColor.Yellow);
                         else {
-                            File.Delete(__getNickname(_command.Replace("--delete", "").Trim()));
+                            File.Delete(__getNickname(_command.Remove(0, 6).Trim()));
                             __color("Deleted.\n", ConsoleColor.Green);
                         }
                     } else __color("Aborted.\n", ConsoleColor.Yellow);
                 } else {
                     __color("ERROR: ", ConsoleColor.Red);
-                    Console.WriteLine($"SWSH -> {_command.Replace("--delete", "").Trim()} -> nickname does not exists");
+                    Console.WriteLine($"SWSH -> {_command.Remove(0, 6).Trim()} -> nickname does not exists");
                 }
             } catch (Exception exp) {
                 __color("ERROR: ", ConsoleColor.Red);
