@@ -280,8 +280,8 @@ namespace SWSH {
             }
         }
         private static void __show() {
-            _command = _command.Remove(0, 4);
-            if (_command.Trim() == string.Empty) {
+            _command = _command.Remove(0, 4).Trim();
+            if (_command == string.Empty) {
                 if (Directory.Exists(_mainDirectory) && Directory.GetFiles(_mainDirectory).Length > 0) {
                     foreach (var file in Directory.GetFiles(_mainDirectory)) {
                         try {
@@ -309,18 +309,23 @@ namespace SWSH {
                     Console.WriteLine("SWSH -> no nickname(s) found. try swsh --help");
                 }
             } else {
-                _command = _command.Trim();
-                var file = $"{_mainDirectory + _command}.swsh";
+                var file = __getNickname(_command);
                 try {
                     if (File.Exists(file)) {
                         Console.Write($"Details of {_command}:\n");
                         var data = File.ReadAllLines(file);
                         for (int i = 0; i < _command.Length + 12; i++) Console.Write("=");
-                        Console.Write($"\nPath to key: {data[0]}\nUsername: {data[1]}\nHost: {data[2]}\nStatus: ");
-                        var connection = new SshClient(__CreateConnectionInfoKey(_command));
-                        connection.Connect();
-                        __color("Working\n", ConsoleColor.Green);
-                        connection.Dispose();
+                        if (data[0] == "-password") {
+                            Console.Write($"\nUsername: {data[1]}\nHost: {data[2]}\n\n");
+                        } else {
+                            Console.Write($"\nPath to key: {data[0]}\nUsername: {data[1]}\nHost: {data[2]}\nStatus: ");
+                            var conInfo = __CreateConnectionInfoKey(Path.GetFileNameWithoutExtension(file));
+                            if (conInfo != null)
+                                using (var connection = new SshClient(conInfo)) {
+                                    connection.Connect();
+                                    __color("Working\n\n", ConsoleColor.Green);
+                                }
+                        }
                     } else {
                         __color("ERROR: ", ConsoleColor.Red);
                         Console.WriteLine($"SWSH -> {_command} -> nickname does not exists");
