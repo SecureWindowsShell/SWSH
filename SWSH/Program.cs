@@ -136,60 +136,56 @@ namespace SWSH {
             }
         }
         private static void __interactiveHelp() {
-            _command = (_command.StartsWith("--help") ? _command.Remove(0, 6).Trim() : _command.Remove(0, 2)).Trim();
+            _command = _command.Remove(0, 4).Trim();
             if (_command.Length > 0) {
                 var title = $"Help for {_command}";
                 Console.WriteLine(title);
                 for (int i = 0; i < title.Length; i++) Console.Write("=");
                 Console.WriteLine();
                 switch (_command) {
-                    case "-v":
-                    case "--version": {
-                            Console.WriteLine("Syntax: swsh --version");
-                            Console.WriteLine("Checks the version of swsh.\n\nUsage: swsh --version\n");
+                    case "version": {
+                            Console.WriteLine("Syntax: version");
+                            Console.WriteLine("Checks the version of swsh.\n\nUsage: version\n");
                             break;
                         }
-                    case "-a":
-                    case "--add": {
-                            Console.WriteLine("Syntax: (swsh --add/swsh -a) [-password]");
+                    case "add": {
+                            Console.WriteLine("Syntax: add [-password]");
                             Console.WriteLine("Add a new connection either using private key or password.\n\nUsage to add using private "
-                                + "key: swsh --add\nUsage to add using a password: swsh --add -password\n\nYou'll be asked for password "
+                                + "key: add\nUsage to add using a password: add -password\n\nYou'll be asked for password "
                                 + "each time as SWSH doesn't store them.\n");
                             break;
                         }
-                    case "--show": {
-                            Console.WriteLine("Syntax: swsh --show [nickname]");
-                            Console.WriteLine("Show nicknames if no arguments have passed. If nickname is provided, shows details of a n"
-                                + "ickname.\nUsage to check all nicknames: swsh --show\nUsage to check a nickname: swsh --show myserver");
+                    case "show": {
+                            Console.WriteLine("Syntax: show [nickname]");
+                            Console.WriteLine("Show nicknames if no arguments are given. If nickname is provided, shows details of a n"
+                                + "ickname.\nUsage to check all nicknames: show\nUsage to check a nickname: show myserver");
                             break;
                         }
-                    case "-c":
-                    case "--connect": {
-                            Console.WriteLine("Syntax: (swsh --connect/swsh -c) [nickname]");
-                            Console.WriteLine("Connects to Server over SSH.\nUsage: swsh --connect myserver");
+                    case "connect": {
+                            Console.WriteLine("Syntax: connect [nickname]");
+                            Console.WriteLine("Connects to Server over SSH.\nUsage: connect myserver");
                             break;
                         }
-                    case "--delete": {
-                            Console.WriteLine("Syntax: swsh --delete [nickname]");
-                            Console.WriteLine("Deletes connection's nickname.\nUsage: swsh --delete myserver");
+                    case "delete": {
+                            Console.WriteLine("Syntax: delete [nickname]");
+                            Console.WriteLine("Deletes connection's nickname.\nUsage: delete myserver");
                             break;
                         }
-                    case "--edit": {
-                            Console.WriteLine("Syntax: swsh --edit [nickname] [arg]");
+                    case "edit": {
+                            Console.WriteLine("Syntax: edit [nickname] [arg]");
                             Console.WriteLine("arg:\n\t-user [newUserName]\n\t-key [newKey]\n\t-server [newServer]");
-                            Console.WriteLine("Edits nickname, use one argument at a time.\nUsage: swsh --edit myserver -user newUSER");
+                            Console.WriteLine("Edits nickname, use one argument at a time.\nUsage: edit myserver -user newUSER");
                             break;
                         }
-                    case "--keygen": {
-                            Console.WriteLine("Syntax: swsh --keygen");
+                    case "keygen": {
+                            Console.WriteLine("Syntax: keygen");
                             Console.WriteLine("Generates SSH RSA key pair. Requires swsh-keygen.exe.\n\nDefault values are provided in parentheses.\nUsage: " +
-                                "swsh --keygen");
+                                "keygen");
                             break;
                         }
-                    case "-h":
-                    case "--help": {
-                            Console.WriteLine("Syntax: (swsh --help/swsh -h) [command]");
-                            Console.WriteLine("Displays this help or command details.\nUsage: swsh --help -h");
+                    case "help": {
+                            Console.WriteLine("Syntax: help [command]");
+                            Console.WriteLine("Displays this help or command details.\nUsage: help add");
                             break;
                         }
                     default:
@@ -199,21 +195,19 @@ namespace SWSH {
             } else __help();
         }
         private static void __help() {
-            Console.Write("swsh [command] [arg]\n");
-            Console.WriteLine("\t-v --version:                  -Check the version of swsh.");
-            Console.WriteLine("\t-a --add     [-password]*      -Add a new connection either using private key or password (-password).");
-            Console.WriteLine("\t   --show    [nickname]*       -Show nicknames/Details of a nickname.");
-            Console.WriteLine("\t-c --connect [nickname]        -Connects to Server over SSH.");
-            Console.WriteLine("\t   --delete  [nickname]        -Deletes connection's nickname.");
-            Console.WriteLine("\t   --edit    [nickname] [arg]  -Edits nickname, use one argument at a time.");
-            Console.WriteLine("\t   --keygen                    -Generates SSH RSA key pair.");
-            Console.WriteLine("\t-h --help    [command]*        -Displays this help or command details.");
-            Console.WriteLine("\tclear                          -Clears the console.");
-            Console.WriteLine("\texit                           -Exits.");
+            Console.WriteLine("version                                -Check the version of swsh.");
+            Console.WriteLine("add     [-password]                    -Add a new connection either using private key or password (-password).");
+            Console.WriteLine("show    [nickname]                     -Show nicknames/Details of a nickname.");
+            Console.WriteLine("connect [nickname]                     -Connects to Server over SSH.");
+            Console.WriteLine("delete  [nickname]                     -Deletes connection's nickname.");
+            Console.WriteLine("edit    [nickname] [arg]               -Edits nickname, use one argument at a time.");
+            Console.WriteLine("keygen                                 -Generates SSH RSA key pair.");
+            Console.WriteLine("help    [command]                      -Displays this help or command details.");
+            Console.WriteLine("clear                                  -Clears the console.");
+            Console.WriteLine("exit                                   -Exits.");
             Console.WriteLine("ls                                     -Lists all files and directories in working directory.");
             Console.WriteLine("cd [arg]                               -Changes directory to 'arg'. arg = directory name.");
             Console.WriteLine("upload [args] [nickname]:[location]    -Uploads files and directories. 'upload -h' for help.");
-            Console.WriteLine("\n\nNOTES:\n[1] * = Optional.");
         }
         private static void __connect() {
             ConnectionInfo ccinfo;
