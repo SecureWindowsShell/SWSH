@@ -67,7 +67,7 @@ namespace SWSH {
             }
         }
         private static void __addConnection() {
-            _command = (_command.StartsWith("--")) ? _command.Replace("--add", "").Trim() : _command.Replace("-a", "").Trim();
+            _command = _command.Remove(0, 3).Trim();
             __color("exit", ConsoleColor.Red);
             Console.Write(" or ");
             __color("-e", ConsoleColor.Red);
