@@ -46,18 +46,15 @@ namespace SWSH {
                     __color($"{_workingDirectory.Replace('\\', '/').Remove(0, 2).ToLower()}:", ConsoleColor.DarkCyan);
                     __color("swsh> ", ConsoleColor.DarkGray);
                     _command = __getCommand();
-                    if (_command.StartsWith("swsh")) {
-                        _command = _command.Replace("swsh", "").Trim();
-                        if (_command == "--version" || _command == "-v") __version();
-                        else if (_command.StartsWith("--add") || _command.StartsWith("-a")) __addConnection();
-                        else if (_command.StartsWith("--help") || _command.StartsWith("-h")) __interactiveHelp();
-                        else if (_command.StartsWith("--connect") || _command.StartsWith("-c")) __connect();
-                        else if (_command.StartsWith("--show")) __show();
-                        else if (_command.StartsWith("--delete")) __delete();
-                        else if (_command.StartsWith("--edit")) __edit();
-                        else if (_command.StartsWith("--keygen")) __keygen();
-                        else __help();
-                    } else if (_command == "ls") __ls();
+                    if (_command == "version") __version();
+                    else if (_command.StartsWith("add")) __addConnection();
+                    else if (_command.StartsWith("help")) __interactiveHelp();
+                    else if (_command.StartsWith("connect")) __connect();
+                    else if (_command.StartsWith("show")) __show();
+                    else if (_command.StartsWith("delete")) __delete();
+                    else if (_command.StartsWith("edit")) __edit();
+                    else if (_command.StartsWith("keygen")) __keygen();
+                    else if (_command == "ls") __ls();
                     else if (_command.StartsWith("cd")) __cd();
                     else if (_command.StartsWith("upload")) __upload();
                     else if (_command == "clear") __clear();
