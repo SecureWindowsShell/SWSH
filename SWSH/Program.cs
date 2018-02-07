@@ -498,8 +498,8 @@ namespace SWSH {
                     }
                 });
             }
-            if (Directory.GetDirectories(_workingDirectory).Length == 0 && Directory.GetFiles(_workingDirectory).Length == 0) __color("No file" +
-                "s or directories here.\n", ConsoleColor.Yellow);
+            if (Directory.GetDirectories(_workingDirectory).Length == 0 && Directory.GetFiles(_workingDirectory).Length == 0) __color("No files or directori" +
+                "es here.\n", ConsoleColor.Yellow);
         }
         private static void __cd() {
             _command = _command.Remove(0, 3);
@@ -512,8 +512,8 @@ namespace SWSH {
             _command = _command.Remove(0, 7);
             if (_command == "-h") {
                 Console.WriteLine("upload [--dir]* [args] [nickname]:[location]\n\n'args' are seperated using spaces ( ) and last 'arg' will be treated as s" +
-                    "erver data which includes nickname as well as the location, part after the colon (:), where the data is to be uploaded. Use flag '" +
-                    "--dir' to upload directiories. Do not use absolute paths for local path, change working directory to navigate.");
+                    "erver data which includes nickname as well as the location, part after the colon (:), where the data is to be uploaded. Use flag '--dir" +
+                    "' to upload directiories. Do not use absolute paths for local path, change working directory to navigate.");
             } else {
                 List<string> toupload = (_command.StartsWith("--dir")) ? _command.Replace("--dir", "").Trim().Split(' ').ToList() : _command.Trim().Split(' ')
                     .ToList();
@@ -590,8 +590,8 @@ namespace SWSH {
             return retVal;
         }
         private static string __version() {
-            Console.Write("   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __"
-                + "  /  \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
+            Console.Write("   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __  / " +
+                " \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
             Console.Write($"\nRelease: {_codename}-{_version}\n(c) Muhammad Muzzammil\nSWSH is licensed under the GNU General Public License v3.0\n");
             return $"{_codename}-{_version}";
         }
