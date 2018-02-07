@@ -28,7 +28,7 @@ namespace SWSH {
         static void Main(string[] args) {
             Console.Title = $"SWSH - {__version()}";
             if (!_codename.StartsWith("unstable")) _keygenstatus = __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
-            Console.Write("swsh --help or -h for help.\n\n");
+            Console.Write("Use `help` command for help.\n\n");
             try {
                 var handle = ExternalFunctions.GetStdHandle(-11);
                 ExternalFunctions.GetConsoleMode(handle, out var mode);
