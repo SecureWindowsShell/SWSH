@@ -46,6 +46,11 @@ namespace SWSH {
                     __color($"{_workingDirectory.Replace('\\', '/').Remove(0, 2).ToLower()}:", ConsoleColor.DarkCyan);
                     __color("swsh> ", ConsoleColor.DarkGray);
                     _command = __getCommand();
+                    if (_command.StartsWith("swsh")) {
+                        __color("WARNING:\nThis type of commands is depreciated and will stop working in future.\nPlease take a look at our latest documenta" +
+                            "tion or use `help` command.\n", ConsoleColor.Yellow);
+                        if (_command.StartsWith("swsh --")) _command = _command.Remove(0, 7);
+                    }
                     if (_command == "version") __version();
                     else if (_command.StartsWith("add")) __addConnection();
                     else if (_command.StartsWith("help")) __interactiveHelp();
