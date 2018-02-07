@@ -217,7 +217,7 @@ namespace SWSH {
         }
         private static void __connect() {
             ConnectionInfo ccinfo;
-            string nickname = (_command.StartsWith("--connect")) ? _command.Remove(0, 10) : _command.Remove(0, 3);
+            string nickname = _command.Remove(0, 8);
             if (File.Exists(_mainDirectory + nickname + ".swsh")) {
                 if (File.ReadAllLines(_mainDirectory + nickname + ".swsh")[0] == "-password") {
                     Console.Write($"Password for {nickname}: ");
