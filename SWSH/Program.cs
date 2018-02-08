@@ -384,19 +384,22 @@ namespace SWSH {
                             if (key == "-e" || key == "exit") {
                                 __color("Aborted.\n", ConsoleColor.Yellow);
                                 break;
-                            }
-                            if (File.Exists(key)) {
+                            } else if (File.Exists(key)) {
                                 arrLine[0] = key;
-                                break;
-                            } else {
+                                save();
+                            } else if(key != String.Empty){
                                 __color("ERROR: ", ConsoleColor.Red);
                                 Console.Write($"SWSH -> {key} -> file is non existent.\n");
                             }
                         }
-                    }
+                        return;
+                    } else arrLine[0] = data[3];
                 }
-                File.WriteAllLines(__getNickname(data[1]), arrLine);
-                __color("Updated.\n", ConsoleColor.Green);
+                save();
+                void save() {
+                    File.WriteAllLines(__getNickname(data[1]), arrLine);
+                    __color("Updated.\n", ConsoleColor.Green);
+                }
             } else {
                 __color("ERROR: ", ConsoleColor.Red);
                 Console.WriteLine($"SWSH -> {data[1]} -> nickname does not exists");
