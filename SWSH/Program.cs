@@ -17,6 +17,11 @@ using Renci.SshNet;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
+using System.Reflection;
+using System.Security.Principal;
+using System.Security.Cryptography;
+using System.Net;
 
 namespace SWSH {
     public static class Program {
@@ -53,7 +58,7 @@ namespace SWSH {
                     }
                     if (_command == "version") __version();
                     else if (_command.StartsWith("add")) __addConnection();
-                    else if (_command.StartsWith("help")) __interactiveHelp();
+                    else if (_command.StartsWith("help")) __help();
                     else if (_command.StartsWith("connect")) __connect();
                     else if (_command.StartsWith("show")) __show();
                     else if (_command.StartsWith("delete")) __delete();
@@ -124,9 +129,9 @@ namespace SWSH {
                 if (data[3].Trim() == string.Empty) {
                     __color("ERROR: ", ConsoleColor.Red);
                     Console.Write("SWSH -> nickname should not be empty!\n");
-                } else if (File.Exists($"{_mainDirectory + data[3]}.swsh")) {
+                } else if (File.Exists(__getNickname(data[3]))) {
                     __color("ERROR: ", ConsoleColor.Red);
-                    Console.WriteLine($"SWSH -> {data[3]} -> nickname exists");
+                    Console.Write($"SWSH -> {data[3]} -> nickname exists!\n");
                 } else {
                     break;
                 }
@@ -140,7 +145,7 @@ namespace SWSH {
                 }
             }
         }
-        private static void __interactiveHelp() {
+        private static void __help() {
             _command = _command.Remove(0, 4).Trim();
             if (_command.Length > 0) {
                 var title = $"Help for {_command}";
@@ -197,28 +202,27 @@ namespace SWSH {
                         __color($"ERROR: SWSH -> {_command} -> unknown command.\n", ConsoleColor.Red);
                         break;
                 }
-            } else __help();
-        }
-        private static void __help() {
-            Console.WriteLine("version                                -Check the version of swsh.");
-            Console.WriteLine("add     [-password]                    -Add a new connection either using private key or password (-password).");
-            Console.WriteLine("show    [nickname]                     -Show nicknames/Details of a nickname.");
-            Console.WriteLine("connect [nickname]                     -Connects to Server over SSH.");
-            Console.WriteLine("delete  [nickname]                     -Deletes connection's nickname.");
-            Console.WriteLine("edit    [nickname] [arg]               -Edits nickname, use one argument at a time.");
-            Console.WriteLine("keygen                                 -Generates SSH RSA key pair.");
-            Console.WriteLine("help    [command]                      -Displays this help or command details.");
-            Console.WriteLine("clear                                  -Clears the console.");
-            Console.WriteLine("exit                                   -Exits.");
-            Console.WriteLine("ls                                     -Lists all files and directories in working directory.");
-            Console.WriteLine("cd [arg]                               -Changes directory to 'arg'. arg = directory name.");
-            Console.WriteLine("upload [args] [nickname]:[location]    -Uploads files and directories. 'upload -h' for help.");
+            } else {
+                Console.WriteLine("version                                -Check the version of swsh.");
+                Console.WriteLine("add     [-password]                    -Add a new connection either using private key or password (-password).");
+                Console.WriteLine("show    [nickname]                     -Show nicknames/Details of a nickname.");
+                Console.WriteLine("connect [nickname]                     -Connects to Server over SSH.");
+                Console.WriteLine("delete  [nickname]                     -Deletes connection's nickname.");
+                Console.WriteLine("edit    [nickname] [arg]               -Edits nickname, use one argument at a time.");
+                Console.WriteLine("keygen                                 -Generates SSH RSA key pair.");
+                Console.WriteLine("help    [command]                      -Displays this help or command details.");
+                Console.WriteLine("clear                                  -Clears the console.");
+                Console.WriteLine("exit                                   -Exits.");
+                Console.WriteLine("ls                                     -Lists all files and directories in working directory.");
+                Console.WriteLine("cd [arg]                               -Changes directory to 'arg'. arg = directory name.");
+                Console.WriteLine("upload [args] [nickname]:[location]    -Uploads files and directories. 'upload -h' for help.");
+            }
         }
         private static void __connect() {
             ConnectionInfo ccinfo;
             string nickname = _command.Remove(0, 8);
-            if (File.Exists(_mainDirectory + nickname + ".swsh")) {
-                if (File.ReadAllLines(_mainDirectory + nickname + ".swsh")[0] == "-password") {
+            if (File.Exists(__getNickname(nickname))) {
+                if (File.ReadAllLines(__getNickname(nickname))[0] == "-password") {
                     Console.Write($"Password for {nickname}: ");
                     ReadLine.PasswordMode = true;
                     ccinfo = __CreateConnectionInfoPassword(nickname, ReadLine.Read());
@@ -240,13 +244,13 @@ namespace SWSH {
                         IDictionary<Renci.SshNet.Common.TerminalModes, uint> terminalModeValues = null;
                         var actual = ssh.CreateShellStream(terminalName, columns, rows, width, height, bufferSize, terminalModeValues);
                         //Read Thread
-                        var read = new System.Threading.Thread(() => {
+                        var read = new Thread(() => {
                             if (actual.CanRead)
                                 while (true)
                                     Console.WriteLine(actual.ReadLine());
                         });
                         //Write Thread
-                        new System.Threading.Thread(() => {
+                        new Thread(() => {
                             if (actual.CanWrite)
                                 while (true) {
                                     try {
@@ -264,7 +268,7 @@ namespace SWSH {
                                         __color("(E)xit SWSH - Any other key to reload SWSH: ", ConsoleColor.Blue);
                                         var key = Console.ReadKey();
                                         if (key.Key != ConsoleKey.E)
-                                            Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                                            Process.Start(Assembly.GetExecutingAssembly().Location);
                                         ssh.Disconnect();
                                         Environment.Exit(0);
                                     }
@@ -306,7 +310,7 @@ namespace SWSH {
                     }
                 } else {
                     __color("ERROR: ", ConsoleColor.Red);
-                    Console.WriteLine("SWSH -> no nickname(s) found. try swsh --help");
+                    Console.WriteLine("SWSH -> no nickname(s) found. try `help`");
                 }
             } else {
                 var file = __getNickname(_command);
@@ -338,21 +342,21 @@ namespace SWSH {
         }
         private static void __delete() {
             try {
-                if (File.Exists(__getNickname(_command.Remove(0, 6).Trim()))) {
+                var name = _command.Remove(0, 6).Trim();
+                if (File.Exists(__getNickname(name))) {
                     __color("Are you sure you want to delete this nickname? (y/n): ", ConsoleColor.Red);
                     var ans = __getCommand().ToUpper();
                     if (ans == "Y") {
                         Console.Write("Type the nickname to confirm: ");
-                        var name = __getCommand();
-                        if (name != _command.Remove(0, 6).Trim()) __color("Aborted.\n", ConsoleColor.Yellow);
+                        if (__getCommand() != name) __color("Aborted.\n", ConsoleColor.Yellow);
                         else {
-                            File.Delete(__getNickname(_command.Remove(0, 6).Trim()));
+                            File.Delete(__getNickname(name));
                             __color("Deleted.\n", ConsoleColor.Green);
                         }
                     } else __color("Aborted.\n", ConsoleColor.Yellow);
                 } else {
                     __color("ERROR: ", ConsoleColor.Red);
-                    Console.WriteLine($"SWSH -> {_command.Remove(0, 6).Trim()} -> nickname does not exists");
+                    Console.WriteLine($"SWSH -> {name} -> nickname does not exists");
                 }
             } catch (Exception exp) {
                 __color("ERROR: ", ConsoleColor.Red);
@@ -367,7 +371,7 @@ namespace SWSH {
                 if (data[2] == "-user") arrLine[1] = data[3];
                 else if (data[2] == "-server") arrLine[2] = data[3];
                 else if (data[2] == "-key") {
-                    if (!Directory.Exists(data[3])) {
+                    if (!File.Exists(data[3]) && data[3] != "-password") {
                         __color("ERROR: ", ConsoleColor.Red);
                         Console.Write($"SWSH -> {data[3]} -> file is non existent.\n");
                         __color("exit", ConsoleColor.Red);
@@ -380,19 +384,22 @@ namespace SWSH {
                             if (key == "-e" || key == "exit") {
                                 __color("Aborted.\n", ConsoleColor.Yellow);
                                 break;
-                            }
-                            if (File.Exists(key)) {
+                            } else if (File.Exists(key)) {
                                 arrLine[0] = key;
-                                break;
-                            } else {
+                                save();
+                            } else if(key != String.Empty){
                                 __color("ERROR: ", ConsoleColor.Red);
                                 Console.Write($"SWSH -> {key} -> file is non existent.\n");
                             }
                         }
-                    }
+                        return;
+                    } else arrLine[0] = data[3];
                 }
-                File.WriteAllLines(__getNickname(data[1]), arrLine);
-                __color("Updated.\n", ConsoleColor.Green);
+                save();
+                void save() {
+                    File.WriteAllLines(__getNickname(data[1]), arrLine);
+                    __color("Updated.\n", ConsoleColor.Green);
+                }
             } else {
                 __color("ERROR: ", ConsoleColor.Red);
                 Console.WriteLine($"SWSH -> {data[1]} -> nickname does not exists");
@@ -441,7 +448,7 @@ namespace SWSH {
                 keygenProcess.Start();
                 keygenProcess.WaitForExit();
                 if (keygenProcess.ExitCode != 0) {
-                    __color("WARNING: swsh-keygen exited with non zero code.", ConsoleColor.Yellow);
+                    __color($"WARNING: swsh-keygen exited with exit code {keygenProcess.ExitCode}.", ConsoleColor.Yellow);
                     return;
                 }
                 __color($"Your public key:\n\n{File.ReadAllLines(publicFile)[0]}\n", ConsoleColor.Green);
@@ -451,7 +458,7 @@ namespace SWSH {
         private static void __clear() {
             Console.Clear();
             __version();
-            Console.Write("swsh --help or -h for help.\n\n");
+            Console.Write("Use `help` command for help.\n\n");
         }
         private static void __ls() {
             if (Directory.GetDirectories(_workingDirectory).Length > 0) {
@@ -464,7 +471,7 @@ namespace SWSH {
                     if (File.Exists(x)) {
                         var info = new FileInfo(x);
                         if (!info.Attributes.ToString().Contains("Hidden")) {
-                            var owner = File.GetAccessControl(x).GetOwner(typeof(System.Security.Principal.NTAccount)).ToString().Split('\\')[1];
+                            var owner = File.GetAccessControl(x).GetOwner(typeof(NTAccount)).ToString().Split('\\')[1];
                             var size = ((info.Length > 1024) ? (((info.Length / 1024) > 1024) ? (info.Length / 1024) / 1024 : info.Length / 1024) :
                             info.Length).ToString();
                             var toApp = "";
@@ -487,7 +494,7 @@ namespace SWSH {
                     } else if (Directory.Exists(x)) {
                         var info = new DirectoryInfo(x);
                         if (!info.Attributes.ToString().Contains("Hidden")) {
-                            var owner = File.GetAccessControl(x).GetOwner(typeof(System.Security.Principal.NTAccount)).ToString().Split('\\')[1];
+                            var owner = File.GetAccessControl(x).GetOwner(typeof(NTAccount)).ToString().Split('\\')[1];
                             owner = (owner.Length >= 10) ? owner.Remove(5) + "..." + owner.Remove(0, owner.Length - 2) : owner;
                             var toApp = "";
                             if (owner.Length < 10) for (int i = 0; i < 10 - owner.Length; i++) toApp += " ";
@@ -534,7 +541,7 @@ namespace SWSH {
                     try {
                         if (File.Exists(__getNickname(nickname))) {
                             ConnectionInfo ccinfo;
-                            if (File.ReadAllLines($"{_mainDirectory}{nickname}.swsh")[0] == "-password") {
+                            if (File.ReadAllLines(__getNickname(nickname))[0] == "-password") {
                                 Console.Write($"Password for {nickname}: ");
                                 ccinfo = __CreateConnectionInfoPassword(nickname, __getCommand());
                             } else ccinfo = __CreateConnectionInfoKey(nickname);
@@ -621,18 +628,18 @@ namespace SWSH {
         private static bool __checkHash(bool ignore) {
             bool compareHash(string path, string hash) => !computeHash(path).Equals(hash.Trim());
 
-            string computeHash(string path) => new List<byte>(new System.Security.Cryptography.SHA1CryptoServiceProvider()
+            string computeHash(string path) => new List<byte>(new SHA1CryptoServiceProvider()
                     .ComputeHash(File.ReadAllBytes(path)))
                     .Select((x) => x.ToString("x2"))
                     .Aggregate((x, y) => x + y);
 
-            string getHash(string uri) => new System.Net.WebClient().DownloadString($"{uri}?" + new Random().Next());
+            string getHash(string uri) => new WebClient().DownloadString($"{uri}?" + new Random().Next());
 
             string
                 error = "ERROR: Checksum Mismatch! This executable *may* be out of date or malicious!\n",
                 github = "https://raw.githubusercontent.com/SecureWindowsShell/",
                 checksumfile = $"{github}SWSH/master/checksum",
-                swshlocation = System.Reflection.Assembly.GetExecutingAssembly().Location,
+                swshlocation = Assembly.GetExecutingAssembly().Location,
                 keygenlocation = "swsh-keygen.exe";
 
             try {
@@ -641,7 +648,7 @@ namespace SWSH {
                 return true;
             } catch (Exception) {
                 if (!File.Exists(keygenlocation)) {
-                    __color("Warning: Could not find swsh-keygen.exe. All features will not be available.\n", ConsoleColor.Yellow);
+                    __color("WARNING: Could not find swsh-keygen.exe. SSH key generation will not be available.\n", ConsoleColor.Yellow);
                 }
                 if (!ignore) {
                     __color(error, ConsoleColor.Red);
