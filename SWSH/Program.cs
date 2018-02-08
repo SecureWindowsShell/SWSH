@@ -683,7 +683,7 @@ namespace SWSH {
             } catch (IndexOutOfRangeException) { }
             var read = ReadLine.Read();
             File.AppendAllText(_swsh_history, $"[{DateTime.UtcNow} UTC]\t=>\t{read}\n");
-            return read;
+            return read.Trim();
         }
         private static ConnectionInfo __CreateConnectionInfoKey(string nickname) {
             try {
