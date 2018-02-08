@@ -446,7 +446,7 @@ namespace SWSH {
                 keygenProcess.Start();
                 keygenProcess.WaitForExit();
                 if (keygenProcess.ExitCode != 0) {
-                    __color("WARNING: swsh-keygen exited with non zero code.", ConsoleColor.Yellow);
+                    __color($"WARNING: swsh-keygen exited with exit code {keygenProcess.ExitCode}.", ConsoleColor.Yellow);
                     return;
                 }
                 __color($"Your public key:\n\n{File.ReadAllLines(publicFile)[0]}\n", ConsoleColor.Green);
@@ -646,7 +646,7 @@ namespace SWSH {
                 return true;
             } catch (Exception) {
                 if (!File.Exists(keygenlocation)) {
-                    __color("Warning: Could not find swsh-keygen.exe. All features will not be available.\n", ConsoleColor.Yellow);
+                    __color("WARNING: Could not find swsh-keygen.exe. SSH key generation will not be available.\n", ConsoleColor.Yellow);
                 }
                 if (!ignore) {
                     __color(error, ConsoleColor.Red);
