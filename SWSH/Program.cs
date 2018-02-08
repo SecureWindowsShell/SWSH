@@ -17,6 +17,11 @@ using Renci.SshNet;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
+using System.Reflection;
+using System.Security.Principal;
+using System.Security.Cryptography;
+using System.Net;
 
 namespace SWSH {
     public static class Program {
@@ -240,13 +245,13 @@ namespace SWSH {
                         IDictionary<Renci.SshNet.Common.TerminalModes, uint> terminalModeValues = null;
                         var actual = ssh.CreateShellStream(terminalName, columns, rows, width, height, bufferSize, terminalModeValues);
                         //Read Thread
-                        var read = new System.Threading.Thread(() => {
+                        var read = new Thread(() => {
                             if (actual.CanRead)
                                 while (true)
                                     Console.WriteLine(actual.ReadLine());
                         });
                         //Write Thread
-                        new System.Threading.Thread(() => {
+                        new Thread(() => {
                             if (actual.CanWrite)
                                 while (true) {
                                     try {
@@ -264,7 +269,7 @@ namespace SWSH {
                                         __color("(E)xit SWSH - Any other key to reload SWSH: ", ConsoleColor.Blue);
                                         var key = Console.ReadKey();
                                         if (key.Key != ConsoleKey.E)
-                                            Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                                            Process.Start(Assembly.GetExecutingAssembly().Location);
                                         ssh.Disconnect();
                                         Environment.Exit(0);
                                     }
@@ -464,7 +469,7 @@ namespace SWSH {
                     if (File.Exists(x)) {
                         var info = new FileInfo(x);
                         if (!info.Attributes.ToString().Contains("Hidden")) {
-                            var owner = File.GetAccessControl(x).GetOwner(typeof(System.Security.Principal.NTAccount)).ToString().Split('\\')[1];
+                            var owner = File.GetAccessControl(x).GetOwner(typeof(NTAccount)).ToString().Split('\\')[1];
                             var size = ((info.Length > 1024) ? (((info.Length / 1024) > 1024) ? (info.Length / 1024) / 1024 : info.Length / 1024) :
                             info.Length).ToString();
                             var toApp = "";
@@ -487,7 +492,7 @@ namespace SWSH {
                     } else if (Directory.Exists(x)) {
                         var info = new DirectoryInfo(x);
                         if (!info.Attributes.ToString().Contains("Hidden")) {
-                            var owner = File.GetAccessControl(x).GetOwner(typeof(System.Security.Principal.NTAccount)).ToString().Split('\\')[1];
+                            var owner = File.GetAccessControl(x).GetOwner(typeof(NTAccount)).ToString().Split('\\')[1];
                             owner = (owner.Length >= 10) ? owner.Remove(5) + "..." + owner.Remove(0, owner.Length - 2) : owner;
                             var toApp = "";
                             if (owner.Length < 10) for (int i = 0; i < 10 - owner.Length; i++) toApp += " ";
@@ -621,18 +626,18 @@ namespace SWSH {
         private static bool __checkHash(bool ignore) {
             bool compareHash(string path, string hash) => !computeHash(path).Equals(hash.Trim());
 
-            string computeHash(string path) => new List<byte>(new System.Security.Cryptography.SHA1CryptoServiceProvider()
+            string computeHash(string path) => new List<byte>(new SHA1CryptoServiceProvider()
                     .ComputeHash(File.ReadAllBytes(path)))
                     .Select((x) => x.ToString("x2"))
                     .Aggregate((x, y) => x + y);
 
-            string getHash(string uri) => new System.Net.WebClient().DownloadString($"{uri}?" + new Random().Next());
+            string getHash(string uri) => new WebClient().DownloadString($"{uri}?" + new Random().Next());
 
             string
                 error = "ERROR: Checksum Mismatch! This executable *may* be out of date or malicious!\n",
                 github = "https://raw.githubusercontent.com/SecureWindowsShell/",
                 checksumfile = $"{github}SWSH/master/checksum",
-                swshlocation = System.Reflection.Assembly.GetExecutingAssembly().Location,
+                swshlocation = Assembly.GetExecutingAssembly().Location,
                 keygenlocation = "swsh-keygen.exe";
 
             try {
