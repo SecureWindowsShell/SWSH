@@ -311,7 +311,7 @@ namespace SWSH {
                     }
                 } else {
                     __color("ERROR: ", ConsoleColor.Red);
-                    Console.WriteLine("SWSH -> no nickname(s) found. try swsh --help");
+                    Console.WriteLine("SWSH -> no nickname(s) found. try `help`");
                 }
             } else {
                 var file = __getNickname(_command);
@@ -456,7 +456,7 @@ namespace SWSH {
         private static void __clear() {
             Console.Clear();
             __version();
-            Console.Write("swsh --help or -h for help.\n\n");
+            Console.Write("Use `help` command for help.\n\n");
         }
         private static void __ls() {
             if (Directory.GetDirectories(_workingDirectory).Length > 0) {
