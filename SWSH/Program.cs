@@ -124,7 +124,7 @@ namespace SWSH {
                 if (data[3].Trim() == string.Empty) {
                     __color("ERROR: ", ConsoleColor.Red);
                     Console.Write("SWSH -> nickname should not be empty!\n");
-                } else if (File.Exists($"{_mainDirectory + data[3]}.swsh")) {
+                } else if (File.Exists(__getNickname(data[3]))) {
                     __color("ERROR: ", ConsoleColor.Red);
                     Console.WriteLine($"SWSH -> {data[3]} -> nickname exists");
                 } else {
@@ -217,8 +217,8 @@ namespace SWSH {
         private static void __connect() {
             ConnectionInfo ccinfo;
             string nickname = _command.Remove(0, 8);
-            if (File.Exists(_mainDirectory + nickname + ".swsh")) {
-                if (File.ReadAllLines(_mainDirectory + nickname + ".swsh")[0] == "-password") {
+            if (File.Exists(__getNickname(nickname))) {
+                if (File.ReadAllLines(__getNickname(nickname))[0] == "-password") {
                     Console.Write($"Password for {nickname}: ");
                     ReadLine.PasswordMode = true;
                     ccinfo = __CreateConnectionInfoPassword(nickname, ReadLine.Read());
@@ -534,7 +534,7 @@ namespace SWSH {
                     try {
                         if (File.Exists(__getNickname(nickname))) {
                             ConnectionInfo ccinfo;
-                            if (File.ReadAllLines($"{_mainDirectory}{nickname}.swsh")[0] == "-password") {
+                            if (File.ReadAllLines(__getNickname(nickname))[0] == "-password") {
                                 Console.Write($"Password for {nickname}: ");
                                 ccinfo = __CreateConnectionInfoPassword(nickname, __getCommand());
                             } else ccinfo = __CreateConnectionInfoKey(nickname);
