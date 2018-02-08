@@ -58,7 +58,7 @@ namespace SWSH {
                     }
                     if (_command == "version") __version();
                     else if (_command.StartsWith("add")) __addConnection();
-                    else if (_command.StartsWith("help")) __interactiveHelp();
+                    else if (_command.StartsWith("help")) __help();
                     else if (_command.StartsWith("connect")) __connect();
                     else if (_command.StartsWith("show")) __show();
                     else if (_command.StartsWith("delete")) __delete();
@@ -145,7 +145,7 @@ namespace SWSH {
                 }
             }
         }
-        private static void __interactiveHelp() {
+        private static void __help() {
             _command = _command.Remove(0, 4).Trim();
             if (_command.Length > 0) {
                 var title = $"Help for {_command}";
@@ -202,22 +202,21 @@ namespace SWSH {
                         __color($"ERROR: SWSH -> {_command} -> unknown command.\n", ConsoleColor.Red);
                         break;
                 }
-            } else __help();
-        }
-        private static void __help() {
-            Console.WriteLine("version                                -Check the version of swsh.");
-            Console.WriteLine("add     [-password]                    -Add a new connection either using private key or password (-password).");
-            Console.WriteLine("show    [nickname]                     -Show nicknames/Details of a nickname.");
-            Console.WriteLine("connect [nickname]                     -Connects to Server over SSH.");
-            Console.WriteLine("delete  [nickname]                     -Deletes connection's nickname.");
-            Console.WriteLine("edit    [nickname] [arg]               -Edits nickname, use one argument at a time.");
-            Console.WriteLine("keygen                                 -Generates SSH RSA key pair.");
-            Console.WriteLine("help    [command]                      -Displays this help or command details.");
-            Console.WriteLine("clear                                  -Clears the console.");
-            Console.WriteLine("exit                                   -Exits.");
-            Console.WriteLine("ls                                     -Lists all files and directories in working directory.");
-            Console.WriteLine("cd [arg]                               -Changes directory to 'arg'. arg = directory name.");
-            Console.WriteLine("upload [args] [nickname]:[location]    -Uploads files and directories. 'upload -h' for help.");
+            } else {
+                Console.WriteLine("version                                -Check the version of swsh.");
+                Console.WriteLine("add     [-password]                    -Add a new connection either using private key or password (-password).");
+                Console.WriteLine("show    [nickname]                     -Show nicknames/Details of a nickname.");
+                Console.WriteLine("connect [nickname]                     -Connects to Server over SSH.");
+                Console.WriteLine("delete  [nickname]                     -Deletes connection's nickname.");
+                Console.WriteLine("edit    [nickname] [arg]               -Edits nickname, use one argument at a time.");
+                Console.WriteLine("keygen                                 -Generates SSH RSA key pair.");
+                Console.WriteLine("help    [command]                      -Displays this help or command details.");
+                Console.WriteLine("clear                                  -Clears the console.");
+                Console.WriteLine("exit                                   -Exits.");
+                Console.WriteLine("ls                                     -Lists all files and directories in working directory.");
+                Console.WriteLine("cd [arg]                               -Changes directory to 'arg'. arg = directory name.");
+                Console.WriteLine("upload [args] [nickname]:[location]    -Uploads files and directories. 'upload -h' for help.");
+            }
         }
         private static void __connect() {
             ConnectionInfo ccinfo;
