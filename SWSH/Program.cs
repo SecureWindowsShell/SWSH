@@ -371,7 +371,7 @@ namespace SWSH {
                 if (data[2] == "-user") arrLine[1] = data[3];
                 else if (data[2] == "-server") arrLine[2] = data[3];
                 else if (data[2] == "-key") {
-                    if (!File.Exists(data[3]) {
+                    if (!File.Exists(data[3]) && data[3] != "-password") {
                         __color("ERROR: ", ConsoleColor.Red);
                         Console.Write($"SWSH -> {data[3]} -> file is non existent.\n");
                         __color("exit", ConsoleColor.Red);
