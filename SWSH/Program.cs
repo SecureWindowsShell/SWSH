@@ -387,7 +387,7 @@ namespace SWSH {
                             } else if (File.Exists(key)) {
                                 arrLine[0] = key;
                                 save();
-                            } else if(key != String.Empty){
+                            } else if (key != String.Empty) {
                                 __color("ERROR: ", ConsoleColor.Red);
                                 Console.Write($"SWSH -> {key} -> file is non existent.\n");
                             }
