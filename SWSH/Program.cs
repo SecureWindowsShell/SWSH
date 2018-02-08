@@ -131,7 +131,7 @@ namespace SWSH {
                     Console.Write("SWSH -> nickname should not be empty!\n");
                 } else if (File.Exists(__getNickname(data[3]))) {
                     __color("ERROR: ", ConsoleColor.Red);
-                    Console.WriteLine($"SWSH -> {data[3]} -> nickname exists");
+                    Console.Write($"SWSH -> {data[3]} -> nickname exists!\n");
                 } else {
                     break;
                 }
