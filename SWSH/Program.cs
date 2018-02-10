@@ -52,7 +52,8 @@ namespace SWSH {
                     Console.Clear();
                 }
             } catch (Exception) {
-                Console.WriteLine("Unable to download License, view online copy here: https://raw.githubusercontent.com/muhammadmuzzammil1998/SWSH/master/LICENSE");
+                Console.WriteLine("Unable to download License, view online copy here: https://raw.githubusercontent.com/muhammadmuzzammil1998/SWSH/master/LI" +
+                    "CENSE");
             }
             /* Downloading License; if does not exists. END  */
             Console.Title = $"SWSH - {__version()}";
@@ -76,8 +77,8 @@ namespace SWSH {
                     __color("swsh> ", ConsoleColor.DarkGray);
                     _command = __getCommand();
                     if (_command.StartsWith("swsh")) {
-                        __color("WARNING:\nThis type of commands is deprecated and will stop working in future.\nPlease take a look at our latest documenta" +
-                            "tion or use `help` command.\n", ConsoleColor.Yellow);
+                        __color("WARNING:\nThis type of commands is deprecated and will stop working in future.\nPlease take a look at our latest documentat" +
+                            "ion or use `help` command.\n", ConsoleColor.Yellow);
                         if (_command.StartsWith("swsh --")) _command = _command.Remove(0, 7);
                     }
                     if (_command == "version") __version();
@@ -685,7 +686,9 @@ namespace SWSH {
             }
         }
         private static void __license() => File.ReadAllLines("LICENSE.txt").ToList().ForEach(x => Console.WriteLine(x));
-        private static void __notice() => Console.Write("SWSH - Secure Windows Shell\nCopyright (C) 2017  Muhammad Muzzammil\nThis program comes with ABSOLUTELY NO WARRANTY; for details type `license'.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions; type `license' for details.\n\n");
+        private static void __notice() => Console.Write("SWSH - Secure Windows Shell\nCopyright (C) 2017  Muhammad Muzzammil\nThis program comes with ABSOLU" +
+            "TELY NO WARRANTY; for details type `license'.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions; type `l" +
+            "icense' for details.\n\n");
         private static string __getNickname(string s) => $"{_mainDirectory}{s}.swsh";
         private static string __getCommand() {
             var list = new List<string>();
