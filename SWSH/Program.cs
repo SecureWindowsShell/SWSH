@@ -81,6 +81,7 @@ namespace SWSH {
                     else if (_command.StartsWith("upload")) __upload();
                     else if (_command == "clear") __clear();
                     else if (_command == "license") __license();
+                    else if (_command == "license notice") __notice();
                     else if (_command == "exit") Environment.Exit(0);
                     else if (_command.Trim() != "") __color($"ERROR: SWSH -> {_command} -> unknown command.\n", ConsoleColor.Red);
                 } catch (Exception exp) {
