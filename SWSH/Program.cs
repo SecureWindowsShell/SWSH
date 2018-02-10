@@ -36,6 +36,7 @@ namespace SWSH {
             _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
             _swsh_history = Environment.GetFolderPath((Environment.SpecialFolder)40) + "/.swsh_history";
         static void Main(string[] args) {
+            __notice();
             Console.Title = $"SWSH - {__version()}";
             if (!_codename.StartsWith("unstable")) _keygenstatus = __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
             Console.Write("Use `help` command for help.\n\n");
@@ -615,7 +616,7 @@ namespace SWSH {
         private static string __version() {
             Console.Write("   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __  / " +
                 " \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
-            Console.Write($"\nRelease: {_codename}-{_version}\n(c) Muhammad Muzzammil\nSWSH is licensed under the GNU General Public License v3.0\n");
+            Console.Write($"\nRelease: {_codename}-{_version}\n");
             return $"{_codename}-{_version}";
         }
         private static void __changeWorkingDir(string path) {
@@ -665,6 +666,7 @@ namespace SWSH {
             }
         }
         private static void __license() => File.ReadAllLines("LICENSE.txt").ToList().ForEach(x => Console.WriteLine(x));
+        private static void __notice() => Console.Write("SWSH - Secure Windows Shell\nCopyright (C) 2017  Muhammad Muzzammil\nThis program comes with ABSOLUTELY NO WARRANTY; for details type `license'.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions; type `license' for details.\n\n");
         private static string __getNickname(string s) => $"{_mainDirectory}{s}.swsh";
         private static string __getCommand() {
             var list = new List<string>();
