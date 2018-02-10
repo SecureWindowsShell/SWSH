@@ -73,6 +73,7 @@ namespace SWSH {
                     else if (_command.StartsWith("cd")) __cd();
                     else if (_command.StartsWith("upload")) __upload();
                     else if (_command == "clear") __clear();
+                    else if (_command == "license") __license();
                     else if (_command == "exit") Environment.Exit(0);
                     else if (_command.Trim() != "") __color($"ERROR: SWSH -> {_command} -> unknown command.\n", ConsoleColor.Red);
                 } catch (Exception exp) {
@@ -663,6 +664,7 @@ namespace SWSH {
                 return false;
             }
         }
+        private static void __license() => File.ReadAllLines("LICENSE.txt").ToList().ForEach(x => Console.WriteLine(x));
         private static string __getNickname(string s) => $"{_mainDirectory}{s}.swsh";
         private static string __getCommand() {
             var list = new List<string>();
