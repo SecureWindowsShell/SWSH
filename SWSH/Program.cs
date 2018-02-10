@@ -712,9 +712,9 @@ namespace SWSH {
                     return tList.ToArray();
                 };
             } catch (IndexOutOfRangeException) { }
-            var read = ReadLine.Read();
+            var read = ReadLine.Read().Trim();
             File.AppendAllText(_swsh_history, $"[{DateTime.UtcNow} UTC]\t=>\t{read}\n");
-            return read.Trim();
+            return read;
         }
         private static ConnectionInfo __CreateConnectionInfoKey(string nickname) {
             try {
