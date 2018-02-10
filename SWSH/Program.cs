@@ -1,16 +1,21 @@
 ﻿/*
-    Copyright (C) 2017  Muhammad Muzzammil
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ *  SWSH - Secure Windows Shell
+ *  Copyright (C) 2017  Muhammad Muzzammil
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 using System;
 using System.IO;
 using Renci.SshNet;
@@ -31,6 +36,26 @@ namespace SWSH {
             _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
             _swsh_history = Environment.GetFolderPath((Environment.SpecialFolder)40) + "/.swsh_history";
         static void Main(string[] args) {
+            Console.Title = "SWSH - Secure Windows Shell";
+            __notice();
+            Console.Write("\nType `license notice` to view this notice again.\n");
+            for (int i = 0; i < 5; i++) {
+                Console.Write($"\rStarting in {5 - (i + 1)}s");
+                Thread.Sleep(1000);
+            }
+            Console.Clear();
+            /* Downloading License; if does not exists. START*/
+            try {
+                if (!File.Exists("LICENSE.txt")) {
+                    Console.WriteLine("License file not found, downloading...");
+                    new WebClient().DownloadFile(new Uri("https://raw.githubusercontent.com/muhammadmuzzammil1998/SWSH/master/LICENSE"), "LICENSE.txt");
+                    Console.Clear();
+                }
+            } catch (Exception) {
+                Console.WriteLine("Unable to download License, view online copy here: https://raw.githubusercontent.com/muhammadmuzzammil1998/SWSH/master/LI" +
+                    "CENSE");
+            }
+            /* Downloading License; if does not exists. END  */
             Console.Title = $"SWSH - {__version()}";
             if (!_codename.StartsWith("unstable")) _keygenstatus = __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
             Console.Write("Use `help` command for help.\n\n");
@@ -52,8 +77,8 @@ namespace SWSH {
                     __color("swsh> ", ConsoleColor.DarkGray);
                     _command = __getCommand();
                     if (_command.StartsWith("swsh")) {
-                        __color("WARNING:\nThis type of commands is deprecated and will stop working in future.\nPlease take a look at our latest documenta" +
-                            "tion or use `help` command.\n", ConsoleColor.Yellow);
+                        __color("WARNING:\nThis type of commands is deprecated and will stop working in future.\nPlease take a look at our latest documentat" +
+                            "ion or use `help` command.\n", ConsoleColor.Yellow);
                         if (_command.StartsWith("swsh --")) _command = _command.Remove(0, 7);
                     }
                     if (_command == "version") __version();
@@ -68,6 +93,8 @@ namespace SWSH {
                     else if (_command.StartsWith("cd")) __cd();
                     else if (_command.StartsWith("upload")) __upload();
                     else if (_command == "clear") __clear();
+                    else if (_command == "license") __license();
+                    else if (_command == "license notice") __notice();
                     else if (_command == "exit") Environment.Exit(0);
                     else if (_command.Trim() != "") __color($"ERROR: SWSH -> {_command} -> unknown command.\n", ConsoleColor.Red);
                 } catch (Exception exp) {
@@ -609,7 +636,7 @@ namespace SWSH {
         private static string __version() {
             Console.Write("   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __  / " +
                 " \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
-            Console.Write($"\nRelease: {_codename}-{_version}\n(c) Muhammad Muzzammil\nSWSH is licensed under the GNU General Public License v3.0\n");
+            Console.Write($"\nRelease: {_codename}-{_version}\n");
             return $"{_codename}-{_version}";
         }
         private static void __changeWorkingDir(string path) {
@@ -658,6 +685,10 @@ namespace SWSH {
                 return false;
             }
         }
+        private static void __license() => File.ReadAllLines("LICENSE.txt").ToList().ForEach(x => Console.WriteLine(x));
+        private static void __notice() => Console.Write("SWSH - Secure Windows Shell\nCopyright (C) 2017  Muhammad Muzzammil\nThis program comes with ABSOLU" +
+            "TELY NO WARRANTY; for details type `license'.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions; type `l" +
+            "icense' for details.\n\n");
         private static string __getNickname(string s) => $"{_mainDirectory}{s}.swsh";
         private static string __getCommand() {
             var list = new List<string>();
