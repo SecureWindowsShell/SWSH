@@ -37,6 +37,12 @@ namespace SWSH {
             _swsh_history = Environment.GetFolderPath((Environment.SpecialFolder)40) + "/.swsh_history";
         static void Main(string[] args) {
             __notice();
+            Console.Write("\nType `license notice` to view this notice again.\n");
+            for (int i = 0; i < 5; i++) {
+                Console.Write($"\rStarting in {5 - (i + 1)}s");
+                Thread.Sleep(1000);
+            }
+            Console.Clear();
             Console.Title = $"SWSH - {__version()}";
             if (!_codename.StartsWith("unstable")) _keygenstatus = __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
             Console.Write("Use `help` command for help.\n\n");
