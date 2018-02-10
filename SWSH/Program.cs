@@ -36,6 +36,7 @@ namespace SWSH {
             _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
             _swsh_history = Environment.GetFolderPath((Environment.SpecialFolder)40) + "/.swsh_history";
         static void Main(string[] args) {
+            Console.Title = "SWSH - Secure Windows Shell";
             __notice();
             Console.Write("\nType `license notice` to view this notice again.\n");
             for (int i = 0; i < 5; i++) {
