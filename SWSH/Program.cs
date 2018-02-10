@@ -43,6 +43,17 @@ namespace SWSH {
                 Thread.Sleep(1000);
             }
             Console.Clear();
+            /* Downloading License; if does not exists. START*/
+            try {
+                if (!File.Exists("LICENSE.txt")) {
+                    Console.WriteLine("License file not found, downloading...");
+                    new WebClient().DownloadFile(new Uri("https://raw.githubusercontent.com/muhammadmuzzammil1998/SWSH/master/LICENSE"), "LICENSE.txt");
+                    Console.Clear();
+                }
+            } catch (Exception) {
+                Console.WriteLine("Unable to download License, view online copy here: https://raw.githubusercontent.com/muhammadmuzzammil1998/SWSH/master/LICENSE");
+            }
+            /* Downloading License; if does not exists. END  */
             Console.Title = $"SWSH - {__version()}";
             if (!_codename.StartsWith("unstable")) _keygenstatus = __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
             Console.Write("Use `help` command for help.\n\n");
