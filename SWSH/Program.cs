@@ -48,12 +48,11 @@ namespace SWSH {
             try {
                 if (!File.Exists("LICENSE.txt")) {
                     Console.WriteLine("License file not found, downloading...");
-                    new WebClient().DownloadFile(new Uri("https://raw.githubusercontent.com/muhammadmuzzammil1998/SWSH/master/LICENSE"), "LICENSE.txt");
+                    new WebClient().DownloadFile(new Uri(Url.License), "LICENSE.txt");
                     Console.Clear();
                 }
             } catch (Exception) {
-                Console.WriteLine("Unable to download License, view online copy here: https://raw.githubusercontent.com/muhammadmuzzammil1998/SWSH/master/LI" +
-                    "CENSE");
+                Console.WriteLine($"Unable to download License, view online copy here: {Url.License}");
             }
             /* Downloading License; if does not exists. END  */
             Console.Title = $"SWSH - {__version()}";
@@ -479,8 +478,7 @@ namespace SWSH {
                     return;
                 }
                 __color($"Your public key:\n\n{File.ReadAllLines(publicFile)[0]}\n", ConsoleColor.Green);
-            } else __color($"ERROR: The binary 'swsh-keygen.exe' was not found. Are you sure it's installed?\nSee: https://github.com/SecureWindowsShell/SWS" +
-                $"H/tree/master/swsh-keygen#swsh-keygen", ConsoleColor.Red);
+            } else __color($"ERROR: The binary 'swsh-keygen.exe' was not found. Are you sure it's installed?\nSee: {Url.Keygen}", ConsoleColor.Red);
         }
         private static void __clear() {
             Console.Clear();
@@ -664,8 +662,7 @@ namespace SWSH {
 
             string
                 error = "ERROR: Checksum Mismatch! This executable *may* be out of date or malicious!\n",
-                github = "https://raw.githubusercontent.com/SecureWindowsShell/",
-                checksumfile = $"{github}SWSH/master/checksum",
+                checksumfile = Url.Checksum,
                 swshlocation = Assembly.GetExecutingAssembly().Location,
                 keygenlocation = "swsh-keygen.exe";
 
