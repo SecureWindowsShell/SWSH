@@ -57,7 +57,7 @@ namespace SWSH {
             }
             /* Downloading License; if does not exists. END  */
             Console.Title = $"SWSH - {__version()}";
-            if (!_codename.StartsWith("unstable")) _keygenstatus = __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
+            if (!__unstable()) _keygenstatus = __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
             Console.Write("Use `help` command for help.\n\n");
             try {
                 var handle = ExternalFunctions.GetStdHandle(-11);
@@ -433,12 +433,12 @@ namespace SWSH {
             }
         }
         private static void __keygen() {
-            if (!_keygenstatus) {
+            if (!_keygenstatus ^ __unstable()) {
                 __color("Key generation is unavailable.\n", ConsoleColor.DarkBlue);
                 return;
             }
             if (File.Exists("swsh-keygen.exe")) {
-                if (!__checkHash(true)) return;
+                if (!__checkHash(true) ^ __unstable()) return;
                 string privateFile, publicFile;
                 __color("exit", ConsoleColor.Red);
                 Console.Write(" or ");
@@ -716,6 +716,7 @@ namespace SWSH {
             File.AppendAllText(_swsh_history, $"[{DateTime.UtcNow} UTC]\t=>\t{read}\n");
             return read;
         }
+        private static bool __unstable() => _codename.StartsWith("unstable");
         private static ConnectionInfo __CreateConnectionInfoKey(string nickname) {
             try {
                 if (File.Exists(__getNickname(nickname))) {
