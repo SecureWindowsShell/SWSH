@@ -220,6 +220,11 @@ namespace SWSH {
                                 "keygen");
                             break;
                         }
+                    case "pwd": {
+                            Console.WriteLine("Syntax: pwd");
+                            Console.WriteLine("Prints working directory.\nUsage: pwd");
+                            break;
+                        }
                     case "help": {
                             Console.WriteLine("Syntax: help [command]");
                             Console.WriteLine("Displays this help or command details.\nUsage: help add");
