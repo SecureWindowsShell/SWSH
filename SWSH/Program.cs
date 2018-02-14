@@ -94,6 +94,7 @@ namespace SWSH {
                     else if (_command == "clear") __clear();
                     else if (_command == "license") __license();
                     else if (_command == "license notice") __notice();
+                    else if (_command == "pwd") Console.WriteLine(_workingDirectory.ToLower());
                     else if (_command == "exit") Environment.Exit(0);
                     else if (_command.Trim() != "") __color($"ERROR: SWSH -> {_command} -> unknown command.\n", ConsoleColor.Red);
                 } catch (Exception exp) {
@@ -219,6 +220,11 @@ namespace SWSH {
                                 "keygen");
                             break;
                         }
+                    case "pwd": {
+                            Console.WriteLine("Syntax: pwd");
+                            Console.WriteLine("Prints working directory.\nUsage: pwd");
+                            break;
+                        }
                     case "help": {
                             Console.WriteLine("Syntax: help [command]");
                             Console.WriteLine("Displays this help or command details.\nUsage: help add");
@@ -238,6 +244,7 @@ namespace SWSH {
                 Console.WriteLine("keygen                                 -Generates SSH RSA key pair.");
                 Console.WriteLine("help    [command]                      -Displays this help or command details.");
                 Console.WriteLine("clear                                  -Clears the console.");
+                Console.WriteLine("pwd                                    -Prints working directory.");
                 Console.WriteLine("exit                                   -Exits.");
                 Console.WriteLine("ls                                     -Lists all files and directories in working directory.");
                 Console.WriteLine("cd [arg]                               -Changes directory to 'arg'. arg = directory name.");
