@@ -244,6 +244,7 @@ namespace SWSH {
                 Console.WriteLine("keygen                                 -Generates SSH RSA key pair.");
                 Console.WriteLine("help    [command]                      -Displays this help or command details.");
                 Console.WriteLine("clear                                  -Clears the console.");
+                Console.WriteLine("pwd                                    -Prints working directory.");
                 Console.WriteLine("exit                                   -Exits.");
                 Console.WriteLine("ls                                     -Lists all files and directories in working directory.");
                 Console.WriteLine("cd [arg]                               -Changes directory to 'arg'. arg = directory name.");
