@@ -556,6 +556,14 @@ namespace SWSH {
             else if (_command.StartsWith("./")) __changeWorkingDir($"{_workingDirectory}/{_command.Remove(0, 2)}");
             else if (_command.StartsWith("/")) __changeWorkingDir(Path.GetPathRoot(_workingDirectory) + _command.Remove(0, 1));
             else __changeWorkingDir($"{_workingDirectory}/{_command}");
+            void __changeWorkingDir(string path) {
+                path = path.Replace('\\', '/');
+                if (Directory.Exists(path)) _workingDirectory = path;
+                else {
+                    __color("ERROR: ", ConsoleColor.Red);
+                    Console.WriteLine($"SWSH -> {path} -> path does not exists");
+                }
+            }
         }
         private static void __upload() {
             _command = _command.Remove(0, 7);
@@ -643,14 +651,6 @@ namespace SWSH {
                 " \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
             Console.Write($"\nRelease: {_codename}-{_version}\n");
             return $"{_codename}-{_version}";
-        }
-        private static void __changeWorkingDir(string path) {
-            path = path.Replace('\\', '/');
-            if (Directory.Exists(path)) _workingDirectory = path;
-            else {
-                __color("ERROR: ", ConsoleColor.Red);
-                Console.WriteLine($"SWSH -> {path} -> path does not exists");
-            }
         }
         private static void __color(string message, ConsoleColor cc) {
             Console.ForegroundColor = cc;
