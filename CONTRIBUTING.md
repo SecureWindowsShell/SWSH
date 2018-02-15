@@ -41,11 +41,11 @@ A report should contain the following:
 * Windows 10 1709 
 * .NET framework 4.7
 
-When I use `swsh --show` it is not displaying output correctly, there are ?'s in between lines. 
+`connect` command is not working if there is a space before it.
 
-Steps: just run `swsh --show`
+Steps: just run ` connect` with space.
 
-Thoughts: You should change encoding of output or something.
+Thoughts: Trim input taken from user.
 
 ## Add new feature
 > “The best way to predict your future is to create it.” ~*Abraham Lincoln*
