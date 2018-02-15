@@ -37,7 +37,7 @@ A report should contain the following:
 **Title**: Bug in swsh --show, characters not displaying correctly.
 **Description**: 
 
-* SWSH Version: beta 1.4
+* SWSH Version: beta 3.0
 * Windows 10 1709 
 * .NET framework 4.7
 
@@ -72,7 +72,7 @@ Example: `var _name = "Hi, I am a variable, I vary.";`
 * Global functions/methods starts with two (2) underscores (__), except for local functions.
 
 Example: 
-```
+```cs
 public static string __name() {
 	...
 	// your code here
@@ -81,7 +81,7 @@ public static string __name() {
 ```
 * If a function is only required for one function, it should be a local function to the latter function.
 Example:
-```
+```cs
 // Instead of this:
 public static string __name() {
 	...
