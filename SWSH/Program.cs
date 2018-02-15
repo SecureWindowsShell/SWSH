@@ -715,37 +715,31 @@ namespace SWSH {
         private static bool __unstable() => _codename.StartsWith("unstable");
         private static ConnectionInfo __CreateConnection(string nickname) {
             try {
-                if (File.Exists(__getNickname(nickname))) {
-                    string
-                        firstString = File.ReadAllLines(__getNickname(nickname))[0],
-                        user = File.ReadAllLines(__getNickname(nickname))[1],
-                        server = File.ReadAllLines(__getNickname(nickname))[2];
-                    if (firstString == "-password") {
-                        ReadLine.PasswordMode = true;
-                        var password = ReadLine.Read($"Password for {nickname}: ");
-                        ReadLine.GetHistory().Pop();
-                        ReadLine.PasswordMode = false;
-                        return new ConnectionInfo(
-                            server,
+                string
+                    firstString = File.ReadAllLines(__getNickname(nickname))[0],
+                    user = File.ReadAllLines(__getNickname(nickname))[1],
+                    server = File.ReadAllLines(__getNickname(nickname))[2];
+                if (firstString == "-password") {
+                    ReadLine.PasswordMode = true;
+                    var password = ReadLine.Read($"Password for {nickname}: ");
+                    ReadLine.GetHistory().Pop();
+                    ReadLine.PasswordMode = false;
+                    return new ConnectionInfo(
+                        server,
+                        user,
+                        new PasswordAuthenticationMethod(
                             user,
-                            new PasswordAuthenticationMethod(
-                                user,
-                                password));
-                    } else return new ConnectionInfo(
-                            server,
+                            password));
+                } else return new ConnectionInfo(
+                        server,
+                        user,
+                        new PrivateKeyAuthenticationMethod(
                             user,
-                            new PrivateKeyAuthenticationMethod(
-                                user,
-                                new PrivateKeyFile(
-                                    new FileStream(
-                                        firstString,
-                                        FileMode.Open,
-                                        FileAccess.Read))));
-                } else {
-                    __color("ERROR: ", ConsoleColor.Red);
-                    Console.WriteLine($"SWSH -> {nickname} -> nickname does not exists");
-                    __start();
-                }
+                            new PrivateKeyFile(
+                                new FileStream(
+                                    firstString,
+                                    FileMode.Open,
+                                    FileAccess.Read))));
             } catch (Exception exp) { __color($"ERROR: {exp.Message}\n", ConsoleColor.Red); }
             return null;
         }
