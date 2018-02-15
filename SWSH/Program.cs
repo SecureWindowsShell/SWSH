@@ -708,7 +708,7 @@ namespace SWSH {
             try {
                 ReadLine.AutoCompletionHandler = (data, length) => {
                     var tList = new List<string>();
-                    if (requiresNickname(data))
+                    if (requiresNickname(data) && Directory.Exists(_mainDirectory) && new DirectoryInfo(_mainDirectory).GetFiles().Length > 0)
                         Directory.GetFiles(_mainDirectory).ToList()
                         .Where(x => Path.GetFileNameWithoutExtension(x).Contains(data.Split(' ')[1])).ToList()
                         .ForEach(x => { tList.Add(Path.GetFileNameWithoutExtension(x)); });
