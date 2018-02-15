@@ -1,11 +1,12 @@
 <img src=".images/github banner.png"/>
+
 [![Build status](https://ci.appveyor.com/api/projects/status/1f2uc16tue6h0r0l/branch/master?svg=true)](https://ci.appveyor.com/project/muhammadmuzzammil1998/swsh/branch/master)
 
 SWSH is a console application that offers SSH-like connectivity with ease to users which grants them the ability to operate remotely on SSH protocol. It is also Open source, so feel free to contribute.
 
 **If you are not using a [prebuilt SWSH binary](https://github.com/SecureWindowsShell/SWSH/releases), you will see SWSH complain about a checksum mismatch and exit, use `--IgnoreChecksumMismatch` to stop it from exiting.**
 
-![SWSH just doing its thing](https://raw.githubusercontent.com/muhammadmuzzammil1998/SWSH/c173fa908f0287cde2a03b25c72b933df6448277/.images/cdls.PNG)
+![SWSH just doing its thing](https://user-images.githubusercontent.com/12321712/36257898-bfaba952-127e-11e8-9bd9-b63d4885f649.png)
 *SWSH (beta) just doing its thing*
 
 ## Getting Started
