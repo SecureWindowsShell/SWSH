@@ -37,15 +37,15 @@ A report should contain the following:
 **Title**: Bug in swsh --show, characters not displaying correctly.
 **Description**: 
 
-* SWSH Version: beta 1.4
+* SWSH Version: beta 3.0
 * Windows 10 1709 
 * .NET framework 4.7
 
-When I use `swsh --show` it is not displaying output correctly, there are ?'s in between lines. 
+`connect` command is not working if there is a space before it.
 
-Steps: just run `swsh --show`
+Steps: just run ` connect` with space.
 
-Thoughts: You should change encoding of output or something.
+Thoughts: Trim input taken from user.
 
 ## Add new feature
 > “The best way to predict your future is to create it.” ~*Abraham Lincoln*
@@ -72,7 +72,7 @@ Example: `var _name = "Hi, I am a variable, I vary.";`
 * Global functions/methods starts with two (2) underscores (__), except for local functions.
 
 Example: 
-```
+```cs
 public static string __name() {
 	...
 	// your code here
@@ -81,7 +81,7 @@ public static string __name() {
 ```
 * If a function is only required for one function, it should be a local function to the latter function.
 Example:
-```
+```cs
 // Instead of this:
 public static string __name() {
 	...
