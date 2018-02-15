@@ -712,6 +712,8 @@ namespace SWSH {
                         Directory.GetFiles(_mainDirectory).ToList()
                         .Where(x => Path.GetFileNameWithoutExtension(x).Contains(data.Split(' ')[1])).ToList()
                         .ForEach(x => { tList.Add(Path.GetFileNameWithoutExtension(x)); });
+                    if (data.Trim() == "help")
+                        commands.ToList().ForEach(x => tList.Add(x));
                     list.Where(x => x.Contains(data)).ToList().ForEach(y => tList.Add(y.Remove(0, length)));
                     return tList.ToArray();
                 };
