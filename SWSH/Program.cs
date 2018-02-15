@@ -725,9 +725,10 @@ namespace SWSH {
         private static ConnectionInfo __CreateConnectionInfoKey(string nickname) {
             try {
                 if (File.Exists(__getNickname(nickname))) {
-                    string privateKeyFilePath = File.ReadAllLines(__getNickname(nickname))[0],
-                    user = File.ReadAllLines(__getNickname(nickname))[1],
-                    server = File.ReadAllLines(__getNickname(nickname))[2];
+                    string 
+                        privateKeyFilePath = File.ReadAllLines(__getNickname(nickname))[0],
+                        user = File.ReadAllLines(__getNickname(nickname))[1],
+                        server = File.ReadAllLines(__getNickname(nickname))[2];
                     ConnectionInfo connectionInfo;
                     using (var stream = new FileStream(privateKeyFilePath, FileMode.Open, FileAccess.Read)) {
                         var privateKeyFile = new PrivateKeyFile(stream);
@@ -746,8 +747,9 @@ namespace SWSH {
         private static ConnectionInfo __CreateConnectionInfoPassword(string nickname, string password) {
             try {
                 if (File.Exists(__getNickname(nickname))) {
-                    string user = File.ReadAllLines(__getNickname(nickname))[1],
-                    server = File.ReadAllLines(__getNickname(nickname))[2];
+                    string 
+                        user = File.ReadAllLines(__getNickname(nickname))[1],
+                        server = File.ReadAllLines(__getNickname(nickname))[2];
                     ConnectionInfo connectionInfo;
                     AuthenticationMethod authenticationMethod = new PasswordAuthenticationMethod(user, password);
                     connectionInfo = new ConnectionInfo(server, user, authenticationMethod);
