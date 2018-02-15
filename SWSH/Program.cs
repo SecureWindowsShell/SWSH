@@ -731,8 +731,7 @@ namespace SWSH {
                             new PasswordAuthenticationMethod(
                                 user,
                                 password));
-                    } else {
-                        return new ConnectionInfo(
+                    } else return new ConnectionInfo(
                             server,
                             user,
                             new PrivateKeyAuthenticationMethod(
@@ -742,7 +741,6 @@ namespace SWSH {
                                         firstString,
                                         FileMode.Open,
                                         FileAccess.Read))));
-                    }
                 } else {
                     __color("ERROR: ", ConsoleColor.Red);
                     Console.WriteLine($"SWSH -> {nickname} -> nickname does not exists");
