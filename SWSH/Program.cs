@@ -92,7 +92,7 @@ namespace SWSH {
                     else if (_command.StartsWith("cd")) __cd();
                     else if (_command.StartsWith("upload")) __upload();
                     else if (_command == "clear") __clear();
-                    else if (_command == "license") __license();
+                    else if (_command == "license") File.ReadAllLines("LICENSE.txt").ToList().ForEach(x => Console.WriteLine(x));
                     else if (_command == "license notice") __notice();
                     else if (_command == "pwd") Console.WriteLine(_workingDirectory.ToLower());
                     else if (_command == "exit") Environment.Exit(0);
@@ -556,6 +556,14 @@ namespace SWSH {
             else if (_command.StartsWith("./")) __changeWorkingDir($"{_workingDirectory}/{_command.Remove(0, 2)}");
             else if (_command.StartsWith("/")) __changeWorkingDir(Path.GetPathRoot(_workingDirectory) + _command.Remove(0, 1));
             else __changeWorkingDir($"{_workingDirectory}/{_command}");
+            void __changeWorkingDir(string path) {
+                path = path.Replace('\\', '/');
+                if (Directory.Exists(path)) _workingDirectory = path;
+                else {
+                    __color("ERROR: ", ConsoleColor.Red);
+                    Console.WriteLine($"SWSH -> {path} -> path does not exists");
+                }
+            }
         }
         private static void __upload() {
             _command = _command.Remove(0, 7);
@@ -616,22 +624,22 @@ namespace SWSH {
                     Console.WriteLine($"SWSH -> upload {_command} -> is not the correct syntax for this command");
                 }
             }
-        }
-        private static void __uploadDir(SftpClient client, string localPath, string remotePath) {
-            new DirectoryInfo(localPath).EnumerateFileSystemInfos().ToList().ForEach(x => {
-                if (x.Attributes.HasFlag(FileAttributes.Directory)) {
-                    string subPath = $"{remotePath}/{x.Name}";
-                    if (!client.Exists(subPath)) client.CreateDirectory(subPath);
-                    __uploadDir(client, x.FullName, $"{remotePath}/{x.Name}");
-                } else {
-                    using (Stream fileStream = new FileStream(x.FullName, FileMode.Open)) {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write("\tUploading <file>: {0} ({1:N0} bytes)", x, ((FileInfo)x).Length);
-                        client.UploadFile(fileStream, $"{remotePath}/{x.Name}");
-                        __color(" -> Done\n", ConsoleColor.Green);
+            void __uploadDir(SftpClient client, string localPath, string remotePath) {
+                new DirectoryInfo(localPath).EnumerateFileSystemInfos().ToList().ForEach(x => {
+                    if (x.Attributes.HasFlag(FileAttributes.Directory)) {
+                        string subPath = $"{remotePath}/{x.Name}";
+                        if (!client.Exists(subPath)) client.CreateDirectory(subPath);
+                        __uploadDir(client, x.FullName, $"{remotePath}/{x.Name}");
+                    } else {
+                        using (Stream fileStream = new FileStream(x.FullName, FileMode.Open)) {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.Write("\tUploading <file>: {0} ({1:N0} bytes)", x, ((FileInfo)x).Length);
+                            client.UploadFile(fileStream, $"{remotePath}/{x.Name}");
+                            __color(" -> Done\n", ConsoleColor.Green);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
         private static string Pop(this List<string> list) {
             var retVal = list[list.Count - 1];
@@ -643,14 +651,6 @@ namespace SWSH {
                 " \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
             Console.Write($"\nRelease: {_codename}-{_version}\n");
             return $"{_codename}-{_version}";
-        }
-        private static void __changeWorkingDir(string path) {
-            path = path.Replace('\\', '/');
-            if (Directory.Exists(path)) _workingDirectory = path;
-            else {
-                __color("ERROR: ", ConsoleColor.Red);
-                Console.WriteLine($"SWSH -> {path} -> path does not exists");
-            }
         }
         private static void __color(string message, ConsoleColor cc) {
             Console.ForegroundColor = cc;
@@ -689,7 +689,6 @@ namespace SWSH {
                 return false;
             }
         }
-        private static void __license() => File.ReadAllLines("LICENSE.txt").ToList().ForEach(x => Console.WriteLine(x));
         private static void __notice() => Console.Write("SWSH - Secure Windows Shell\nCopyright (C) 2017  Muhammad Muzzammil\nThis program comes with ABSOLU" +
             "TELY NO WARRANTY; for details type `license'.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions; type `l" +
             "icense' for details.\n\n");
@@ -726,9 +725,10 @@ namespace SWSH {
         private static ConnectionInfo __CreateConnectionInfoKey(string nickname) {
             try {
                 if (File.Exists(__getNickname(nickname))) {
-                    string privateKeyFilePath = File.ReadAllLines(__getNickname(nickname))[0],
-                    user = File.ReadAllLines(__getNickname(nickname))[1],
-                    server = File.ReadAllLines(__getNickname(nickname))[2];
+                    string 
+                        privateKeyFilePath = File.ReadAllLines(__getNickname(nickname))[0],
+                        user = File.ReadAllLines(__getNickname(nickname))[1],
+                        server = File.ReadAllLines(__getNickname(nickname))[2];
                     ConnectionInfo connectionInfo;
                     using (var stream = new FileStream(privateKeyFilePath, FileMode.Open, FileAccess.Read)) {
                         var privateKeyFile = new PrivateKeyFile(stream);
@@ -747,8 +747,9 @@ namespace SWSH {
         private static ConnectionInfo __CreateConnectionInfoPassword(string nickname, string password) {
             try {
                 if (File.Exists(__getNickname(nickname))) {
-                    string user = File.ReadAllLines(__getNickname(nickname))[1],
-                    server = File.ReadAllLines(__getNickname(nickname))[2];
+                    string 
+                        user = File.ReadAllLines(__getNickname(nickname))[1],
+                        server = File.ReadAllLines(__getNickname(nickname))[2];
                     ConnectionInfo connectionInfo;
                     AuthenticationMethod authenticationMethod = new PasswordAuthenticationMethod(user, password);
                     connectionInfo = new ConnectionInfo(server, user, authenticationMethod);
