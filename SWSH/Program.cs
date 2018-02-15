@@ -624,22 +624,22 @@ namespace SWSH {
                     Console.WriteLine($"SWSH -> upload {_command} -> is not the correct syntax for this command");
                 }
             }
-        }
-        private static void __uploadDir(SftpClient client, string localPath, string remotePath) {
-            new DirectoryInfo(localPath).EnumerateFileSystemInfos().ToList().ForEach(x => {
-                if (x.Attributes.HasFlag(FileAttributes.Directory)) {
-                    string subPath = $"{remotePath}/{x.Name}";
-                    if (!client.Exists(subPath)) client.CreateDirectory(subPath);
-                    __uploadDir(client, x.FullName, $"{remotePath}/{x.Name}");
-                } else {
-                    using (Stream fileStream = new FileStream(x.FullName, FileMode.Open)) {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write("\tUploading <file>: {0} ({1:N0} bytes)", x, ((FileInfo)x).Length);
-                        client.UploadFile(fileStream, $"{remotePath}/{x.Name}");
-                        __color(" -> Done\n", ConsoleColor.Green);
+            void __uploadDir(SftpClient client, string localPath, string remotePath) {
+                new DirectoryInfo(localPath).EnumerateFileSystemInfos().ToList().ForEach(x => {
+                    if (x.Attributes.HasFlag(FileAttributes.Directory)) {
+                        string subPath = $"{remotePath}/{x.Name}";
+                        if (!client.Exists(subPath)) client.CreateDirectory(subPath);
+                        __uploadDir(client, x.FullName, $"{remotePath}/{x.Name}");
+                    } else {
+                        using (Stream fileStream = new FileStream(x.FullName, FileMode.Open)) {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.Write("\tUploading <file>: {0} ({1:N0} bytes)", x, ((FileInfo)x).Length);
+                            client.UploadFile(fileStream, $"{remotePath}/{x.Name}");
+                            __color(" -> Done\n", ConsoleColor.Green);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
         private static string Pop(this List<string> list) {
             var retVal = list[list.Count - 1];
