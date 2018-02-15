@@ -255,13 +255,7 @@ namespace SWSH {
             ConnectionInfo ccinfo;
             string nickname = _command.Remove(0, 8);
             if (File.Exists(__getNickname(nickname))) {
-                if (File.ReadAllLines(__getNickname(nickname))[0] == "-password") {
-                    Console.Write($"Password for {nickname}: ");
-                    ReadLine.PasswordMode = true;
-                    ccinfo = __CreateConnectionInfoPassword(nickname, ReadLine.Read());
-                    ReadLine.GetHistory().Pop();
-                    ReadLine.PasswordMode = false;
-                } else ccinfo = __CreateConnectionInfoKey(nickname);
+                ccinfo = __CreateConnection(nickname);
                 if (ccinfo != null) {
                     Console.Write($"Waiting for response from {ccinfo.Username}@{ccinfo.Host}...\n");
                     using (var ssh = new SshClient(ccinfo)) {
@@ -329,7 +323,7 @@ namespace SWSH {
                                 Console.Write($"\nUsername: {data[1]}\nHost: {data[2]}\n\n");
                             } else {
                                 Console.Write($"\nPath to key: {data[0]}\nUsername: {data[1]}\nHost: {data[2]}\nStatus: ");
-                                var conInfo = __CreateConnectionInfoKey(Path.GetFileNameWithoutExtension(file));
+                                var conInfo = __CreateConnection(Path.GetFileNameWithoutExtension(file));
                                 if (conInfo != null)
                                     using (var connection = new SshClient(conInfo)) {
                                         connection.Connect();
@@ -356,7 +350,7 @@ namespace SWSH {
                             Console.Write($"\nUsername: {data[1]}\nHost: {data[2]}\n\n");
                         } else {
                             Console.Write($"\nPath to key: {data[0]}\nUsername: {data[1]}\nHost: {data[2]}\nStatus: ");
-                            var conInfo = __CreateConnectionInfoKey(Path.GetFileNameWithoutExtension(file));
+                            var conInfo = __CreateConnection(Path.GetFileNameWithoutExtension(file));
                             if (conInfo != null)
                                 using (var connection = new SshClient(conInfo)) {
                                     connection.Connect();
@@ -581,10 +575,7 @@ namespace SWSH {
                     try {
                         if (File.Exists(__getNickname(nickname))) {
                             ConnectionInfo ccinfo;
-                            if (File.ReadAllLines(__getNickname(nickname))[0] == "-password") {
-                                Console.Write($"Password for {nickname}: ");
-                                ccinfo = __CreateConnectionInfoPassword(nickname, __getCommand());
-                            } else ccinfo = __CreateConnectionInfoKey(nickname);
+                            ccinfo = __CreateConnection(nickname);
                             if (ccinfo != null) {
                                 if (_command.StartsWith("--dir"))
                                     using (var sftp = new SftpClient(ccinfo)) {
@@ -722,38 +713,34 @@ namespace SWSH {
             return read;
         }
         private static bool __unstable() => _codename.StartsWith("unstable");
-        private static ConnectionInfo __CreateConnectionInfoKey(string nickname) {
+        private static ConnectionInfo __CreateConnection(string nickname) {
             try {
                 if (File.Exists(__getNickname(nickname))) {
-                    string 
-                        privateKeyFilePath = File.ReadAllLines(__getNickname(nickname))[0],
+                    string
+                        firstString = File.ReadAllLines(__getNickname(nickname))[0],
                         user = File.ReadAllLines(__getNickname(nickname))[1],
                         server = File.ReadAllLines(__getNickname(nickname))[2];
-                    ConnectionInfo connectionInfo;
-                    using (var stream = new FileStream(privateKeyFilePath, FileMode.Open, FileAccess.Read)) {
-                        var privateKeyFile = new PrivateKeyFile(stream);
-                        AuthenticationMethod authenticationMethod = new PrivateKeyAuthenticationMethod(user, privateKeyFile);
-                        connectionInfo = new ConnectionInfo(server, user, authenticationMethod);
-                    }
-                    return connectionInfo;
-                } else {
-                    __color("ERROR: ", ConsoleColor.Red);
-                    Console.WriteLine($"SWSH -> {nickname} -> nickname does not exists");
-                    __start();
-                }
-            } catch (Exception exp) { __color($"ERROR: {exp.Message}\n", ConsoleColor.Red); }
-            return null;
-        }
-        private static ConnectionInfo __CreateConnectionInfoPassword(string nickname, string password) {
-            try {
-                if (File.Exists(__getNickname(nickname))) {
-                    string 
-                        user = File.ReadAllLines(__getNickname(nickname))[1],
-                        server = File.ReadAllLines(__getNickname(nickname))[2];
-                    ConnectionInfo connectionInfo;
-                    AuthenticationMethod authenticationMethod = new PasswordAuthenticationMethod(user, password);
-                    connectionInfo = new ConnectionInfo(server, user, authenticationMethod);
-                    return connectionInfo;
+                    if (firstString == "-password") {
+                        ReadLine.PasswordMode = true;
+                        var password = ReadLine.Read($"Password for {nickname}: ");
+                        ReadLine.GetHistory().Pop();
+                        ReadLine.PasswordMode = false;
+                        return new ConnectionInfo(
+                            server,
+                            user,
+                            new PasswordAuthenticationMethod(
+                                user,
+                                password));
+                    } else return new ConnectionInfo(
+                            server,
+                            user,
+                            new PrivateKeyAuthenticationMethod(
+                                user,
+                                new PrivateKeyFile(
+                                    new FileStream(
+                                        firstString,
+                                        FileMode.Open,
+                                        FileAccess.Read))));
                 } else {
                     __color("ERROR: ", ConsoleColor.Red);
                     Console.WriteLine($"SWSH -> {nickname} -> nickname does not exists");
