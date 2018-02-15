@@ -7,7 +7,7 @@ A report should contain the following:
 * And, your thought on how to fix this. :)
 
 #### Example
-**Title**: Bug in swsh --show, characters not displaying correctly.
+**Title**: `connect` command is not working.
 **Description**: 
 
 * SWSH Version: beta 3.0
