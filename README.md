@@ -69,22 +69,22 @@ Connected to usr@host...
 
 ## Commands
 
-| Command                                        | Description                                                            |
-|:-----------------------------------------------|:-----------------------------------------------------------------------|
-| [version](#version)                            | Check the version of swsh.                                             |
-| [add    [-password]](#add)                     | Add a new connection either using private key or password (-password). |
-| [show    [nickname]](#show)                    | Show nicknames/Details of a nickname.                                  |
-| [connect [nickname]](#connect)                 | Connects to Server over SSH.                                           |
-| [delete  [nickname]](#delete)                  | Deletes connection's nickname.                                         |
-| [edit    [nickname] [arg]](#edit)              | Edits nickname, use one argument at a time.                            |
-| [keygen](#keygen)                              | Generates SSH RSA key pair.                                            |
-| [help    [command]](#help)                     | Displays this help or command details.                                 |
-| [clear](#clear)                                | Clears the console.                                                    |
-| [pwd](#pwd)                                    | Prints working directory.                                              |
-| [exit](#exit)                                  | Exits.                                                                 |
-| [ls](#ls)                                      | Lists all files and directories in working directory.                  |
-| [cd [arg]](#cd)                                | Changes directory to 'arg'. arg = directory name.                      |
-| [upload [args] [nickname]:[location]](#upload) | Uploads files and directories. 'upload -h' for help.                   |
+| Command                             | Description                                                            |
+|:------------------------------------|:-----------------------------------------------------------------------|
+| version                             | Check the version of swsh.                                             |
+| add    [-password]                  | Add a new connection either using private key or password (-password). |
+| show    [nickname]                  | Show nicknames/Details of a nickname.                                  |
+| connect [nickname]                  | Connects to Server over SSH.                                           |
+| delete  [nickname]                  | Deletes connection's nickname.                                         |
+| edit    [nickname] [arg]]           | Edits nickname, use one argument at a time.                            |
+| keygen](#keygen)                    | Generates SSH RSA key pair.                                            |
+| help    [command]                   | Displays this help or command details.                                 |
+| clear                               | Clears the console.                                                    |
+| pwd                                 | Prints working directory.                                              |
+| exit                                | Exits.                                                                 |
+| ls                                  | Lists all files and directories in working directory.                  |
+| cd [arg]                            | Changes directory to 'arg'. arg = directory name.                      |
+| upload [args] [nickname]:[location] | Uploads files and directories. 'upload -h' for help.                   |
 
 For more, see our [documentation](DOCUMENTATION.md).
 
