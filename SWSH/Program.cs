@@ -250,15 +250,13 @@ namespace SWSH {
                     using (var ssh = new SshClient(ccinfo)) {
                         ssh.Connect();
                         __color($"Connected to {ccinfo.Username}@{ccinfo.Host}...\n", ConsoleColor.Green);
-
-                        string terminalName = "xterm-256color";
-                        uint columns = (uint)Console.BufferWidth;
-                        uint rows = (uint)Console.BufferHeight;
-                        uint width = (uint)Console.BufferWidth;
-                        uint height = (uint)Console.BufferHeight;
-                        int bufferSize = Console.BufferHeight;
-                        IDictionary<Renci.SshNet.Common.TerminalModes, uint> terminalModeValues = null;
-                        var actual = ssh.CreateShellStream(terminalName, columns, rows, width, height, bufferSize, terminalModeValues);
+                        var actual = ssh.CreateShellStream(
+                            "xterm-256color",
+                            (uint)Console.BufferWidth,
+                            (uint)Console.BufferHeight,
+                            (uint)Console.BufferWidth,
+                            (uint)Console.BufferHeight,
+                            Console.BufferHeight, null);
                         //Read Thread
                         var read = new Thread(() => {
                             if (actual.CanRead)
