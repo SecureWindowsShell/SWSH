@@ -31,10 +31,14 @@ using System.Net;
 namespace SWSH {
     public static class Program {
         public static bool _keygenstatus;
-        public const string _version = "3.0";
-        public static string _command = "", _codename = "unstable-beta", _mainDirectory = "swsh-data/",
-            _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-            _swsh_history = Environment.GetFolderPath((Environment.SpecialFolder)40) + "/.swsh_history";
+        public const string
+            _version = "3.0",
+            _codename = "unstable-beta",
+            _mainDirectory = "swsh-data/";
+        public static string
+            _command = "",
+            _swsh_history = Environment.GetFolderPath((Environment.SpecialFolder)40) + "/.swsh_history",
+            _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         static void Main(string[] args) {
             Console.Title = "SWSH - Secure Windows Shell";
             __notice();
