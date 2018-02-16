@@ -593,20 +593,16 @@ namespace SWSH {
         }
         private static bool __checkHash(bool ignore) {
             bool compareHash(string path, string hash) => !computeHash(path).Equals(hash.Trim());
-
             string computeHash(string path) => new List<byte>(new SHA1CryptoServiceProvider()
                     .ComputeHash(File.ReadAllBytes(path)))
                     .Select((x) => x.ToString("x2"))
                     .Aggregate((x, y) => x + y);
-
             string getHash(string uri) => new WebClient().DownloadString($"{uri}?" + new Random().Next());
-
             string
                 error = "ERROR: Checksum Mismatch! This executable *may* be out of date or malicious!\n",
                 checksumfile = Url.Checksum,
                 swshlocation = Assembly.GetExecutingAssembly().Location,
                 keygenlocation = "swsh-keygen.exe";
-
             try {
                 if (compareHash(swshlocation, getHash(checksumfile).Split(' ')[0]) || compareHash(keygenlocation, getHash(checksumfile).Split(' ')[1]))
                     throw new Exception();
@@ -632,7 +628,6 @@ namespace SWSH {
             var commands = new string[] { "version", "add", "show", "connect", "delete", "edit", "keygen", "help", "clear", "exit", "upload" };
             foreach (var i in commands) list.Add(i);
             foreach (var i in Directory.GetDirectories(_workingDirectory)) list.Add("cd " + new DirectoryInfo(i).Name.ToLower());
-
             bool requiresNickname(string data) {
                 foreach (var i in new List<string>() { "show", "connect", "delete", "edit" })
                     if (data.StartsWith(i)) return true;
