@@ -105,7 +105,6 @@ namespace SWSH {
             Console.Write(" or ");
             __color("-e", ConsoleColor.Red);
             Console.Write(" to cancel.\n");
-
             String[] data = new String[4] /*{ key, username, server, nickname }*/;
             if (_command.StartsWith("-password")) data[0] = "-password";
             else {
