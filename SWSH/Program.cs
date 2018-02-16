@@ -694,7 +694,7 @@ namespace SWSH {
                                     firstString,
                                     FileMode.Open,
                                     FileAccess.Read))));
-            } catch (Exception exp) { __color($"ERROR: {exp.Message}\n", ConsoleColor.Red); }
+            } catch (Exception exp) { __error(exp.Message); }
             return null;
         }
     }
