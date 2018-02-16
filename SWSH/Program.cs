@@ -55,9 +55,7 @@ namespace SWSH {
                     new WebClient().DownloadFile(new Uri(Url.License), "LICENSE.txt");
                     Console.Clear();
                 }
-            } catch (Exception) {
-                Console.WriteLine($"Unable to download License, view online copy here: {Url.License}");
-            }
+            } catch (Exception exp) { __error($"Unable to download License, view online copy here: {Url.License}\nReason:{exp.Message}\n"); }
             /* Downloading License; if does not exists. END   */
             Console.Title = $"SWSH - {__version()}";
             if (!__unstable()) _keygenstatus = __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
