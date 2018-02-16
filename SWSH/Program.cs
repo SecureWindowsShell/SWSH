@@ -63,7 +63,7 @@ namespace SWSH {
                 ExternalFunctions.GetConsoleMode(handle, out var mode);
                 ExternalFunctions.SetConsoleMode(handle, mode | 0x4);
                 ExternalFunctions.GetConsoleMode(handle, out mode);
-            } catch (Exception exp) { __error(exp.Message); }
+            } catch (Exception exp) { __error($"{exp.Message}\n"); }
             __start();
         }
         private static void __start() {
@@ -94,7 +94,7 @@ namespace SWSH {
                     else if (_command == "pwd") Console.WriteLine(_workingDirectory.ToLower());
                     else if (_command == "exit") Environment.Exit(0);
                     else if (_command.Trim() != "") __error($"SWSH -> {_command} -> unknown command.\n");
-                } catch (Exception exp) { __error(exp.Message); }
+                } catch (Exception exp) { __error($"{exp.Message}\n"); }
             }
         }
         private static void __addConnection() {
@@ -315,7 +315,7 @@ namespace SWSH {
                                         __color("Working\n\n", ConsoleColor.Green);
                                     }
                             }
-                        } catch (Exception exp) { __error(exp.Message); }
+                        } catch (Exception exp) { __error($"{exp.Message}\n"); }
                     }
                 } else __error("SWSH -> no nickname(s) found. try `help`");
             } else {
@@ -337,7 +337,7 @@ namespace SWSH {
                                 }
                         }
                     } else __error($"SWSH -> {_command} -> nickname does not exists");
-                } catch (Exception exp) { __error(exp.Message); }
+                } catch (Exception exp) { __error($"{exp.Message}\n"); }
             }
         }
         private static void __delete() {
@@ -355,7 +355,7 @@ namespace SWSH {
                         }
                     } else __color("Aborted.\n", ConsoleColor.Yellow);
                 } else __error($"SWSH -> {name} -> nickname does not exists");
-            } catch (Exception exp) { __error(exp.Message); }
+            } catch (Exception exp) { __error($"{exp.Message}\n"); }
         }
         private static void __edit() {
             _command = _command.Remove(0, 4);
@@ -562,7 +562,7 @@ namespace SWSH {
                                     }
                             }
                         } else __error($"SWSH -> {nickname} -> nickname does not exists");
-                    } catch (Exception exp) { __error(exp.Message); }
+                    } catch (Exception exp) { __error($"{exp.Message}\n"); }
                 } catch { __error($"SWSH -> upload {_command} -> is not the correct syntax for this command"); }
             }
             void __uploadDir(SftpClient client, string localPath, string remotePath) {
@@ -694,7 +694,7 @@ namespace SWSH {
                                     firstString,
                                     FileMode.Open,
                                     FileAccess.Read))));
-            } catch (Exception exp) { __error(exp.Message); }
+            } catch (Exception exp) { __error($"{exp.Message}\n"); }
             return null;
         }
     }
