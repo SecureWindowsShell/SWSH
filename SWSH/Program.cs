@@ -315,7 +315,7 @@ namespace SWSH {
                             }
                         } catch (Exception exp) { __error($"{exp.Message}\n"); }
                     }
-                } else __error("SWSH -> no nickname(s) found. try `help`");
+                } else __error("SWSH -> no nickname(s) found. Try `help`");
             } else {
                 var file = __getNickname(_command);
                 try {
