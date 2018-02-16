@@ -498,8 +498,8 @@ namespace SWSH {
                     }
                 });
             }
-            if (Directory.GetDirectories(_workingDirectory).Length == 0 && Directory.GetFiles(_workingDirectory).Length == 0) __color("No files or directori" +
-                "es here.\n", ConsoleColor.Yellow);
+            if (Directory.GetDirectories(_workingDirectory).Length == 0 && Directory.GetFiles(_workingDirectory).Length == 0)
+                __color("No files or directories here.\n", ConsoleColor.Yellow);
         }
         private static void __cd() {
             if ((_command = _command.Remove(0, 3)) == "..") __changeWorkingDir(Path.GetDirectoryName(_workingDirectory));
