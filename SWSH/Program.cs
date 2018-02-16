@@ -223,20 +223,20 @@ namespace SWSH {
                         break;
                 }
             } else {
-                Console.WriteLine("version                                -Check the version of swsh.");
-                Console.WriteLine("add     [-password]                    -Add a new connection either using private key or password (-password).");
-                Console.WriteLine("show    [nickname]                     -Show nicknames/Details of a nickname.");
-                Console.WriteLine("connect [nickname]                     -Connects to Server over SSH.");
-                Console.WriteLine("delete  [nickname]                     -Deletes connection's nickname.");
-                Console.WriteLine("edit    [nickname] [arg]               -Edits nickname, use one argument at a time.");
-                Console.WriteLine("keygen                                 -Generates SSH RSA key pair.");
-                Console.WriteLine("help    [command]                      -Displays this help or command details.");
-                Console.WriteLine("clear                                  -Clears the console.");
-                Console.WriteLine("pwd                                    -Prints working directory.");
-                Console.WriteLine("exit                                   -Exits.");
-                Console.WriteLine("ls                                     -Lists all files and directories in working directory.");
-                Console.WriteLine("cd [arg]                               -Changes directory to 'arg'. arg = directory name.");
-                Console.WriteLine("upload [args] [nickname]:[location]    -Uploads files and directories. 'upload -h' for help.");
+                Console.WriteLine("version                                -Check the version of swsh."
+                + "\nadd     [-password]                    -Add a new connection either using private key or password (-password)."
+                + "\nshow    [nickname]                     -Show nicknames/Details of a nickname."
+                + "\nconnect [nickname]                     -Connects to Server over SSH."
+                + "\ndelete  [nickname]                     -Deletes connection's nickname."
+                + "\nedit    [nickname] [arg]               -Edits nickname, use one argument at a time."
+                + "\nkeygen                                 -Generates SSH RSA key pair."
+                + "\nhelp    [command]                      -Displays this help or command details."
+                + "\nclear                                  -Clears the console."
+                + "\npwd                                    -Prints working directory."
+                + "\nexit                                   -Exits."
+                + "\nls                                     -Lists all files and directories in working directory."
+                + "\ncd [arg]                               -Changes directory to 'arg'. arg = directory name."
+                + "\nupload [args] [nickname]:[location]    -Uploads files and directories. 'upload -h' for help.");
             }
         }
         private static void __connect() {
