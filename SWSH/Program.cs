@@ -713,6 +713,10 @@ namespace SWSH {
             return read;
         }
         private static bool __unstable() => _codename.StartsWith("unstable");
+        private static void __error(string err) {
+            __color("ERROR: ", ConsoleColor.Red);
+            Console.Write(err);
+        }
         private static ConnectionInfo __CreateConnection(string nickname) {
             try {
                 string
