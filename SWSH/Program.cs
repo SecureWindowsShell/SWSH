@@ -144,13 +144,12 @@ namespace SWSH {
                 Console.Write("Unique Nickname: ");
                 data[3] = __getCommand();
                 __checkexit(data[3]);
-                if (data[3].Trim() == string.Empty) {
+                if (data[3].Trim() == string.Empty) 
                     __error("SWSH -> nickname should not be empty!\n");
-                } else if (File.Exists(__getNickname(data[3]))) {
+                 else if (File.Exists(__getNickname(data[3]))) 
                     __error($"SWSH -> {data[3]} -> nickname exists!\n");
-                } else {
+                 else 
                     break;
-                }
             }
             if (!Directory.Exists(_mainDirectory)) Directory.CreateDirectory(_mainDirectory);
             File.AppendAllLines(__getNickname(data[3]), data.Take(data.Count() - 1).ToArray());
