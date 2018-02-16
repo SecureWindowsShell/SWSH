@@ -292,7 +292,7 @@ namespace SWSH {
                         while (true) ;
                     }
                 }
-            } else __error($"SWSH -> {nickname} -> nickname does not exists\n");
+            } else __error($"SWSH -> {nickname} -> nickname does not exists.\n");
         }
         private static void __show() {
             _command = _command.Remove(0, 4).Trim();
@@ -315,7 +315,7 @@ namespace SWSH {
                             }
                         } catch (Exception exp) { __error($"{exp.Message}\n"); }
                     }
-                } else __error("SWSH -> no nickname(s) found. Try `help`");
+                } else __error("SWSH -> no nickname(s) found. Try `help`.\n");
             } else {
                 var file = __getNickname(_command);
                 try {
@@ -334,7 +334,7 @@ namespace SWSH {
                                     __color("Working\n\n", ConsoleColor.Green);
                                 }
                         }
-                    } else __error($"SWSH -> {_command} -> nickname does not exists");
+                    } else __error($"SWSH -> {_command} -> nickname does not exists.\n");
                 } catch (Exception exp) { __error($"{exp.Message}\n"); }
             }
         }
@@ -352,7 +352,7 @@ namespace SWSH {
                             __color("Deleted.\n", ConsoleColor.Green);
                         }
                     } else __color("Aborted.\n", ConsoleColor.Yellow);
-                } else __error($"SWSH -> {name} -> nickname does not exists");
+                } else __error($"SWSH -> {name} -> nickname does not exists.");
             } catch (Exception exp) { __error($"{exp.Message}\n"); }
         }
         private static void __edit() {
@@ -388,7 +388,7 @@ namespace SWSH {
                     File.WriteAllLines(__getNickname(data[1]), arrLine);
                     __color("Updated.\n", ConsoleColor.Green);
                 }
-            } else __error($"SWSH -> {data[1]} -> nickname does not exists");
+            } else __error($"SWSH -> {data[1]} -> nickname does not exists.\n");
         }
         private static void __keygen() {
             if (!_keygenstatus ^ __unstable()) {
@@ -436,7 +436,7 @@ namespace SWSH {
                     return;
                 }
                 __color($"Your public key:\n\n{File.ReadAllLines(publicFile)[0]}\n", ConsoleColor.Green);
-            } else __error($"The binary 'swsh-keygen.exe' was not found. Are you sure it's installed?\nSee: {Url.Keygen}");
+            } else __error($"The binary 'swsh-keygen.exe' was not found. Are you sure it's installed?\nSee: {Url.Keygen}.");
         }
         private static void __clear() {
             Console.Clear();
@@ -510,7 +510,7 @@ namespace SWSH {
                 if (_workingDirectory == Path.GetPathRoot(_workingDirectory)) return;
                 path = path.Replace('\\', '/');
                 if (Directory.Exists(Path.GetFullPath(path))) _workingDirectory = Path.GetFullPath(path);
-                else __error($"SWSH -> {path} -> path does not exists\n");
+                else __error($"SWSH -> {path} -> path does not exists.\n");
             }
         }
         private static void __upload() {
@@ -551,13 +551,13 @@ namespace SWSH {
                                                 __color($"Uploading <file>: {x.Trim()}", ConsoleColor.Yellow);
                                                 scp.Upload(new FileInfo(path), location);
                                                 __color(" -> Done\n", ConsoleColor.Green);
-                                            } else __error($"SWSH -> {path.Replace('/', '\\')} -> file does not exists");
+                                            } else __error($"SWSH -> {path.Replace('/', '\\')} -> file does not exists.\n");
                                         });
                                     }
                             }
-                        } else __error($"SWSH -> {nickname} -> nickname does not exists");
+                        } else __error($"SWSH -> {nickname} -> nickname does not exists.\n");
                     } catch (Exception exp) { __error($"{exp.Message}\n"); }
-                } catch { __error($"SWSH -> upload {_command} -> is not the correct syntax for this command"); }
+                } catch { __error($"SWSH -> upload {_command} -> is not the correct syntax for this command.\n"); }
             }
             void __uploadDir(SftpClient client, string localPath, string remotePath) {
                 new DirectoryInfo(localPath).EnumerateFileSystemInfos().ToList().ForEach(x => {
