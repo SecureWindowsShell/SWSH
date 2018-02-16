@@ -44,7 +44,7 @@ namespace SWSH {
                 Thread.Sleep(1000);
             }
             Console.Clear();
-            /* Downloading License; if does not exists. START*/
+            /* Downloading License; if does not exists. START */
             try {
                 if (!File.Exists("LICENSE.txt")) {
                     Console.WriteLine("License file not found, downloading...");
@@ -54,7 +54,7 @@ namespace SWSH {
             } catch (Exception) {
                 Console.WriteLine($"Unable to download License, view online copy here: {Url.License}");
             }
-            /* Downloading License; if does not exists. END  */
+            /* Downloading License; if does not exists. END   */
             Console.Title = $"SWSH - {__version()}";
             if (!__unstable()) _keygenstatus = __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
             Console.Write("Use `help` command for help.\n\n");
