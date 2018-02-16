@@ -303,9 +303,8 @@ namespace SWSH {
                             var data = File.ReadAllLines(file);
                             Console.Write($"\nDetails of {Path.GetFileNameWithoutExtension(file)}:\n");
                             for (int i = 0; i < Path.GetFileNameWithoutExtension(file).Length + 12; i++) Console.Write("=");
-                            if (data[0] == "-password") {
-                                Console.Write($"\nUsername: {data[1]}\nHost: {data[2]}\n\n");
-                            } else {
+                            if (data[0] == "-password") Console.Write($"\nUsername: {data[1]}\nHost: {data[2]}\n\n");
+                            else {
                                 Console.Write($"\nPath to key: {data[0]}\nUsername: {data[1]}\nHost: {data[2]}\nStatus: ");
                                 var conInfo = __CreateConnection(Path.GetFileNameWithoutExtension(file));
                                 if (conInfo != null)
@@ -389,9 +388,7 @@ namespace SWSH {
                     File.WriteAllLines(__getNickname(data[1]), arrLine);
                     __color("Updated.\n", ConsoleColor.Green);
                 }
-            } else {
-                __error($"SWSH -> {data[1]} -> nickname does not exists");
-            }
+            } else __error($"SWSH -> {data[1]} -> nickname does not exists");
         }
         private static void __keygen() {
             if (!_keygenstatus ^ __unstable()) {
@@ -420,8 +417,7 @@ namespace SWSH {
                 bool isWritable(string path) {
                     if (File.Exists(path)) {
                         __color($"File exists: {new FileInfo(path).FullName}\n\n\nOverwrite? (y/n): ", ConsoleColor.Red);
-                        if (__getCommand().ToUpper() == "Y") return true;
-                        else return false;
+                        return (__getCommand().ToUpper() == "Y") ? true : false;
                     } else return true;
                 }
                 var keygenProcess = new Process {
@@ -506,8 +502,7 @@ namespace SWSH {
                 "es here.\n", ConsoleColor.Yellow);
         }
         private static void __cd() {
-            _command = _command.Remove(0, 3);
-            if (_command == "..") __changeWorkingDir(Path.GetDirectoryName(_workingDirectory));
+            if ((_command = _command.Remove(0, 3)) == "..") __changeWorkingDir(Path.GetDirectoryName(_workingDirectory));
             else if (_command.StartsWith("./")) __changeWorkingDir($"{_workingDirectory}/{_command.Remove(0, 2)}");
             else if (_command.StartsWith("/")) __changeWorkingDir(Path.GetPathRoot(_workingDirectory) + _command.Remove(0, 1));
             else __changeWorkingDir($"{_workingDirectory}/{_command}");
@@ -518,8 +513,7 @@ namespace SWSH {
             }
         }
         private static void __upload() {
-            _command = _command.Remove(0, 7);
-            if (_command == "-h") {
+            if ((_command = _command.Remove(0, 7)) == "-h") {
                 Console.WriteLine("upload [--dir]* [args] [nickname]:[location]\n\n'args' are seperated using spaces ( ) and last 'arg' will be treated as s" +
                     "erver data which includes nickname as well as the location, part after the colon (:), where the data is to be uploaded. Use flag '--dir" +
                     "' to upload directiories. Do not use absolute paths for local path, change working directory to navigate.");
