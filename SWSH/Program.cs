@@ -110,7 +110,7 @@ namespace SWSH {
                 while (true) {
                     Console.Write("Enter path to private key: ");
                     data[0] = __getCommand();
-                    if (data[0].Trim() == String.Empty) 
+                    if (data[0].Trim() == String.Empty)
                         __error("SWSH -> key path should not be empty!\n");
                     else {
                         __checkexit(data[0]);
@@ -125,19 +125,19 @@ namespace SWSH {
                 Console.Write("Username: ");
                 data[1] = __getCommand();
                 __checkexit(data[1]);
-                if (data[1].Trim() == String.Empty) 
+                if (data[1].Trim() == String.Empty)
                     __error("SWSH -> username should not be empty!\n");
-                 else break;
+                else break;
             }
 
             while (true) {
                 Console.Write("Server: ");
                 data[2] = __getCommand();
                 __checkexit(data[2]);
-                if (data[2].Trim() == String.Empty) 
+                if (data[2].Trim() == String.Empty)
                     __error("SWSH -> IP address or domain name should not be empty!\n");
-                 else break;
-                }
+                else break;
+            }
 
             while (true) {
                 Console.Write("Unique Nickname: ");
