@@ -653,10 +653,10 @@ namespace SWSH {
 
 
                     if (data.StartsWith("cd ") && (data.Contains("/") || data.Contains("\\")))
-                        Directory.GetDirectories($"{_workingDirectory}/{data.Split(' ')[1]}").ToList()
+                        Directory.GetDirectories($"{_workingDirectory}/{data.Remove(0, 3)}").ToList()
                         .Where(x => new DirectoryInfo(x)
                             .FullName.Contains(data.Split(' ')[1].Replace('/', '\\'))).ToList()
-                        .ForEach(x => tList.Add(x.Remove(0, ($"{_workingDirectory}/{data.Split(' ')[1]}").Length)));
+                        .ForEach(x => tList.Add(x.Remove(0, ($"{_workingDirectory}/{data.Remove(0, 3)}").Length)));
 
 
 
