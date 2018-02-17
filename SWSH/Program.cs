@@ -628,7 +628,7 @@ namespace SWSH {
             var list = new List<string>();
             var commands = new string[] { "version", "add", "show", "connect", "delete", "edit", "keygen", "help", "clear", "exit", "upload" };
             foreach (var i in commands) list.Add(i);
-            foreach (var i in Directory.GetDirectories(_workingDirectory)) list.Add($"cd {new DirectoryInfo(i).Name.ToLower()}/");
+            foreach (var i in Directory.GetDirectories(_workingDirectory)) list.Add($"cd {new DirectoryInfo(i).Name.ToLower()}");
             bool requiresNickname(string data) {
                 foreach (var i in new List<string>() { "show", "connect", "delete", "edit" })
                     if (data.StartsWith(i)) return true;
