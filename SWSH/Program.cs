@@ -641,6 +641,12 @@ namespace SWSH {
                         Directory.GetFiles(_mainDirectory).ToList()
                         .Where(x => Path.GetFileNameWithoutExtension(x).Contains(data.Split(' ')[1])).ToList()
                         .ForEach(x => { tList.Add(Path.GetFileNameWithoutExtension(x)); });
+                    /* Basic idea:
+                     * cd des[tab] => cd desktop/
+                     * cd desktop/[tab] => cd desktop/folders in desktop
+                     * folders in desktop[tab] => cd desktop/folders in desktop/more folders/
+                     * and so on...
+                     */
                     if (data.Trim() == "help")
                         commands.ToList().ForEach(x => tList.Add(x));
                     list.Where(x => x.Contains(data)).ToList().ForEach(y => tList.Add(y.Remove(0, length)));
