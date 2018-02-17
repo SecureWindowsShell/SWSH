@@ -628,7 +628,7 @@ namespace SWSH {
             var list = new List<string>();
             var commands = new string[] { "version", "add", "show", "connect", "delete", "edit", "keygen", "help", "clear", "exit", "upload" };
             foreach (var i in commands) list.Add(i);
-            foreach (var i in Directory.GetDirectories(_workingDirectory)) list.Add("cd " + new DirectoryInfo(i).Name.ToLower());
+            foreach (var i in Directory.GetDirectories(_workingDirectory)) list.Add($"cd {new DirectoryInfo(i).Name.ToLower()}");
             bool requiresNickname(string data) {
                 foreach (var i in new List<string>() { "show", "connect", "delete", "edit" })
                     if (data.StartsWith(i)) return true;
@@ -641,6 +641,11 @@ namespace SWSH {
                         Directory.GetFiles(_mainDirectory).ToList()
                         .Where(x => Path.GetFileNameWithoutExtension(x).Contains(data.Split(' ')[1])).ToList()
                         .ForEach(x => { tList.Add(Path.GetFileNameWithoutExtension(x)); });
+                    if (data.StartsWith("cd ") && (data.Contains("/") || data.Contains("\\")))
+                        Directory.GetDirectories($"{_workingDirectory}/{data.Remove(0, 3)}").ToList()
+                        .Where(x => new DirectoryInfo(x)
+                            .FullName.Contains(data.Split(' ')[1].Replace('/', '\\'))).ToList()
+                        .ForEach(x => tList.Add(x.Remove(0, ($"{_workingDirectory}/{data.Remove(0, 3)}").Length)));
                     if (data.Trim() == "help")
                         commands.ToList().ForEach(x => tList.Add(x));
                     list.Where(x => x.Contains(data)).ToList().ForEach(y => tList.Add(y.Remove(0, length)));
