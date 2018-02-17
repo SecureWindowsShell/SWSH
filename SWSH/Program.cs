@@ -647,6 +647,17 @@ namespace SWSH {
                      * folders in desktop[tab] => cd desktop/folders in desktop/more folders/
                      * and so on...
                      */
+
+
+
+
+
+                    
+
+
+
+
+
                     if (data.Trim() == "help")
                         commands.ToList().ForEach(x => tList.Add(x));
                     list.Where(x => x.Contains(data)).ToList().ForEach(y => tList.Add(y.Remove(0, length)));
