@@ -652,9 +652,9 @@ namespace SWSH {
                     return tList.ToArray();
                 };
             } catch (IndexOutOfRangeException) { }
-            var read = ReadLine.Read().Trim();
+            var read = ReadLine.Read();
             File.AppendAllText(_swsh_history, $"[{DateTime.UtcNow} UTC]\t=>\t{read}\n");
-            return read;
+            return read.TrimEnd().TrimStart().Trim();
         }
         private static bool __unstable() => _codename.StartsWith("unstable");
         private static void __error(string err) {
