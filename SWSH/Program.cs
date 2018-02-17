@@ -628,11 +628,7 @@ namespace SWSH {
             var list = new List<string>();
             var commands = new string[] { "version", "add", "show", "connect", "delete", "edit", "keygen", "help", "clear", "exit", "upload" };
             foreach (var i in commands) list.Add(i);
-            List<string> getDirectories(string path) {
-                var dList = new List<string>();
-                foreach (var i in Directory.GetDirectories(path)) dList.Add("cd " + new DirectoryInfo(i).Name.ToLower());
-                return dList;
-            }
+            foreach (var i in Directory.GetDirectories(_workingDirectory)) list.Add($"cd {new DirectoryInfo(i).Name.ToLower()}/");
             bool requiresNickname(string data) {
                 foreach (var i in new List<string>() { "show", "connect", "delete", "edit" })
                     if (data.StartsWith(i)) return true;
@@ -651,7 +647,6 @@ namespace SWSH {
                      * folders in desktop[tab] => cd desktop/folders in desktop/more folders/
                      * and so on...
                      */
-                    list.AddRange(getDirectories(data));
                     if (data.Trim() == "help")
                         commands.ToList().ForEach(x => tList.Add(x));
                     list.Where(x => x.Contains(data)).ToList().ForEach(y => tList.Add(y.Remove(0, length)));
