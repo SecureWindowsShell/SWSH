@@ -78,7 +78,7 @@ Connected to usr@host...
 | connect [nickname]                  | Connects to Server over SSH.                                           |
 | delete  [nickname]                  | Deletes connection's nickname.                                         |
 | edit    [nickname] [arg]]           | Edits nickname, use one argument at a time.                            |
-| keygen](#keygen)                    | Generates SSH RSA key pair.                                            |
+| keygen                              | Generates SSH RSA key pair.                                            |
 | help    [command]                   | Displays this help or command details.                                 |
 | clear                               | Clears the console.                                                    |
 | pwd                                 | Prints working directory.                                              |
