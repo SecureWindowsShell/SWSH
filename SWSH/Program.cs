@@ -94,6 +94,7 @@ namespace SWSH {
                     else if (_command == "license") File.ReadAllLines("LICENSE.txt").ToList().ForEach(x => Console.WriteLine(x));
                     else if (_command == "license notice") __notice();
                     else if (_command == "pwd") Console.WriteLine(_workingDirectory.ToLower());
+                    else if (_command == "computehash") __printHash();
                     else if (_command == "exit") Environment.Exit(0);
                     else if (_command.Trim() != "") __error($"SWSH -> {_command} -> unknown command.\n");
                 } catch (Exception exp) { __error($"{exp.Message}\n"); }
@@ -213,6 +214,11 @@ namespace SWSH {
                             Console.WriteLine("Prints working directory.\nUsage: pwd");
                             break;
                         }
+                    case "computehash": {
+                            Console.WriteLine("Syntax: computehash");
+                            Console.WriteLine("Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\nUsage: computehash");
+                            break;
+                        }
                     case "help": {
                             Console.WriteLine("Syntax: help [command]");
                             Console.WriteLine("Displays this help or command details.\nUsage: help add");
@@ -234,6 +240,7 @@ namespace SWSH {
                     + "help    [command]                      -Displays this help or command details.\n"
                     + "clear                                  -Clears the console.\n"
                     + "pwd                                    -Prints working directory.\n"
+                    + "computehash                            -Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\n"
                     + "exit                                   -Exits.\n"
                     + "ls                                     -Lists all files and directories in working directory.\n"
                     + "cd [arg]                               -Changes directory to 'arg'. arg = directory name.\n"
@@ -593,11 +600,7 @@ namespace SWSH {
             Console.ResetColor();
         }
         private static bool __checkHash(bool ignore) {
-            bool compareHash(string path, string hash) => !computeHash(path).Equals(hash.Trim());
-            string computeHash(string path) => new List<byte>(new SHA1CryptoServiceProvider()
-                    .ComputeHash(File.ReadAllBytes(path)))
-                    .Select((x) => x.ToString("x2"))
-                    .Aggregate((x, y) => x + y);
+            bool compareHash(string path, string hash) => !__computeHash(path).Equals(hash.Trim());
             string getHash(string uri) => new WebClient().DownloadString($"{uri}?" + new Random().Next());
             string
                 error = "ERROR: Checksum Mismatch! This executable *may* be out of date or malicious!\n",
@@ -620,13 +623,24 @@ namespace SWSH {
                 return false;
             }
         }
+        private static void __printHash() {
+            Console.WriteLine($"{__computeHash(Assembly.GetExecutingAssembly().Location)} -- SHA1 -- SWSH.exe");
+            if (File.Exists("swsh-keygen.exe"))
+                Console.WriteLine($"{__computeHash("swsh-keygen.exe")} -- SHA1 -- swsh-keygen.exe");
+        }
+        private static string __computeHash(string path) => 
+            new List<byte>(new SHA1CryptoServiceProvider()
+                .ComputeHash(File.ReadAllBytes(path)))
+                .Select((x) => x.ToString("x2"))
+                .Aggregate((x, y) => x + y);
         private static void __notice() => Console.Write("SWSH - Secure Windows Shell\nCopyright (C) 2017  Muhammad Muzzammil\nThis program comes with ABSOLU" +
             "TELY NO WARRANTY; for details type `license'.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions; type `l" +
             "icense' for details.\n\n");
         private static string __getNickname(string s) => $"{_mainDirectory}{s}.swsh";
         private static string __getCommand() {
             var list = new List<string>();
-            var commands = new string[] { "version", "add", "show", "connect", "delete", "edit", "keygen", "help", "clear", "exit", "upload", "pwd" };
+            var commands = new string[] { "version", "add", "show", "connect", "delete", "edit", "keygen", "help", "clear", "exit", "upload", "pwd", "comput" +
+                "ehash" };
             foreach (var i in commands) list.Add(i);
             foreach (var i in Directory.GetDirectories(_workingDirectory)) list.Add($"cd {new DirectoryInfo(i).Name.ToLower()}");
             bool requiresNickname(string data) {
