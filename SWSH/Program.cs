@@ -594,11 +594,7 @@ namespace SWSH {
             Console.ResetColor();
         }
         private static bool __checkHash(bool ignore) {
-            bool compareHash(string path, string hash) => !computeHash(path).Equals(hash.Trim());
-            string computeHash(string path) => new List<byte>(new SHA1CryptoServiceProvider()
-                    .ComputeHash(File.ReadAllBytes(path)))
-                    .Select((x) => x.ToString("x2"))
-                    .Aggregate((x, y) => x + y);
+            bool compareHash(string path, string hash) => !__computeHash(path).Equals(hash.Trim());
             string getHash(string uri) => new WebClient().DownloadString($"{uri}?" + new Random().Next());
             string
                 error = "ERROR: Checksum Mismatch! This executable *may* be out of date or malicious!\n",
@@ -622,7 +618,15 @@ namespace SWSH {
             }
         }
         private static void __printHash() {
+            Console.WriteLine($"{__computeHash(Assembly.GetExecutingAssembly().Location)} -- SHA1 -- SWSH.exe");
+            if (File.Exists("swsh-keygen.exe"))
+                Console.WriteLine($"{__computeHash("swsh-keygen.exe")} -- SHA1 -- swsh-keygen.exe");
         }
+        private static string __computeHash(string path) => 
+            new List<byte>(new SHA1CryptoServiceProvider()
+                .ComputeHash(File.ReadAllBytes(path)))
+                .Select((x) => x.ToString("x2"))
+                .Aggregate((x, y) => x + y);
         private static void __notice() => Console.Write("SWSH - Secure Windows Shell\nCopyright (C) 2017  Muhammad Muzzammil\nThis program comes with ABSOLU" +
             "TELY NO WARRANTY; for details type `license'.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions; type `l" +
             "icense' for details.\n\n");
