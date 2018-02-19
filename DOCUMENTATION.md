@@ -98,6 +98,7 @@ Connected to usr@host...
 | [help    [command]](#help)                     | Displays this help or command details.                                 |
 | [clear](#clear)                                | Clears the console.                                                    |
 | [pwd](#pwd)                                    | Prints working directory.                                              |
+| [computehash](#computehash)                    | Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.  |
 | [exit](#exit)                                  | Exits.                                                                 |
 | [ls](#ls)                                      | Lists all files and directories in working directory.                  |
 | [cd [arg]](#cd)                                | Changes directory to 'arg'. arg = directory name.                      |
@@ -194,6 +195,14 @@ Usage: clear
 Syntax: pwd
 Prints working directory.
 Usage: pwd
+```
+
+### computehash
+
+```swsh
+Syntax: computehash
+Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.
+Usage: computehash
 ```
 
 ### exit
