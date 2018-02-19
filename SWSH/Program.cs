@@ -94,6 +94,7 @@ namespace SWSH {
                     else if (_command == "license") File.ReadAllLines("LICENSE.txt").ToList().ForEach(x => Console.WriteLine(x));
                     else if (_command == "license notice") __notice();
                     else if (_command == "pwd") Console.WriteLine(_workingDirectory.ToLower());
+                    else if (_command == "computehash") __printHash();
                     else if (_command == "exit") Environment.Exit(0);
                     else if (_command.Trim() != "") __error($"SWSH -> {_command} -> unknown command.\n");
                 } catch (Exception exp) { __error($"{exp.Message}\n"); }
@@ -619,6 +620,8 @@ namespace SWSH {
                 }
                 return false;
             }
+        }
+        private static void __printHash() {
         }
         private static void __notice() => Console.Write("SWSH - Secure Windows Shell\nCopyright (C) 2017  Muhammad Muzzammil\nThis program comes with ABSOLU" +
             "TELY NO WARRANTY; for details type `license'.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions; type `l" +
