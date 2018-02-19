@@ -214,6 +214,11 @@ namespace SWSH {
                             Console.WriteLine("Prints working directory.\nUsage: pwd");
                             break;
                         }
+                    case "computehash": {
+                            Console.WriteLine("Syntax: computehash");
+                            Console.WriteLine("Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\nUsage: computehash");
+                            break;
+                        }
                     case "help": {
                             Console.WriteLine("Syntax: help [command]");
                             Console.WriteLine("Displays this help or command details.\nUsage: help add");
@@ -235,6 +240,7 @@ namespace SWSH {
                     + "help    [command]                      -Displays this help or command details.\n"
                     + "clear                                  -Clears the console.\n"
                     + "pwd                                    -Prints working directory.\n"
+                    + "computehash                            -Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\n"
                     + "exit                                   -Exits.\n"
                     + "ls                                     -Lists all files and directories in working directory.\n"
                     + "cd [arg]                               -Changes directory to 'arg'. arg = directory name.\n"
