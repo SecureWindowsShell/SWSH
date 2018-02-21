@@ -686,6 +686,7 @@ namespace SWSH {
             } catch (IndexOutOfRangeException) { }
             var read = ReadLine.Read();
             File.AppendAllText(_swshHistory, $"[{DateTime.UtcNow} UTC]\t=>\t{read}\n");
+            if (read.Contains("%appdata%")) read = read.Replace("%appdata%", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace('\\', '/'));
             return read.TrimEnd().TrimStart().Trim();
         }
         private static bool __unstable() => _codename.StartsWith("unstable");
