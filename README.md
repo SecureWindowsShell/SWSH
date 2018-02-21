@@ -82,7 +82,7 @@ Connected to usr@host...
 | help    [command]                   | Displays this help or command details.                                 |
 | clear                               | Clears the console.                                                    |
 | pwd                                 | Prints working directory.                                              |
-| computehash                         | Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.  |
+| computehash [(>/>>) path/to/file]   | Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.  |
 | exit                                | Exits.                                                                 |
 | ls                                  | Lists all files and directories in working directory.                  |
 | cd [arg]                            | Changes directory to 'arg'. arg = directory name.                      |

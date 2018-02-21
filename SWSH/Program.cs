@@ -94,7 +94,7 @@ namespace SWSH {
                     else if (_command == "license") File.ReadAllLines("LICENSE.txt").ToList().ForEach(x => Console.WriteLine(x));
                     else if (_command == "license notice") __notice();
                     else if (_command == "pwd") Console.WriteLine(_workingDirectory.ToLower());
-                    else if (_command == "computehash") __printHash();
+                    else if (_command.StartsWith("computehash")) __printHash();
                     else if (_command == "exit") Environment.Exit(0);
                     else if (_command.Trim() != "") __error($"SWSH -> {_command} -> unknown command.\n");
                 } catch (Exception exp) { __error($"{exp.Message}\n"); }
@@ -215,8 +215,9 @@ namespace SWSH {
                             break;
                         }
                     case "computehash": {
-                            Console.WriteLine("Syntax: computehash");
-                            Console.WriteLine("Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\nUsage: computehash");
+                            Console.WriteLine("Syntax: computehash [(>/>>) path/to/file]");
+                            Console.WriteLine("Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\n");
+                            Console.WriteLine("Usage:\nTo overwrite-> computehash > path/to/file\nTo append-> computehash >> path/to/file");
                             break;
                         }
                     case "help": {
@@ -240,7 +241,7 @@ namespace SWSH {
                     + "help    [command]                      -Displays this help or command details.\n"
                     + "clear                                  -Clears the console.\n"
                     + "pwd                                    -Prints working directory.\n"
-                    + "computehash                            -Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\n"
+                    + "computehash [(>/>>) path/to/file]      -Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\n"
                     + "exit                                   -Exits.\n"
                     + "ls                                     -Lists all files and directories in working directory.\n"
                     + "cd [arg]                               -Changes directory to 'arg'. arg = directory name.\n"
@@ -624,6 +625,20 @@ namespace SWSH {
             }
         }
         private static void __printHash() {
+            string action = _command.Remove(0, 11).Trim(), file;
+            if (action.StartsWith(">") && File.Exists("swsh-keygen.exe")) {
+                __color($"Exporting... ", ConsoleColor.Yellow);
+                if (action.StartsWith(">>")) {
+                    file = action.Remove(0, 2).Trim();
+                    File.AppendAllText(file, $"{__computeHash(Assembly.GetExecutingAssembly().Location)} {__computeHash("swsh-keygen.exe")}");
+                    Console.WriteLine(new FileInfo(file).FullName);
+                    return;
+                }
+                file = action.Remove(0, 1).Trim();
+                File.WriteAllText(file, $"{__computeHash(Assembly.GetExecutingAssembly().Location)} {__computeHash("swsh-keygen.exe")}");
+                Console.WriteLine(new FileInfo(file).FullName);
+                return;
+            }
             Console.WriteLine($"{__computeHash(Assembly.GetExecutingAssembly().Location)} -- SHA1 -- SWSH.exe");
             if (File.Exists("swsh-keygen.exe"))
                 Console.WriteLine($"{__computeHash("swsh-keygen.exe")} -- SHA1 -- swsh-keygen.exe");

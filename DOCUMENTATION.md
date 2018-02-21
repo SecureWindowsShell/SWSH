@@ -20,6 +20,7 @@ For Version beta-3.0
   * [help    [command]](#help)
   * [clear](#clear)
   * [pwd](#pwd)
+  * [computehash [(>/>>) path/to/file]](#computehash)
   * [exit](#exit)
   * [ls](#ls)
   * [cd [arg]](#cd)
@@ -86,23 +87,23 @@ Connected to usr@host...
 
 ## Commands
 
-| Command                                        | Description                                                            |
-|:-----------------------------------------------|:-----------------------------------------------------------------------|
-| [version](#version)                            | Check the version of swsh.                                             |
-| [add    [-password]](#add)                     | Add a new connection either using private key or password (-password). |
-| [show    [nickname]](#show)                    | Show nicknames/Details of a nickname.                                  |
-| [connect [nickname]](#connect)                 | Connects to Server over SSH.                                           |
-| [delete  [nickname]](#delete)                  | Deletes connection's nickname.                                         |
-| [edit    [nickname] [arg]](#edit)              | Edits nickname, use one argument at a time.                            |
-| [keygen](#keygen)                              | Generates SSH RSA key pair.                                            |
-| [help    [command]](#help)                     | Displays this help or command details.                                 |
-| [clear](#clear)                                | Clears the console.                                                    |
-| [pwd](#pwd)                                    | Prints working directory.                                              |
-| [computehash](#computehash)                    | Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.  |
-| [exit](#exit)                                  | Exits.                                                                 |
-| [ls](#ls)                                      | Lists all files and directories in working directory.                  |
-| [cd [arg]](#cd)                                | Changes directory to 'arg'. arg = directory name.                      |
-| [upload [args] [nickname]:[location]](#upload) | Uploads files and directories. 'upload -h' for help.                   |
+| Command                                           | Description                                                            |
+|:--------------------------------------------------|:-----------------------------------------------------------------------|
+| [version](#version)                               | Check the version of swsh.                                             |
+| [add    [-password]](#add)                        | Add a new connection either using private key or password (-password). |
+| [show    [nickname]](#show)                       | Show nicknames/Details of a nickname.                                  |
+| [connect [nickname]](#connect)                    | Connects to Server over SSH.                                           |
+| [delete  [nickname]](#delete)                     | Deletes connection's nickname.                                         |
+| [edit    [nickname] [arg]](#edit)                 | Edits nickname, use one argument at a time.                            |
+| [keygen](#keygen)                                 | Generates SSH RSA key pair.                                            |
+| [help    [command]](#help)                        | Displays this help or command details.                                 |
+| [clear](#clear)                                   | Clears the console.                                                    |
+| [pwd](#pwd)                                       | Prints working directory.                                              |
+| [computehash [(>/>>) path/to/file]](#computehash) | Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.  |
+| [exit](#exit)                                     | Exits.                                                                 |
+| [ls](#ls)                                         | Lists all files and directories in working directory.                  |
+| [cd [arg]](#cd)                                   | Changes directory to 'arg'. arg = directory name.                      |
+| [upload [args] [nickname]:[location]](#upload)    | Uploads files and directories. 'upload -h' for help.                   |
 
 ### version
 
@@ -200,9 +201,12 @@ Usage: pwd
 ### computehash
 
 ```swsh
-Syntax: computehash
+Syntax: computehash [(>/>>) path/to/file]
 Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.
-Usage: computehash
+
+Usage:
+To overwrite-> computehash > path/to/file
+To append-> computehash >> path/to/file
 ```
 
 ### exit
