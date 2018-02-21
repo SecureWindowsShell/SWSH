@@ -422,7 +422,7 @@ namespace SWSH {
                 do {
                     __color("Enter path to save public key (%appdata%/SWSH/swsh.public):\t", ConsoleColor.Yellow);
                     publicFile = __getCommand();
-                    if (publicFile == String.Empty) publicFile = _swshAppdata+ "/swsh.public";
+                    if (publicFile == String.Empty) publicFile = _swshAppdata + "/swsh.public";
                     else if (publicFile == "-e" || privateFile == "exit") return;
                 } while (!isWritable(publicFile));
                 bool isWritable(string path) {
