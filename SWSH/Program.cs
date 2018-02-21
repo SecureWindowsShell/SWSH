@@ -94,7 +94,7 @@ namespace SWSH {
                     else if (_command == "license") File.ReadAllLines("LICENSE.txt").ToList().ForEach(x => Console.WriteLine(x));
                     else if (_command == "license notice") __notice();
                     else if (_command == "pwd") Console.WriteLine(_workingDirectory.ToLower());
-                    else if (_command == "computehash") __printHash();
+                    else if (_command.StartsWith("computehash")) __printHash();
                     else if (_command == "exit") Environment.Exit(0);
                     else if (_command.Trim() != "") __error($"SWSH -> {_command} -> unknown command.\n");
                 } catch (Exception exp) { __error($"{exp.Message}\n"); }
@@ -624,6 +624,15 @@ namespace SWSH {
             }
         }
         private static void __printHash() {
+            string action = _command.Remove(0, 11).Trim();
+            if (action.StartsWith(">") && File.Exists("swsh-keygen.exe")) {
+                if (action.StartsWith(">>")) {
+                    File.AppendAllText(action.Remove(0, 2).Trim(), $"{__computeHash(Assembly.GetExecutingAssembly().Location)} {__computeHash("swsh-keygen.exe")}");
+                    return;
+                }
+                File.WriteAllText(action.Remove(0, 1).Trim(), $"{__computeHash(Assembly.GetExecutingAssembly().Location)} {__computeHash("swsh-keygen.exe")}");
+                return;
+            }
             Console.WriteLine($"{__computeHash(Assembly.GetExecutingAssembly().Location)} -- SHA1 -- SWSH.exe");
             if (File.Exists("swsh-keygen.exe"))
                 Console.WriteLine($"{__computeHash("swsh-keygen.exe")} -- SHA1 -- swsh-keygen.exe");
