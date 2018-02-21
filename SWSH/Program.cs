@@ -33,13 +33,16 @@ namespace SWSH {
         public static bool _keygenstatus;
         public const string
             _version = "3.0",
-            _codename = "unstable-beta",
-            _mainDirectory = "swsh-data/";
+            _codename = "unstable-beta";
         public static string
             _command = "",
-            _swsh_history = Environment.GetFolderPath((Environment.SpecialFolder)40) + "/.swsh_history",
+            _swshAppdata = Environment.GetFolderPath((Environment.SpecialFolder.ApplicationData)) + "/SWSH",
+            _swshHistory = _swshAppdata + "/swsh_history",
+            _mainDirectory = _swshAppdata + "/swsh-data/",
+            _swshLicense = _swshAppdata + "/LICENSE.txt",
             _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         static void Main(string[] args) {
+            if (!Directory.Exists(_swshAppdata)) Directory.CreateDirectory(_swshAppdata);
             Console.Title = "SWSH - Secure Windows Shell";
             __notice();
             Console.Write("\nType `license notice` to view this notice again.\n");
@@ -50,9 +53,9 @@ namespace SWSH {
             Console.Clear();
             /* Downloading License; if does not exists. START */
             try {
-                if (!File.Exists("LICENSE.txt")) {
+                if (!File.Exists(_swshLicense)) {
                     Console.WriteLine("License file not found, downloading...");
-                    new WebClient().DownloadFile(new Uri(Url.License), "LICENSE.txt");
+                    new WebClient().DownloadFile(new Uri(Url.License), _swshLicense);
                     Console.Clear();
                 }
             } catch (Exception exp) { __error($"Unable to download License, view online copy here: {Url.License}\nReason:{exp.Message}\n"); }
@@ -91,7 +94,7 @@ namespace SWSH {
                     else if (_command.StartsWith("cd")) __cd();
                     else if (_command.StartsWith("upload")) __upload();
                     else if (_command == "clear") __clear();
-                    else if (_command == "license") File.ReadAllLines("LICENSE.txt").ToList().ForEach(x => Console.WriteLine(x));
+                    else if (_command == "license") File.ReadAllLines(_swshLicense).ToList().ForEach(x => Console.WriteLine(x));
                     else if (_command == "license notice") __notice();
                     else if (_command == "pwd") Console.WriteLine(_workingDirectory.ToLower());
                     else if (_command.StartsWith("computehash")) __printHash();
@@ -411,15 +414,15 @@ namespace SWSH {
                 __color("-e", ConsoleColor.Red);
                 Console.Write(" to cancel.\n");
                 do {
-                    __color("Enter path to save private key (swsh.private):\t", ConsoleColor.Yellow);
+                    __color("Enter path to save private key (%appdata%/SWSH/swsh.private):\t", ConsoleColor.Yellow);
                     privateFile = __getCommand();
-                    if (privateFile == String.Empty) privateFile = "swsh.private";
+                    if (privateFile == String.Empty) privateFile = _swshAppdata + "/swsh.private";
                     else if (privateFile == "-e" || privateFile == "exit") return;
                 } while (!isWritable(privateFile));
                 do {
-                    __color("Enter path to save public key (swsh.public):\t", ConsoleColor.Yellow);
+                    __color("Enter path to save public key (%appdata%/SWSH/swsh.public):\t", ConsoleColor.Yellow);
                     publicFile = __getCommand();
-                    if (publicFile == String.Empty) publicFile = "swsh.public";
+                    if (publicFile == String.Empty) publicFile = _swshAppdata+ "/swsh.public";
                     else if (publicFile == "-e" || privateFile == "exit") return;
                 } while (!isWritable(publicFile));
                 bool isWritable(string path) {
@@ -682,7 +685,7 @@ namespace SWSH {
                 };
             } catch (IndexOutOfRangeException) { }
             var read = ReadLine.Read();
-            File.AppendAllText(_swsh_history, $"[{DateTime.UtcNow} UTC]\t=>\t{read}\n");
+            File.AppendAllText(_swshHistory, $"[{DateTime.UtcNow} UTC]\t=>\t{read}\n");
             return read.TrimEnd().TrimStart().Trim();
         }
         private static bool __unstable() => _codename.StartsWith("unstable");
