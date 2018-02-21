@@ -360,7 +360,7 @@ namespace SWSH {
                             __color("Deleted.\n", ConsoleColor.Green);
                         }
                     } else __color("Aborted.\n", ConsoleColor.Yellow);
-                } else __error($"SWSH -> {name} -> nickname does not exists.");
+                } else __error($"SWSH -> {name} -> nickname does not exists.\n");
             } catch (Exception exp) { __error($"{exp.Message}\n"); }
         }
         private static void __edit() {
