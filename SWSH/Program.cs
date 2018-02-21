@@ -215,8 +215,9 @@ namespace SWSH {
                             break;
                         }
                     case "computehash": {
-                            Console.WriteLine("Syntax: computehash");
-                            Console.WriteLine("Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\nUsage: computehash");
+                            Console.WriteLine("Syntax: computehash [(>/>>) path/to/file]");
+                            Console.WriteLine("Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\n");
+                            Console.WriteLine("Usage:\nTo overwrite-> computehash > path/to/file\nTo append-> computehash >> path/to/file");
                             break;
                         }
                     case "help": {
@@ -240,7 +241,7 @@ namespace SWSH {
                     + "help    [command]                      -Displays this help or command details.\n"
                     + "clear                                  -Clears the console.\n"
                     + "pwd                                    -Prints working directory.\n"
-                    + "computehash                            -Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\n"
+                    + "computehash [(>/>>) path/to/file]      -Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\n"
                     + "exit                                   -Exits.\n"
                     + "ls                                     -Lists all files and directories in working directory.\n"
                     + "cd [arg]                               -Changes directory to 'arg'. arg = directory name.\n"
