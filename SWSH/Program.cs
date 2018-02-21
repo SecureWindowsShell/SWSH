@@ -628,7 +628,7 @@ namespace SWSH {
             if (File.Exists("swsh-keygen.exe"))
                 Console.WriteLine($"{__computeHash("swsh-keygen.exe")} -- SHA1 -- swsh-keygen.exe");
         }
-        private static string __computeHash(string path) => 
+        private static string __computeHash(string path) =>
             new List<byte>(new SHA1CryptoServiceProvider()
                 .ComputeHash(File.ReadAllBytes(path)))
                 .Select((x) => x.ToString("x2"))
