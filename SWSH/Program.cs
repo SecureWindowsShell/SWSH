@@ -624,13 +624,18 @@ namespace SWSH {
             }
         }
         private static void __printHash() {
-            string action = _command.Remove(0, 11).Trim();
+            string action = _command.Remove(0, 11).Trim(), file;
             if (action.StartsWith(">") && File.Exists("swsh-keygen.exe")) {
+                __color($"Exporting... ", ConsoleColor.Yellow);
                 if (action.StartsWith(">>")) {
-                    File.AppendAllText(action.Remove(0, 2).Trim(), $"{__computeHash(Assembly.GetExecutingAssembly().Location)} {__computeHash("swsh-keygen.exe")}");
+                    file = action.Remove(0, 2).Trim();
+                    File.AppendAllText(file, $"{__computeHash(Assembly.GetExecutingAssembly().Location)} {__computeHash("swsh-keygen.exe")}");
+                    Console.WriteLine(new FileInfo(file).FullName);
                     return;
                 }
-                File.WriteAllText(action.Remove(0, 1).Trim(), $"{__computeHash(Assembly.GetExecutingAssembly().Location)} {__computeHash("swsh-keygen.exe")}");
+                file = action.Remove(0, 1).Trim();
+                File.WriteAllText(file, $"{__computeHash(Assembly.GetExecutingAssembly().Location)} {__computeHash("swsh-keygen.exe")}");
+                Console.WriteLine(new FileInfo(file).FullName);
                 return;
             }
             Console.WriteLine($"{__computeHash(Assembly.GetExecutingAssembly().Location)} -- SHA1 -- SWSH.exe");
