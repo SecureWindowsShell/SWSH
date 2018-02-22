@@ -1,6 +1,6 @@
 <img src=".images/github banner.png"/>
 
-[![Build status](https://ci.appveyor.com/api/projects/status/1f2uc16tue6h0r0l/branch/master?svg=true)](https://ci.appveyor.com/project/muhammadmuzzammil1998/swsh/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/1f2uc16tue6h0r0l/branch/master?retina=true)](https://ci.appveyor.com/project/muhammadmuzzammil1998/swsh/branch/master)
 
 SWSH is a console application that offers SSH-like connectivity with ease to users which grants them the ability to operate remotely on SSH protocol. It is also Open source, so feel free to contribute.
 
