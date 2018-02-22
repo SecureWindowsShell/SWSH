@@ -119,7 +119,12 @@ namespace SWSH {
                         __error("SWSH -> key path should not be empty!\n");
                     else {
                         __checkexit(data[0]);
-                        if (!File.Exists(data[0]))
+                        if (File.Exists(data[0]) && File.Exists($"{_workingDirectory}/{data[0]}"))
+                            __error($"SWSH -> {data[0]} -> file path is ambiguous.\n");
+                        else if (File.Exists($"{_workingDirectory}/{data[0]}")) {
+                            data[0] = $"{_workingDirectory.Replace('\\', '/')}/{data[0]}";
+                            break;
+                        } else if (!File.Exists(data[0]))
                             __error($"SWSH -> {data[0]} -> file is non existent.\n");
                         else break;
                     }
