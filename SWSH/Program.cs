@@ -678,10 +678,10 @@ namespace SWSH {
                         .Where(x => Path.GetFileNameWithoutExtension(x).Contains(data.Split(' ')[1])).ToList()
                         .ForEach(x => { tList.Add(Path.GetFileNameWithoutExtension(x)); });
                     if (data.StartsWith("cd ") && (data.Contains("/") || data.Contains("\\")))
-                        Directory.GetDirectories($"{_workingDirectory}/{data.Remove(0, 3)}").ToList()
+                        Directory.GetDirectories($"{_workingDirectory}/{Path.GetDirectoryName(data.Remove(0, 3))}").ToList()
                         .Where(x => new DirectoryInfo(x)
-                            .FullName.Contains(data.Split(' ')[1].Replace('/', '\\'))).ToList()
-                        .ForEach(x => tList.Add(x.Remove(0, ($"{_workingDirectory}/{data.Remove(0, 3)}").Length)));
+                            .FullName.ToLower().Contains(data.ToLower().Split(' ')[1].Replace('/', '\\'))).ToList()
+                        .ForEach(x => tList.Add(x.Remove(0, ($"{_workingDirectory}/{Path.GetDirectoryName(data.Remove(0, 3))}").Length + 1).ToLower()));
                     if (data.Trim() == "help")
                         commands.ToList().ForEach(x => tList.Add(x));
                     list.Where(x => x.Contains(data)).ToList().ForEach(y => tList.Add(y.Remove(0, length)));
