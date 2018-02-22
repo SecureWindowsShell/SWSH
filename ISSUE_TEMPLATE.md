@@ -8,6 +8,7 @@ A report should contain the following:
 
 #### Example
 **Title**: `connect` command is not working.
+
 **Description**: 
 
 * SWSH Version: beta 3.0
