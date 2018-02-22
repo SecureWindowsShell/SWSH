@@ -523,7 +523,6 @@ namespace SWSH {
             else if (_command.StartsWith("/")) __changeWorkingDir(Path.GetPathRoot(_workingDirectory) + _command.Remove(0, 1));
             else __changeWorkingDir($"{_workingDirectory}/{_command}");
             void __changeWorkingDir(string path) {
-                if (_workingDirectory == Path.GetPathRoot(_workingDirectory)) return;
                 path = path.Replace('\\', '/');
                 if (Directory.Exists(Path.GetFullPath(path))) _workingDirectory = Path.GetFullPath(path);
                 else __error($"SWSH -> {path} -> path does not exists.\n");
