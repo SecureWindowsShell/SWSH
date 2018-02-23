@@ -1,5 +1,6 @@
 <p align="center">
   <img src=".images/github banner.png"/>
+  <br>
   <a href="https://ci.appveyor.com/project/muhammadmuzzammil1998/swsh/branch/master" target="_blank">
     <img src="https://ci.appveyor.com/api/projects/status/1f2uc16tue6h0r0l/branch/master?retina=true" alt="Build status">
   </a>
