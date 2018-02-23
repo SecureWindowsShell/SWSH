@@ -25,7 +25,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SWSH")]
 [assembly: AssemblyDescription("Licensed under the GNU GPL v3")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Secure Windows Shell")]
 [assembly: AssemblyProduct("SWSH")]
 [assembly: AssemblyCopyright("Copyright © 2017 Muhammad Muzzammil")]
 [assembly: AssemblyTrademark("SWSH")]
