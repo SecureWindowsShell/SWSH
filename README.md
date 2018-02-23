@@ -1,6 +1,26 @@
-<img src=".images/github banner.png"/>
-
-[![Build status](https://ci.appveyor.com/api/projects/status/1f2uc16tue6h0r0l/branch/master?retina=true)](https://ci.appveyor.com/project/muhammadmuzzammil1998/swsh/branch/master)
+<p align="center">
+  <img src=".images/github banner.png"/>
+  <a href="https://ci.appveyor.com/project/muhammadmuzzammil1998/swsh/branch/master" target="_blank">
+    <img src="https://ci.appveyor.com/api/projects/status/1f2uc16tue6h0r0l/branch/master?retina=true" alt="Build status">
+  </a>
+  <br>
+  <a href="https://github.com/SecureWindowsShell/SWSH/issues" target="_blank">
+    <img src="https://img.shields.io/github/issues/SecureWindowsShell/SWSH.svg?style=for-the-badge" alt="GitHub issues">
+  </a>
+  <a href="https://github.com/SecureWindowsShell/SWSH/network" target="_blank">
+    <img src="https://img.shields.io/github/forks/SecureWindowsShell/SWSH.svg?style=for-the-badge" alt="GitHub forks">
+  </a>
+  <a href="https://github.com/SecureWindowsShell/SWSH/stargazers" target="_blank">
+    <img src="https://img.shields.io/github/stars/SecureWindowsShell/SWSH.svg?style=for-the-badge" alt="GitHub stars">
+  </a>
+  <a href="https://github.com/SecureWindowsShell/SWSH/blob/master/LICENSE" target="_blank">
+    <img src="https://img.shields.io/github/license/SecureWindowsShell/SWSH.svg?style=for-the-badge" alt="GitHub license">
+  </a>
+  <a href="https://github.com/SecureWindowsShell/SWSH/releases" target="_blank">
+    <img src="https://img.shields.io/github/release/SecureWindowsShell/SWSH/all.svg?style=for-the-badge" alt="Latest release">
+  </a>
+  <img src="https://img.shields.io/github/languages/top/SecureWindowsShell/SWSH.svg?style=for-the-badge" alt="Top language">
+</p>
 
 SWSH is a console application that offers SSH-like connectivity with ease to users which grants them the ability to operate remotely on SSH protocol. It is also Open source, so feel free to contribute.
 
