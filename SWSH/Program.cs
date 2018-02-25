@@ -32,6 +32,7 @@ namespace SWSH {
     public static class Program {
         public static bool _keygenstatus;
         public const string
+            _absVersion = "0.3",
             _version = "3.0",
             _codename = "unstable-beta";
         public static string
