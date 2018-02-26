@@ -240,21 +240,23 @@ namespace SWSH {
                 }
             } else {
                 Console.Write(
-                      "version                                -Check the version of swsh.\n"
-                    + "add     [-password]                    -Add a new connection either using private key or password (-password).\n"
-                    + "show    [nickname]                     -Show nicknames/Details of a nickname.\n"
-                    + "connect [nickname]                     -Connects to Server over SSH.\n"
-                    + "delete  [nickname]                     -Deletes connection's nickname.\n"
-                    + "edit    [nickname] [arg]               -Edits nickname, use one argument at a time.\n"
-                    + "keygen                                 -Generates SSH RSA key pair.\n"
-                    + "help    [command]                      -Displays this help or command details.\n"
-                    + "clear                                  -Clears the console.\n"
-                    + "pwd                                    -Prints working directory.\n"
-                    + "computehash [(>/>>) path/to/file]      -Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\n"
-                    + "exit                                   -Exits.\n"
-                    + "ls                                     -Lists all files and directories in working directory.\n"
-                    + "cd [arg]                               -Changes directory to 'arg'. arg = directory name.\n"
-                    + "upload [args] [nickname]:[location]    -Uploads files and directories. 'upload -h' for help.\n");
+                      "Usage: <command> [arguments]\n"
+                    + "Available commands:\n"
+                    + "  version                             -Check the version of swsh.\n"
+                    + "  add     [-password]                 -Add a new connection either using private key or password (-password).\n"
+                    + "  show    [nickname]                  -Show nicknames/Details of a nickname.\n"
+                    + "  connect [nickname]                  -Connects to Server over SSH.\n"
+                    + "  delete  [nickname]                  -Deletes connection's nickname.\n"
+                    + "  edit    [nickname] [arg]            -Edits nickname, use one argument at a time.\n"
+                    + "  keygen                              -Generates SSH RSA key pair.\n"
+                    + "  help    [command]                   -Displays this help or command details.\n"
+                    + "  clear                               -Clears the console.\n"
+                    + "  pwd                                 -Prints working directory.\n"
+                    + "  computehash [(>/>>) path/to/file]   -Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\n"
+                    + "  exit                                -Exits.\n"
+                    + "  ls                                  -Lists all files and directories in working directory.\n"
+                    + "  cd [arg]                            -Changes directory to 'arg'. arg = directory name.\n"
+                    + "  upload [args] [nickname]:[location] -Uploads files and directories. 'upload -h' for help.\n");
             }
         }
         private static void __connect() {
