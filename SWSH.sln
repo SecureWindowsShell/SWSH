@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWSH", "SWSH\SWSH.csproj", "{6A30C4D1-0E4F-49B9-B2B2-D210923CE44C}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Installer", "Installer\Installer.vdproj", "{9150E1A4-794D-4CD8-AF91-D5ADDD0508C4}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Installer", "Installer\Installer.vdproj", "{92400EB6-E01D-4838-A261-0C44A2E50C36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,8 +17,8 @@ Global
 		{6A30C4D1-0E4F-49B9-B2B2-D210923CE44C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A30C4D1-0E4F-49B9-B2B2-D210923CE44C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A30C4D1-0E4F-49B9-B2B2-D210923CE44C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9150E1A4-794D-4CD8-AF91-D5ADDD0508C4}.Debug|Any CPU.ActiveCfg = Debug
-		{9150E1A4-794D-4CD8-AF91-D5ADDD0508C4}.Release|Any CPU.ActiveCfg = Release
+		{92400EB6-E01D-4838-A261-0C44A2E50C36}.Debug|Any CPU.ActiveCfg = Debug
+		{92400EB6-E01D-4838-A261-0C44A2E50C36}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
