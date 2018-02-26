@@ -34,7 +34,7 @@ namespace SWSH {
         public const string
             _absVersion = "0.3",
             _version = "3.0",
-            _codename = "unstable-beta";
+            _codename = "beta";
         public static string
             _command = "",
             _swshAppdata = Environment.GetFolderPath((Environment.SpecialFolder.ApplicationData)) + "/SWSH",
