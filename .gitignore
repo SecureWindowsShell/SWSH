@@ -294,3 +294,4 @@ swsh-keygen/swsh-keygen.exe
 *.patch
 swsh-data/
 Installer/Installer.vdproj
+Installer/logo.ico
