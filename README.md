@@ -21,6 +21,9 @@
     <img src="https://img.shields.io/github/release/SecureWindowsShell/SWSH/all.svg?style=for-the-badge" alt="Latest release">
   </a>
   <img src="https://img.shields.io/github/languages/top/SecureWindowsShell/SWSH.svg?style=for-the-badge" alt="Top language">
+  <a href="https://swsh.muzzammil.xyz/" target="_blank">
+    <img src="https://img.shields.io/website-up-down-green-red/http/shields.io.svg?label=website&style=for-the-badge" alt="Website">
+  </a>
 </p>
 
 SWSH is a console application that offers SSH-like connectivity with ease to users which grants them the ability to operate remotely on SSH protocol. It is also Open source, so feel free to contribute.
