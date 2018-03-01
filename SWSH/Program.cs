@@ -702,6 +702,9 @@ namespace SWSH {
             Console.Write(err);
         }
         private static ConnectionInfo __CreateConnection(string nickname) {
+        private static string __getPrivateKey() {
+            return File.ReadAllLines("swsh-settings")[0];
+        }
             try {
                 string
                     firstString = File.ReadAllLines(__getNickname(nickname))[0],
