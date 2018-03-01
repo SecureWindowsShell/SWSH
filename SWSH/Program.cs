@@ -84,7 +84,6 @@ namespace SWSH {
                         if (_command.StartsWith("swsh --")) _command = _command.Remove(0, 7);
                     }
                     if (_command == "version") __version();
-                    else if (_command.StartsWith("add")) __addConnection();
                     else if (_command.StartsWith("help")) __help();
                     else if (_command.StartsWith("connect")) __connect();
                     else if (_command.StartsWith("keygen")) __keygen();
