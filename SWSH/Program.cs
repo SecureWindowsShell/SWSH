@@ -113,33 +113,9 @@ namespace SWSH {
                             Console.WriteLine("Checks the version of swsh.\n\nUsage: version\n");
                             break;
                         }
-                    case "add": {
-                            Console.WriteLine("Syntax: add [-password]");
-                            Console.WriteLine("Add a new connection either using private key or password.\n\nUsage to add using private "
-                                + "key: add\nUsage to add using a password: add -password\n\nYou'll be asked for password "
-                                + "each time as SWSH doesn't store them.\n");
-                            break;
-                        }
-                    case "show": {
-                            Console.WriteLine("Syntax: show [nickname]");
-                            Console.WriteLine("Show nicknames if no arguments are given. If nickname is provided, shows details of a n"
-                                + "ickname.\nUsage to check all nicknames: show\nUsage to check a nickname: show myserver");
-                            break;
-                        }
                     case "connect": {
-                            Console.WriteLine("Syntax: connect [nickname]");
-                            Console.WriteLine("Connects to Server over SSH.\nUsage: connect myserver");
-                            break;
-                        }
-                    case "delete": {
-                            Console.WriteLine("Syntax: delete [nickname]");
-                            Console.WriteLine("Deletes connection's nickname.\nUsage: delete myserver");
-                            break;
-                        }
-                    case "edit": {
-                            Console.WriteLine("Syntax: edit [nickname] [arg]");
-                            Console.WriteLine("arg:\n\t-user [newUserName]\n\t-key [newKey]\n\t-server [newServer]");
-                            Console.WriteLine("Edits nickname, use one argument at a time.\nUsage: edit myserver -user newUSER");
+                            Console.WriteLine("Syntax: connect [user@host] (-p)");
+                            Console.WriteLine("Connects to Server over SSH. Use `-p` for password connection.\nUsage: connect root@server.ip");
                             break;
                         }
                     case "keygen": {
@@ -170,15 +146,11 @@ namespace SWSH {
                 }
             } else {
                 Console.Write(
-                      "Usage: <command> [arguments]\n"
+                      "Usage: <command> [arguments] (options)\n"
                     + "Available commands:\n"
                     + "  version                             -Check the version of swsh.\n"
-                    + "  add     [-password]                 -Add a new connection either using private key or password (-password).\n"
-                    + "  show    [nickname]                  -Show nicknames/Details of a nickname.\n"
-                    + "  connect [nickname]                  -Connects to Server over SSH.\n"
-                    + "  delete  [nickname]                  -Deletes connection's nickname.\n"
-                    + "  edit    [nickname] [arg]            -Edits nickname, use one argument at a time.\n"
-                    + "  keygen                              -Generates SSH RSA key pair.\n"
+                    + "  connect [user@host] (-p)            -Connects to Server over SSH.\n"
+                    + "  keygen  (import)                    -Generates or imports SSH RSA key pair.\n"
                     + "  help    [command]                   -Displays this help or command details.\n"
                     + "  clear                               -Clears the console.\n"
                     + "  pwd                                 -Prints working directory.\n"
