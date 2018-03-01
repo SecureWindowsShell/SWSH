@@ -701,34 +701,32 @@ namespace SWSH {
             __color("ERROR: ", ConsoleColor.Red);
             Console.Write(err);
         }
-        private static ConnectionInfo __CreateConnection(string nickname) {
+
         private static string __getPrivateKey() {
             return File.ReadAllLines("swsh-settings")[0];
         }
+        private static ConnectionInfo __CreateConnection(string data) {
             try {
-                string
-                    firstString = File.ReadAllLines(__getNickname(nickname))[0],
-                    user = File.ReadAllLines(__getNickname(nickname))[1],
-                    server = File.ReadAllLines(__getNickname(nickname))[2];
-                if (firstString == "-password") {
+                if (data.EndsWith("-p")) {
+                    data = data.Split(' ')[0];
                     ReadLine.PasswordMode = true;
-                    var password = ReadLine.Read($"Password for {nickname}: ");
+                    var password = ReadLine.Read($"Password for {data}: ");
                     ReadLine.GetHistory().Pop();
                     ReadLine.PasswordMode = false;
                     return new ConnectionInfo(
-                        server,
-                        user,
+                        data.Split('@')[1],
+                        data.Split('@')[0],
                         new PasswordAuthenticationMethod(
-                            user,
+                            data.Split('@')[0],
                             password));
                 } else return new ConnectionInfo(
-                        server,
-                        user,
+                        data.Split('@')[1],
+                        data.Split('@')[0],
                         new PrivateKeyAuthenticationMethod(
-                            user,
+                            data.Split('@')[0],
                             new PrivateKeyFile(
                                 new FileStream(
-                                    firstString,
+                                    __getPrivateKey(),
                                     FileMode.Open,
                                     FileAccess.Read))));
             } catch (Exception exp) { __error($"{exp.Message}\n"); }
