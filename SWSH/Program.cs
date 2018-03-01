@@ -119,9 +119,9 @@ namespace SWSH {
                             break;
                         }
                     case "keygen": {
-                            Console.WriteLine("Syntax: keygen");
-                            Console.WriteLine("Generates SSH RSA key pair. Requires swsh-keygen.exe.\n\nDefault values are provided in parentheses.\nUsage: " +
-                                "keygen");
+                            Console.WriteLine("Syntax: keygen (import)");
+                            Console.WriteLine("Generates or imports SSH RSA key pair. Requires swsh-keygen.exe.");
+                            Console.WriteLine("Default values are provided in parentheses.\nUsage: \nTo generate-> keygen\nTo import-> keygen import");
                             break;
                         }
                     case "pwd": {
