@@ -261,58 +261,40 @@ namespace SWSH {
         }
         private static void __connect() {
             ConnectionInfo ccinfo;
-            string nickname = _command.Remove(0, 8);
-            if (File.Exists(__getNickname(nickname))) {
-                ccinfo = __CreateConnection(nickname);
-                if (ccinfo != null) {
-                    Console.Write($"Waiting for response from {ccinfo.Username}@{ccinfo.Host}...\n");
-                    using (var ssh = new SshClient(ccinfo)) {
-                        ssh.Connect();
-                        __color($"Connected to {ccinfo.Username}@{ccinfo.Host}...\n", ConsoleColor.Green);
-                        var actual = ssh.CreateShellStream(
-                            "xterm-256color",
-                            (uint)Console.BufferWidth,
-                            (uint)Console.BufferHeight,
-                            (uint)Console.BufferWidth,
-                            (uint)Console.BufferHeight,
-                            Console.BufferHeight, null);
-                        //Read Thread
-                        var read = new Thread(() => {
-                            if (actual.CanRead)
-                                while (true)
-                                    Console.WriteLine(actual.ReadLine());
-                        });
-                        //Write Thread
-                        new Thread(() => {
-                            if (actual.CanWrite)
-                                while (true) {
-                                    try {
-                                        actual.WriteLine("");
-                                        var input = Console.ReadLine();
-                                        Console.Write("\b\r\b\r");
-                                        actual.WriteLine(input);
-                                        if (input == "exit") {
-                                            actual.Dispose();
-                                            read.Abort();
-                                            throw new Exception();
-                                        }
-                                    } catch (Exception) {
-                                        __color($"Connection to {ccinfo.Username}@{ccinfo.Host}, closed.\n", ConsoleColor.Yellow);
-                                        __color("(E)xit SWSH - Any other key to reload SWSH: ", ConsoleColor.Blue);
-                                        var key = Console.ReadKey();
-                                        if (key.Key != ConsoleKey.E)
-                                            Process.Start(Assembly.GetExecutingAssembly().Location);
-                                        ssh.Disconnect();
-                                        Environment.Exit(0);
+            ccinfo = __CreateConnection(_command.Remove(0, 8));
+            if (ccinfo != null) {
+                Console.Write($"Waiting for response from {ccinfo.Username}@{ccinfo.Host}...\n");
+                using (var ssh = new SshClient(ccinfo)) {
+                    ssh.Connect();
+                    __color($"Connected to {ccinfo.Username}@{ccinfo.Host}...\n", ConsoleColor.Green);
+                    var actual = ssh.CreateShellStream(
+                        "xterm-256color",
+                        (uint) Console.BufferWidth,
+                        (uint) Console.BufferHeight,
+                        (uint) Console.BufferWidth,
+                        (uint) Console.BufferHeight,
+                        Console.BufferHeight, null);
+                    //Read Thread
+                    var read = new Thread(() => {
+                        if (actual.CanRead)
+                            while (true)
+                                Console.WriteLine(actual.ReadLine());
+                    });
+                    //Write Thread
+                    new Thread(() => {
+                        if (actual.CanWrite)
+                            while (true) {
+                                try {
+                                    actual.WriteLine("");
+                                    var input = Console.ReadLine();
+                                    Console.Write("\b\r\b\r");
+                                    actual.WriteLine(input);
+                                    if (input == "exit") {
+                                        actual.Dispose();
+                                        read.Abort();
+                                        throw new Exception();
                                     }
                                 }
-                        }).Start();
-                        read.Start();
-                        while (true) ;
-                    }
-                }
-            } else __error($"SWSH -> {nickname} -> nickname does not exists.\n");
-        }
         private static void __show() {
             _command = _command.Remove(0, 4).Trim();
             if (_command == string.Empty) {
