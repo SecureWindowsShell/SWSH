@@ -32,9 +32,9 @@ namespace SWSH {
     public static class Program {
         public static bool _keygenstatus;
         public const string
-            _absVersion = "0.3",
-            _version = "3.0",
-            _codename = "beta";
+            _absVersion = "0.4",
+            _version = "",
+            _codename = "unstable-titan";
         public static string
             _command = "",
             _swshAppdata = Environment.GetFolderPath((Environment.SpecialFolder.ApplicationData)) + "/SWSH",
