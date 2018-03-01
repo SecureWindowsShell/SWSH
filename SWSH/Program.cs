@@ -172,6 +172,9 @@ namespace SWSH {
                     case ConsoleKey.G:
                         __keygen();
                         break;
+                    default:
+                        Console.WriteLine(" <= Invalid option.");
+                        return;
                 }
                 return;
             }
