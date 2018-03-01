@@ -602,8 +602,8 @@ namespace SWSH {
         private static string __version() {
             Console.Write("   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __  / " +
                 " \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
-            Console.Write($"\nRelease: {_codename}-{_version}\n");
-            return $"{_codename}-{_version}";
+            Console.Write($"\nRelease: {_codename} {_version}\n");
+            return $"{_codename} {_version}";
         }
         private static void __color(string message, ConsoleColor cc) {
             Console.ForegroundColor = cc;
