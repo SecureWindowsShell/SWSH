@@ -39,6 +39,7 @@ namespace SWSH {
             _command = "",
             _swshAppdata = Environment.GetFolderPath((Environment.SpecialFolder.ApplicationData)) + "/SWSH",
             _swshHistory = _swshAppdata + "/swsh_history",
+            _swshKeys = _swshAppdata + "/swsh_keys",
             _swshLicense = _swshAppdata + "/LICENSE.txt",
             _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         static void Main(string[] args) {
@@ -241,13 +242,61 @@ namespace SWSH {
                 }
             }
         }
+
+        private static void __importKey() {
+            string[] data = new string[2];
+            Console.WriteLine("Importing keys...");
+            while (true) {
+                Console.Write("Enter path to private key: ");
+                data[0] = __getCommand();
+                if (data[0].Trim() == String.Empty)
+                    __error("SWSH -> key path should not be empty!\n");
+                else {
+                    if (File.Exists(data[0]) && File.Exists($"{_workingDirectory}/{data[0]}"))
+                        __error($"SWSH -> {data[0]} -> file path is ambiguous.\n");
+                    else if (File.Exists($"{_workingDirectory}/{data[0]}")) {
+                        data[0] = $"{_workingDirectory.Replace('\\', '/')}/{data[0]}";
+                        break;
+                    } else if (!File.Exists(data[0]))
+                        __error($"SWSH -> {data[0]} -> file is non existent.\n");
+                    else break;
+                }
+            }
+
+            Console.Write("Import public key? (y/n): ");
+            if (__getCommand().ToUpper() == "Y") {
+                while (true) {
+                    Console.Write("Enter path to public key: ");
+                    data[1] = __getCommand();
+                    if (data[1].Trim() == String.Empty)
+                        __error("SWSH -> key path should not be empty!\n");
+                    else {
+                        if (File.Exists(data[1]) && File.Exists($"{_workingDirectory}/{data[1]}"))
+                            __error($"SWSH -> {data[1]} -> file path is ambiguous.\n");
+                        else if (File.Exists($"{_workingDirectory}/{data[0]}")) {
+                            data[0] = $"{_workingDirectory.Replace('\\', '/')}/{data[0]}";
+                            break;
+                        } else if (!File.Exists(data[1]))
+                            __error($"SWSH -> {data[1]} -> file is non existent.\n");
+                        else break;
+                    }
+                }
+            } else
+                Console.Write("\r\b\rImport public key? (y/n): ...skipped\n");
+            File.WriteAllLines(_swshKeys, data);
+        }
         private static string[] __keygen() {
+            if((_command = (_command.Length>7)?_command.Remove(0, 7): null) == "import") {
+                __importKey();
+                return null;
+            }
             if (!_keygenstatus ^ __unstable()) {
                 __color("Key generation is unavailable.\n", ConsoleColor.DarkBlue);
                 return null;
             }
             if (File.Exists("swsh-keygen.exe")) {
                 if (!__checkHash(true) ^ __unstable()) return null;
+                Console.WriteLine("\nGenerating public/private rsa key pair.");
                 string privateFile, publicFile;
                 __color("exit", ConsoleColor.Red);
                 Console.Write(" or ");
@@ -287,7 +336,7 @@ namespace SWSH {
                     return null;
                 }
                 __color($"Your public key:\n\n{File.ReadAllLines(publicFile)[0]}\n", ConsoleColor.Green);
-                return new string[] {privateFile, publicFile};
+                File.WriteAllLines(_swshKeys, new string[] { new FileInfo(privateFile).FullName, new FileInfo(publicFile).FullName });
             } else __error($"The binary 'swsh-keygen.exe' was not found. Are you sure it's installed?\nSee: {Url.Keygen}.\n");
             return null;
         }
