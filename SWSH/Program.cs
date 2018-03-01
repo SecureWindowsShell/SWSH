@@ -39,7 +39,6 @@ namespace SWSH {
             _command = "",
             _swshAppdata = Environment.GetFolderPath((Environment.SpecialFolder.ApplicationData)) + "/SWSH",
             _swshHistory = _swshAppdata + "/swsh_history",
-            _mainDirectory = _swshAppdata + "/swsh-data/",
             _swshLicense = _swshAppdata + "/LICENSE.txt",
             _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         static void Main(string[] args) {
