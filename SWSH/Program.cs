@@ -497,22 +497,13 @@ namespace SWSH {
             "icense' for details.\n\n");
         private static string __getCommand() {
             var list = new List<string>();
-            var commands = new string[] { "version", "add", "show", "connect", "delete", "edit", "keygen", "help", "clear", "exit", "upload", "pwd", "comput" +
+            var commands = new string[] { "version", "connect", "keygen", "help", "clear", "exit", "upload", "pwd", "comput" +
                 "ehash" };
             foreach (var i in commands) list.Add(i);
             foreach (var i in Directory.GetDirectories(_workingDirectory)) list.Add($"cd {new DirectoryInfo(i).Name.ToLower()}");
-            bool requiresNickname(string data) {
-                foreach (var i in new List<string>() { "show", "connect", "delete", "edit" })
-                    if (data.StartsWith(i)) return true;
-                return false;
-            }
             try {
                 ReadLine.AutoCompletionHandler = (data, length) => {
                     var tList = new List<string>();
-                    if (requiresNickname(data) && Directory.Exists(_mainDirectory) && new DirectoryInfo(_mainDirectory).GetFiles().Length > 0)
-                        Directory.GetFiles(_mainDirectory).ToList()
-                        .Where(x => Path.GetFileNameWithoutExtension(x).Contains(data.Split(' ')[1])).ToList()
-                        .ForEach(x => { tList.Add(Path.GetFileNameWithoutExtension(x)); });
                     if (data.StartsWith("cd ") && (data.Contains("/") || data.Contains("\\")))
                         Directory.GetDirectories($"{_workingDirectory}/{Path.GetDirectoryName(data.Remove(0, 3))}").ToList()
                         .Where(x => new DirectoryInfo(x)
