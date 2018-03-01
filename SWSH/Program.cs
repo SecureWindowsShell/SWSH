@@ -87,9 +87,6 @@ namespace SWSH {
                     else if (_command.StartsWith("add")) __addConnection();
                     else if (_command.StartsWith("help")) __help();
                     else if (_command.StartsWith("connect")) __connect();
-                    else if (_command.StartsWith("show")) __show();
-                    else if (_command.StartsWith("delete")) __delete();
-                    else if (_command.StartsWith("edit")) __edit();
                     else if (_command.StartsWith("keygen")) __keygen();
                     else if (_command == "ls") __ls();
                     else if (_command.StartsWith("cd")) __cd();
