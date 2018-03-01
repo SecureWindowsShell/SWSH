@@ -295,101 +295,22 @@ namespace SWSH {
                                         throw new Exception();
                                     }
                                 }
-        private static void __show() {
-            _command = _command.Remove(0, 4).Trim();
-            if (_command == string.Empty) {
-                if (Directory.Exists(_mainDirectory) && Directory.GetFiles(_mainDirectory).Length > 0) {
-                    foreach (var file in Directory.GetFiles(_mainDirectory)) {
-                        try {
-                            var data = File.ReadAllLines(file);
-                            Console.Write($"\nDetails of {Path.GetFileNameWithoutExtension(file)}:\n");
-                            for (int i = 0; i < Path.GetFileNameWithoutExtension(file).Length + 12; i++) Console.Write("=");
-                            if (data[0] == "-password") Console.Write($"\nUsername: {data[1]}\nHost: {data[2]}\n\n");
-                            else {
-                                Console.Write($"\nPath to key: {data[0]}\nUsername: {data[1]}\nHost: {data[2]}\nStatus: ");
-                                var conInfo = __CreateConnection(Path.GetFileNameWithoutExtension(file));
-                                if (conInfo != null)
-                                    using (var connection = new SshClient(conInfo)) {
-                                        connection.Connect();
-                                        __color("Working\n\n", ConsoleColor.Green);
-                                    }
-                            }
-                        } catch (Exception exp) { __error($"{exp.Message}\n"); }
-                    }
-                } else __error("SWSH -> no nickname(s) found. Try `help`.\n");
-            } else {
-                var file = __getNickname(_command);
-                try {
-                    if (File.Exists(file)) {
-                        Console.Write($"Details of {_command}:\n");
-                        var data = File.ReadAllLines(file);
-                        for (int i = 0; i < _command.Length + 12; i++) Console.Write("=");
-                        if (data[0] == "-password") {
-                            Console.Write($"\nUsername: {data[1]}\nHost: {data[2]}\n\n");
-                        } else {
-                            Console.Write($"\nPath to key: {data[0]}\nUsername: {data[1]}\nHost: {data[2]}\nStatus: ");
-                            var conInfo = __CreateConnection(Path.GetFileNameWithoutExtension(file));
-                            if (conInfo != null)
-                                using (var connection = new SshClient(conInfo)) {
-                                    connection.Connect();
-                                    __color("Working\n\n", ConsoleColor.Green);
+                                catch (Exception) {
+                                    __color($"Connection to {ccinfo.Username}@{ccinfo.Host}, closed.\n",
+                                        ConsoleColor.Yellow);
+                                    __color("(E)xit SWSH - Any other key to reload SWSH: ", ConsoleColor.Blue);
+                                    var key = Console.ReadKey();
+                                    if (key.Key != ConsoleKey.E)
+                                        Process.Start(Assembly.GetExecutingAssembly().Location);
+                                    ssh.Disconnect();
+                                    Environment.Exit(0);
                                 }
-                        }
-                    } else __error($"SWSH -> {_command} -> nickname does not exists.\n");
-                } catch (Exception exp) { __error($"{exp.Message}\n"); }
+                            }
+                    }).Start();
+                    read.Start();
+                    while (true) ;
+                }
             }
-        }
-        private static void __delete() {
-            try {
-                var name = _command.Remove(0, 6).Trim();
-                if (File.Exists(__getNickname(name))) {
-                    __color("Are you sure you want to delete this nickname? (y/n): ", ConsoleColor.Red);
-                    var ans = __getCommand().ToUpper();
-                    if (ans == "Y") {
-                        Console.Write("Type the nickname to confirm: ");
-                        if (__getCommand() != name) __color("Aborted.\n", ConsoleColor.Yellow);
-                        else {
-                            File.Delete(__getNickname(name));
-                            __color("Deleted.\n", ConsoleColor.Green);
-                        }
-                    } else __color("Aborted.\n", ConsoleColor.Yellow);
-                } else __error($"SWSH -> {name} -> nickname does not exists.\n");
-            } catch (Exception exp) { __error($"{exp.Message}\n"); }
-        }
-        private static void __edit() {
-            _command = _command.Remove(0, 4);
-            String[] data = _command.Split(' ');
-            if (File.Exists(__getNickname(data[1]))) {
-                string[] arrLine = File.ReadAllLines(__getNickname(data[1]));
-                if (data[2] == "-user") arrLine[1] = data[3];
-                else if (data[2] == "-server") arrLine[2] = data[3];
-                else if (data[2] == "-key") {
-                    if (!File.Exists(data[3]) && data[3] != "-password") {
-                        __error($"SWSH -> {data[3]} -> file is non existent.\n");
-                        __color("exit", ConsoleColor.Red);
-                        Console.Write(" or ");
-                        __color("-e", ConsoleColor.Red);
-                        Console.Write(" to cancel.\n");
-                        while (true) {
-                            Console.Write("-key: ");
-                            var key = __getCommand();
-                            if (key == "-e" || key == "exit") {
-                                __color("Aborted.\n", ConsoleColor.Yellow);
-                                break;
-                            } else if (File.Exists(key)) {
-                                arrLine[0] = key;
-                                save();
-                            } else if (key != String.Empty) __error($"SWSH -> {key} -> file is non existent.\n");
-                        }
-                        return;
-                    } else arrLine[0] = data[3];
-                }
-                save();
-                void save() {
-                    File.WriteAllLines(__getNickname(data[1]), arrLine);
-                    __color("Updated.\n", ConsoleColor.Green);
-                }
-            } else __error($"SWSH -> {data[1]} -> nickname does not exists.\n");
         }
         private static void __keygen() {
             if (!_keygenstatus ^ __unstable()) {
