@@ -243,7 +243,7 @@ namespace SWSH {
 
         private static void __importKey() {
             string[] data = new string[2];
-            Console.WriteLine("Importing keys...");
+            Console.WriteLine("\nImporting keys...");
             while (true) {
                 Console.Write("Enter path to private key: ");
                 data[0] = __getCommand();
