@@ -441,39 +441,40 @@ namespace SWSH {
                     .ToList();
                 try {
                     var serverData = toupload.Pop().Split(':');
-                    var nickname = serverData[0];
+                    var data = serverData[0];
                     var location = serverData[1];
                     try {
-                        if (File.Exists(__getNickname(nickname))) {
                             ConnectionInfo ccinfo;
-                            ccinfo = __CreateConnection(nickname);
-                            if (ccinfo != null) {
-                                if (_command.StartsWith("--dir"))
-                                    using (var sftp = new SftpClient(ccinfo)) {
-                                        _command = _command.Replace("--dir", "");
-                                        sftp.Connect();
-                                        toupload.ForEach(x => {
-                                            var path = $"{_workingDirectory}/{x.Trim()}";
-                                            location = serverData[1] + ((serverData[1].EndsWith("/")) ? "" : "/") + x.Trim();
-                                            if (!sftp.Exists(location)) sftp.CreateDirectory(location);
-                                            __color($"Uploading <directory>: {x.Trim()}\n", ConsoleColor.Yellow);
-                                            __uploadDir(sftp, path, location);
-                                            __color("Done.\n", ConsoleColor.Green);
-                                        });
-                                    } else
-                                    using (var scp = new ScpClient(ccinfo)) {
-                                        scp.Connect();
-                                        toupload.ForEach(x => {
-                                            var path = $"{_workingDirectory}/{x.Trim()}";
-                                            if (File.Exists(path)) {
-                                                __color($"Uploading <file>: {x.Trim()}", ConsoleColor.Yellow);
-                                                scp.Upload(new FileInfo(path), location);
-                                                __color(" -> Done\n", ConsoleColor.Green);
-                                            } else __error($"SWSH -> {path.Replace('/', '\\')} -> file does not exists.\n");
-                                        });
-                                    }
-                            }
-                        } else __error($"SWSH -> {nickname} -> nickname does not exists.\n");
+                            ccinfo = __CreateConnection(data);
+                        if (ccinfo != null) {
+                            if (_command.StartsWith("--dir"))
+                                using (var sftp = new SftpClient(ccinfo)) {
+                                    _command = _command.Replace("--dir", "");
+                                    sftp.Connect();
+                                    toupload.ForEach(x => {
+                                        var path = $"{_workingDirectory}/{x.Trim()}";
+                                        location = serverData[1] + ((serverData[1].EndsWith("/")) ? "" : "/") +
+                                                   x.Trim();
+                                        if (!sftp.Exists(location)) sftp.CreateDirectory(location);
+                                        __color($"Uploading <directory>: {x.Trim()}\n", ConsoleColor.Yellow);
+                                        __uploadDir(sftp, path, location);
+                                        __color("Done.\n", ConsoleColor.Green);
+                                    });
+                                }
+                            else
+                                using (var scp = new ScpClient(ccinfo)) {
+                                    scp.Connect();
+                                    toupload.ForEach(x => {
+                                        var path = $"{_workingDirectory}/{x.Trim()}";
+                                        if (File.Exists(path)) {
+                                            __color($"Uploading <file>: {x.Trim()}", ConsoleColor.Yellow);
+                                            scp.Upload(new FileInfo(path), location);
+                                            __color(" -> Done\n", ConsoleColor.Green);
+                                        }
+                                        else __error($"SWSH -> {path.Replace('/', '\\')} -> file does not exists.\n");
+                                    });
+                                }
+                        }
                     } catch (Exception exp) { __error($"{exp.Message}\n"); }
                 } catch { __error($"SWSH -> upload {_command} -> is not the correct syntax for this command.\n"); }
             }
