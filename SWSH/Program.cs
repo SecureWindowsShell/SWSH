@@ -190,6 +190,29 @@ namespace SWSH {
             }
         }
         private static void __connect() {
+            if (!File.Exists(_swshKeys)) {
+                var data = new string[2];
+                Console.Write("SWSH private key file not found. (I)mport or (G)enerate?: ");
+                switch (Console.ReadKey().Key) {
+                    case ConsoleKey.I:
+                        __importKey();
+                        break;
+                    case ConsoleKey.G:
+                        __keygen();
+                        break;
+                }
+                return;
+            }
+            else {
+                var data = File.ReadAllLines(_swshKeys);
+                if (!File.Exists(data[0])) {
+                    Console.WriteLine("Invalid private key file.");
+                    return;
+                }
+
+                if (!File.Exists(data[1])) __color("WARNING: No public key detected.\n", ConsoleColor.Yellow);
+            }
+
             ConnectionInfo ccinfo;
             ccinfo = __CreateConnection(_command.Remove(0, 8));
             if (ccinfo != null) {
