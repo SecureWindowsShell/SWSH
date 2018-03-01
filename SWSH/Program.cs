@@ -285,17 +285,17 @@ namespace SWSH {
                 Console.Write("\r\b\rImport public key? (y/n): ...skipped\n");
             File.WriteAllLines(_swshKeys, data);
         }
-        private static string[] __keygen() {
+        private static void __keygen() {
             if((_command = (_command.Length>7)?_command.Remove(0, 7): null) == "import") {
                 __importKey();
-                return null;
+                return;
             }
             if (!_keygenstatus ^ __unstable()) {
                 __color("Key generation is unavailable.\n", ConsoleColor.DarkBlue);
-                return null;
+                return;
             }
             if (File.Exists("swsh-keygen.exe")) {
-                if (!__checkHash(true) ^ __unstable()) return null;
+                if (!__checkHash(true) ^ __unstable()) return;
                 Console.WriteLine("\nGenerating public/private rsa key pair.");
                 string privateFile, publicFile;
                 __color("exit", ConsoleColor.Red);
@@ -306,13 +306,13 @@ namespace SWSH {
                     __color("Enter path to save private key (%appdata%/SWSH/swsh.private):\t", ConsoleColor.Yellow);
                     privateFile = __getCommand();
                     if (privateFile == String.Empty) privateFile = _swshAppdata + "/swsh.private";
-                    else if (privateFile == "-e" || privateFile == "exit") return null;
+                    else if (privateFile == "-e" || privateFile == "exit") return;
                 } while (!isWritable(privateFile));
                 do {
                     __color("Enter path to save public key (%appdata%/SWSH/swsh.public):\t", ConsoleColor.Yellow);
                     publicFile = __getCommand();
                     if (publicFile == String.Empty) publicFile = _swshAppdata + "/swsh.public";
-                    else if (publicFile == "-e" || privateFile == "exit") return null;
+                    else if (publicFile == "-e" || privateFile == "exit") return;
                 } while (!isWritable(publicFile));
                 bool isWritable(string path) {
                     if (File.Exists(path)) {
@@ -333,12 +333,13 @@ namespace SWSH {
                 keygenProcess.WaitForExit();
                 if (keygenProcess.ExitCode != 0) {
                     __color($"WARNING: swsh-keygen exited with exit code {keygenProcess.ExitCode}.", ConsoleColor.Yellow);
-                    return null;
+                    return;
                 }
                 __color($"Your public key:\n\n{File.ReadAllLines(publicFile)[0]}\n", ConsoleColor.Green);
                 File.WriteAllLines(_swshKeys, new string[] { new FileInfo(privateFile).FullName, new FileInfo(publicFile).FullName });
             } else __error($"The binary 'swsh-keygen.exe' was not found. Are you sure it's installed?\nSee: {Url.Keygen}.\n");
-            return null;
+
+            return;
         }
         private static void __clear() {
             Console.Clear();
