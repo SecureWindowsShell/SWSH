@@ -569,6 +569,14 @@ namespace SWSH {
             if (read.Contains("%appdata%")) read = read.Replace("%appdata%", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace('\\', '/'));
             return read.TrimEnd().TrimStart().Trim();
         }
+
+        private static string __getPassword(string prompt) {
+            ReadLine.PasswordMode = true;
+            var password = ReadLine.Read(prompt);
+            ReadLine.GetHistory().Pop();
+            ReadLine.PasswordMode = false;
+            return password;
+        }
         private static bool __unstable() => _codename.StartsWith("unstable");
         private static void __error(string err) {
             __color("ERROR: ", ConsoleColor.Red);
@@ -582,16 +590,12 @@ namespace SWSH {
             try {
                 if (data.EndsWith("-p")) {
                     data = data.Split(' ')[0];
-                    ReadLine.PasswordMode = true;
-                    var password = ReadLine.Read($"Password for {data}: ");
-                    ReadLine.GetHistory().Pop();
-                    ReadLine.PasswordMode = false;
                     return new ConnectionInfo(
                         data.Split('@')[1],
                         data.Split('@')[0],
                         new PasswordAuthenticationMethod(
                             data.Split('@')[0],
-                            password));
+                            __getPassword($"Password for {data}: ")));
                 } else return new ConnectionInfo(
                         data.Split('@')[1],
                         data.Split('@')[0],
