@@ -30,8 +30,8 @@ SWSH is a console application that offers SSH-like connectivity with ease to use
 
 **If you are not using a [prebuilt SWSH binary](https://github.com/SecureWindowsShell/SWSH/releases), you will see SWSH complain about a checksum mismatch and exit, use `--IgnoreChecksumMismatch` to stop it from exiting.**
 
-![SWSH just doing its thing](https://user-images.githubusercontent.com/12321712/36257898-bfaba952-127e-11e8-9bd9-b63d4885f649.png)
-*SWSH (beta) just doing its thing*
+![SWSH, just doing its thing](https://user-images.githubusercontent.com/12321712/36885187-8c5fcb12-1e0b-11e8-9ded-62d58dcd3c1e.png)
+*SWSH, just doing its thing*
 
 ## Getting Started
 
