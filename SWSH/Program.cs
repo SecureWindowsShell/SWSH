@@ -154,7 +154,7 @@ namespace SWSH {
                     + "Available commands:\n"
                     + "  version                             -Check the version of swsh.\n"
                     + "  connect [user@host] (-p)            -Connects to Server over SSH.\n"
-                    + "  keygen              (options)       -Generates, imports or show SSH RSA key pair. Use `help keygen` for more.\n"
+                    + "  keygen              (options)       -Generates, imports or show SSH RSA key pair. `help keygen` for more.\n"
                     + "  help    [command]                   -Displays this help or command details.\n"
                     + "  clear                               -Clears the console.\n"
                     + "  pwd                                 -Prints working directory.\n"
