@@ -590,11 +590,12 @@ namespace SWSH {
             return new string[] {xml.GetElementsByTagName("private")[0].InnerText, xml.GetElementsByTagName("public")[0].InnerText };
         }
         private static void __writeKeys(string privateFile, string publicFile) {
+            var publickey = publicFile == null ? "" : File.ReadAllText(new FileInfo(publicFile).FullName);
             File.WriteAllLines(_swshKeys, new string[] {
                 "<?xml version=\"1.0\" encoding=\"utf-8\" ?>",
                 "<data>",
                 $"<private>{File.ReadAllText(new FileInfo(privateFile).FullName)}</private>",
-                $"<public>{publicFile ?? File.ReadAllText(new FileInfo(publicFile).FullName)}</public>",
+                $"<public>{publickey}</public>",
                 "</data>"
             });
         }
