@@ -121,9 +121,11 @@ namespace SWSH {
                             break;
                         }
                     case "keygen": {
-                            Console.WriteLine("Syntax: keygen (import)");
-                            Console.WriteLine("Generates or imports SSH RSA key pair. Requires swsh-keygen.exe.");
-                            Console.WriteLine("Default values are provided in parentheses.\nUsage: \nTo generate-> keygen\nTo import-> keygen import");
+                            Console.WriteLine("Syntax: keygen (options)");
+                            Console.WriteLine("Generates, imports or show SSH RSA key pair. Requires swsh-keygen.exe.");
+                            Console.WriteLine("Default values are provided in parentheses.");
+                            Console.WriteLine("\nOptions:\n\timport\t\t- Imports RSA key pair.");
+                            Console.WriteLine("\tshow [private]\t- Print RSA keys. By default, prints public key. Use `private` to print private key.");
                             break;
                         }
                     case "pwd": {
@@ -152,7 +154,7 @@ namespace SWSH {
                     + "Available commands:\n"
                     + "  version                             -Check the version of swsh.\n"
                     + "  connect [user@host] (-p)            -Connects to Server over SSH.\n"
-                    + "  keygen  (import)                    -Generates or imports SSH RSA key pair.\n"
+                    + "  keygen              (options)       -Generates, imports or show SSH RSA key pair. Use `help keygen` for more.\n"
                     + "  help    [command]                   -Displays this help or command details.\n"
                     + "  clear                               -Clears the console.\n"
                     + "  pwd                                 -Prints working directory.\n"
