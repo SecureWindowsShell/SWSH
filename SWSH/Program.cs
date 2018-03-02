@@ -277,6 +277,7 @@ namespace SWSH {
             __writeKeys(data[0], data[1] == null ? "" : data[1]);
         }
         private static void __keygen() {
+            _command = (_command.Length > 7) ? _command.Remove(0, 7):null;
             if (File.Exists(_swshKeys)) {
                 __color("WARNING: This action will overwrite previously generated or imported keys in the data file but not the original keys. Continue? (y/n): ", ConsoleColor.Yellow);
                 if (Console.ReadKey().Key != ConsoleKey.Y) {
@@ -284,7 +285,7 @@ namespace SWSH {
                     return;
                 }
             }
-            if ((_command = (_command.Length>7)?_command.Remove(0, 7): null) == "import") {
+            if (_command == "import") {
                 __importKey();
                 return;
             }
