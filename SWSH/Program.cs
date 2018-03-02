@@ -152,17 +152,17 @@ namespace SWSH {
                 Console.Write(
                       "Usage: <command> [arguments] (options)\n"
                     + "Available commands:\n"
-                    + "  version                             -Check the version of swsh.\n"
-                    + "  connect [user@host] (-p)            -Connects to Server over SSH.\n"
-                    + "  keygen              (options)       -Generates, imports or show SSH RSA key pair. `help keygen` for more.\n"
-                    + "  help    [command]                   -Displays this help or command details.\n"
-                    + "  clear                               -Clears the console.\n"
-                    + "  pwd                                 -Prints working directory.\n"
-                    + "  computehash [(>/>>) path/to/file]   -Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\n"
-                    + "  exit                                -Exits.\n"
-                    + "  ls                                  -Lists all files and directories in working directory.\n"
-                    + "  cd [arg]                            -Changes directory to 'arg'. arg = directory name.\n"
-                    + "  upload [args] [nickname]:[location] -Uploads files and directories. 'upload -h' for help.\n");
+                    + "  version                              -Check the version of swsh.\n"
+                    + "  connect [user@host] (-p)             -Connects to Server over SSH.\n"
+                    + "  keygen              (options)        -Generates, imports or show SSH RSA key pair. `help keygen` for more.\n"
+                    + "  help    [command]                    -Displays this help or command details.\n"
+                    + "  clear                                -Clears the console.\n"
+                    + "  pwd                                  -Prints working directory.\n"
+                    + "  computehash [(>/>>) path/to/file]    -Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\n"
+                    + "  exit                                 -Exits.\n"
+                    + "  ls                                   -Lists all files and directories in working directory.\n"
+                    + "  cd [arg]                             -Changes directory to 'arg'. arg = directory name.\n"
+                    + "  upload [args] [user@host]:[location] -Uploads files and directories. 'upload -h' for help.\n");
             }
         }
         private static void __connect() {
@@ -427,9 +427,10 @@ namespace SWSH {
         }
         private static void __upload() {
             if ((_command = _command.Remove(0, 7)) == "-h") {
-                Console.WriteLine("upload [--dir]* [args] [nickname]:[location]\n\n'args' are seperated using spaces ( ) and last 'arg' will be treated as s" +
-                    "erver data which includes nickname as well as the location, part after the colon (:), where the data is to be uploaded. Use flag '--dir" +
-                    "' to upload directiories. Do not use absolute paths for local path, change working directory to navigate.");
+                Console.WriteLine("upload [--dir]* [args] [user@host]:[location]\n\n'args' are seperated using spaces ( ) and last 'arg' will be treated as " +
+                    "server data which includes username and host location as well as the location of data to upload, part after the colon (:), where the da" +
+                    "ta is to be uploaded. Use flag '--dir' to upload directiories. Do not use absolute paths for local path, change working directory to na" +
+                    "vigate.");
             } else {
                 List<string> toupload = (_command.StartsWith("--dir")) ? _command.Replace("--dir", "").Trim().Split(' ').ToList() : _command.Trim().Split(' ')
                     .ToList();
