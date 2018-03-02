@@ -152,17 +152,17 @@ namespace SWSH {
                 Console.Write(
                       "Usage: <command> [arguments] (options)\n"
                     + "Available commands:\n"
-                    + "  version                              -Check the version of swsh.\n"
-                    + "  connect [user@host] (-p)             -Connects to Server over SSH.\n"
-                    + "  keygen              (options)        -Generates, imports or show SSH RSA key pair. `help keygen` for more.\n"
-                    + "  help    [command]                    -Displays this help or command details.\n"
-                    + "  clear                                -Clears the console.\n"
-                    + "  pwd                                  -Prints working directory.\n"
-                    + "  computehash [(>/>>) path/to/file]    -Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\n"
-                    + "  exit                                 -Exits.\n"
-                    + "  ls                                   -Lists all files and directories in working directory.\n"
-                    + "  cd [arg]                             -Changes directory to 'arg'. arg = directory name.\n"
-                    + "  upload [args] [user@host]:[location] -Uploads files and directories. 'upload -h' for help.\n");
+                    + "  version                     -Check the version of swsh.\n"
+                    + "  connect [user@host] (-p)    -Connects to Server over SSH.\n"
+                    + "  keygen (options)            -Generates, imports or show SSH RSA key pair. `help keygen` for more.\n"
+                    + "  help [command]              -Displays this help or command details.\n"
+                    + "  clear                       -Clears the console.\n"
+                    + "  pwd                         -Prints working directory.\n"
+                    + "  computehash [(>/>>) path]   -Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\n"
+                    + "  exit                        -Exits.\n"
+                    + "  ls                          -Lists all files and directories in working directory.\n"
+                    + "  cd [arg]                    -Changes directory to 'arg'. arg = directory name.\n"
+                    + "  upload [arguments]          -Uploads files and directories. 'upload -h' for help.\n");
             }
         }
         private static void __connect() {
