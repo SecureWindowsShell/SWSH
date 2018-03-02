@@ -166,23 +166,24 @@ namespace SWSH {
             }
         }
         private static void __connect() {
-            if (!File.Exists(_swshKeys)) {
-                Console.Write("SWSH private key file not found. (I)mport or (G)enerate?: ");
-                switch (Console.ReadKey().Key) {
-                    case ConsoleKey.I:
-                        __importKey();
-                        break;
-                    case ConsoleKey.G:
-                        __keygen();
-                        break;
-                    default:
-                        Console.WriteLine(" <= Invalid option.");
-                        return;
+            if (!_command.EndsWith("-p")) { 
+                if (!File.Exists(_swshKeys)) {
+                    Console.Write("SWSH private key file not found. (I)mport or (G)enerate?: ");
+                    switch (Console.ReadKey().Key) {
+                        case ConsoleKey.I:
+                            __importKey();
+                            break;
+                        case ConsoleKey.G:
+                            __keygen();
+                            break;
+                        default:
+                            Console.WriteLine(" <= Invalid option.");
+                            return;
+                    }
+                    return;
                 }
-                return;
+                    if (String.IsNullOrEmpty(__readKeys()[1])) __color("WARNING: No public key detected.\n", ConsoleColor.Yellow);
             }
-                if (String.IsNullOrEmpty(__readKeys()[1])) __color("WARNING: No public key detected.\n", ConsoleColor.Yellow);
-
             ConnectionInfo ccinfo;
             ccinfo = __CreateConnection(_command.Remove(0, 8));
             if (ccinfo != null) {
