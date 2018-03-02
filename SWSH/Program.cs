@@ -141,7 +141,7 @@ namespace SWSH {
                         }
                     case "help": {
                             Console.WriteLine("Syntax: help [command]");
-                            Console.WriteLine("Displays this help or command details.\nUsage: help add");
+                            Console.WriteLine("Displays this help or command details.\nUsage: help pwd");
                             break;
                         }
                     default:
