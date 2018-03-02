@@ -301,13 +301,13 @@ namespace SWSH {
                 __color("-e", ConsoleColor.Red);
                 Console.Write(" to cancel.\n");
                 do {
-                    __color("Enter path to save private key (%appdata%/SWSH/swsh.private):\t", ConsoleColor.Yellow);
+                    __color("Enter absolute path to save private key (%appdata%/SWSH/swsh.private):\t", ConsoleColor.Yellow);
                     privateFile = __getCommand();
                     if (privateFile == String.Empty) privateFile = _swshAppdata + "/swsh.private";
                     else if (privateFile == "-e" || privateFile == "exit") return;
                 } while (!isWritable(privateFile));
                 do {
-                    __color("Enter path to save public key (%appdata%/SWSH/swsh.public):\t", ConsoleColor.Yellow);
+                    __color("Enter absolute path to save public key (%appdata%/SWSH/swsh.public):\t", ConsoleColor.Yellow);
                     publicFile = __getCommand();
                     if (publicFile == String.Empty) publicFile = _swshAppdata + "/swsh.public";
                     else if (publicFile == "-e" || privateFile == "exit") return;
