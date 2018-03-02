@@ -35,82 +35,61 @@ SWSH is a console application that offers SSH-like connectivity with ease to use
 
 ## Getting Started
 
-### Nicknames
-
-SSH connections are saved as **nicknames**, each nickname has to be unique.
-
 ### Generating SSH keys
 
-SSH keys serve as a means of identifying yourself to an SSH server. To Generate your private and public key, SWSH uses an add-on, swsh-keygen. You can [build swsh-keygen](https://github.com/SecureWindowsShell/swsh-keygen) yourself if you want and place the executable (.exe) in SWSH's root directory. 
+SSH keys serve as a means of identifying yourself to an SSH server. To Generate your private and public key, SWSH uses an add-on, swsh-keygen. You can [build swsh-keygen](https://github.com/SecureWindowsShell/swsh-keygen) yourself if you want and place the executable (.exe) in SWSH's root (installation) directory.
 
-Use command ```keygen``` to tell SWSH that you want to generate a new RSA key pair for SSH connection after that just follow the prompts. 
+Use command ```keygen``` to tell SWSH that you want to generate a new RSA key pair for SSH connection after that just follow the prompts.
 You'll be asked for locations to store your keys, leave it blank if you want it to be default.
 Output will be similar to this:
 
 ```swsh
 /users/muzzammil:swsh> keygen
+
+Generating public/private rsa key pair.
 exit or -e to cancel.
-Enter path to save private key (swsh.private): 
-Enter path to save public key (swsh.public):
+Enter absolute path to save private key (%appdata%/SWSH/swsh.private):
+Enter absolute path to save public key (%appdata%/SWSH/swsh.public):
 Your public key:
 
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDIAHPhxzRApbQgcgDCXysDqkBezHgHBHJTeBpfcGXfkHyGKUlbv7X1Ftz5Qyl6lEPwTg2vOR+FCMKbOOVbv5ISZXJJyGSiPPqis0Jfp58wmSjPuyS78N+ZgqynD6SXbcKbJhEYtriPBKueraj3lY3DYQjRQR42YoeAqjcAg2Riew==
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQCt2MxdswuuUvmaY4JK6kP4lYIqGy0KeHCqcx1NEjB4EcqH7+MIeXGbdikACvP3wlOAEAt+7PMEhBHf7nL2S2SsOybpegJw0piiMeOIPJwQxIQFaRWyz3xn0ESItzBizsQ4yxfQiG37sFkMeQVnP5fHuc2+Z4JZ5SD56Dh1xxgnEw==
 ```
+
+### Importing SSH keys
+
+If you already have SSH keys and want to use them instead of creating a new pair, you can! Use ```keygen import``` command to do so and just follow the prompts.
 
 NOTE: DO **NOT** SHARE YOUR PRIVATE KEY!
 
-### Making a nickname with Key
+### Connecting to a host
 
-To add a new nickname run ```add``` and follow the prompts:
+To connect run ```connect username@host```.
 
-```swsh
-Path to private key: C:\path\to\ssh\private.key
-Username: root
-Server: my.server.ssh
-Unique Nickname: server.ssh
-```
+To use a password connection, use tag `-p` like this: ```connect username@host -p```.
 
-### Making a nickname with Password
-
-To add a new nickname run ```add -password``` and follow the prompts:
+If done properly, output would be similar to the following:
 
 ```swsh
-Username: root
-Server: my.server.ssh
-Unique Nickname: server.ssh
-```
-
-### Connecting to server
-
-To connect run ```connect nickname```.
-
-If done properly, output would be similar to the following (you will be asked for a password if you didn't add a key):
-
-```swsh
-Waiting for response from usr@host...
-Connected to usr@host...
+Waiting for response from username@host...
+Connected to username@host...
 ~:/ $
 ```
 
 ## Commands
 
-| Command                             | Description                                                            |
-|:------------------------------------|:-----------------------------------------------------------------------|
-| version                             | Check the version of swsh.                                             |
-| add    [-password]                  | Add a new connection either using private key or password (-password). |
-| show    [nickname]                  | Show nicknames/Details of a nickname.                                  |
-| connect [nickname]                  | Connects to Server over SSH.                                           |
-| delete  [nickname]                  | Deletes connection's nickname.                                         |
-| edit    [nickname] [arg]]           | Edits nickname, use one argument at a time.                            |
-| keygen                              | Generates SSH RSA key pair.                                            |
-| help    [command]                   | Displays this help or command details.                                 |
-| clear                               | Clears the console.                                                    |
-| pwd                                 | Prints working directory.                                              |
-| computehash [(>/>>) path/to/file]   | Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.  |
-| exit                                | Exits.                                                                 |
-| ls                                  | Lists all files and directories in working directory.                  |
-| cd [arg]                            | Changes directory to 'arg'. arg = directory name.                      |
-| upload [args] [nickname]:[location] | Uploads files and directories. 'upload -h' for help.                   |
+| Command                                   | Description                                                           |
+|:------------------------------------------|:----------------------------------------------------------------------|
+| [version](#version)                       | Check the version of swsh.                                            |
+| [connect [user@host] (-p)](#connect)      | Connects to Server over SSH.                                          |
+| [keygen (options)](#keygen)               | Generates SSH RSA key pair.                                           |
+| [help    [command]](#help)                | Displays this help or command details.                                |
+| [clear](#clear)                           | Clears the console.                                                   |
+| [pwd](#pwd)                               | Prints working directory.                                             |
+| [computehash [(>/>>) path]](#computehash) | Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen. |
+| [exit](#exit)                             | Exits.                                                                |
+| [ls](#ls)                                 | Lists all files and directories in working directory.                 |
+| [cd [arg]](#cd)                           | Changes directory to 'arg'. arg = directory name.                     |
+| [upload [arguments]](#upload)             | Uploads files and directories. 'upload -h' for help.                  |
 
 For more, see our [documentation](DOCUMENTATION.md).
 
