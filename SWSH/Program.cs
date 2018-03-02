@@ -278,6 +278,15 @@ namespace SWSH {
         }
         private static void __keygen() {
             _command = (_command.Length > 7) ? _command.Remove(0, 7):null;
+            if (_command != null && _command.StartsWith("show")) {
+                if (_command.Remove(0, 4).Trim() == "private") {
+                    Console.WriteLine(__readKeys()[0]);
+                } else {
+                    if (!String.IsNullOrEmpty(__readKeys()[1])) Console.WriteLine(__readKeys()[1]);
+                    else Console.WriteLine("No public key detected.");
+                }
+                return;
+            }
             if (File.Exists(_swshKeys)) {
                 __color("WARNING: This action will overwrite previously generated or imported keys in the data file but not the original keys. Continue? (y/n): ", ConsoleColor.Yellow);
                 if (Console.ReadKey().Key != ConsoleKey.Y) {
