@@ -27,6 +27,8 @@ using System.Reflection;
 using System.Security.Principal;
 using System.Security.Cryptography;
 using System.Net;
+using System.Text;
+using System.Xml;
 
 namespace SWSH {
     public static class Program {
@@ -163,7 +165,6 @@ namespace SWSH {
         }
         private static void __connect() {
             if (!File.Exists(_swshKeys)) {
-                var data = new string[2];
                 Console.Write("SWSH private key file not found. (I)mport or (G)enerate?: ");
                 switch (Console.ReadKey().Key) {
                     case ConsoleKey.I:
@@ -178,15 +179,7 @@ namespace SWSH {
                 }
                 return;
             }
-            else {
-                var data = File.ReadAllLines(_swshKeys);
-                if (!File.Exists(data[0])) {
-                    Console.WriteLine("Invalid private key file.");
-                    return;
-                }
-
-                if (!File.Exists(data[1])) __color("WARNING: No public key detected.\n", ConsoleColor.Yellow);
-            }
+                if (String.IsNullOrEmpty(__readKeys()[1])) __color("WARNING: No public key detected.\n", ConsoleColor.Yellow);
 
             ConnectionInfo ccinfo;
             ccinfo = __CreateConnection(_command.Remove(0, 8));
@@ -281,10 +274,17 @@ namespace SWSH {
                 }
             } else
                 Console.Write("\r\b\rImport public key? (y/n): ...skipped\n");
-            File.WriteAllLines(_swshKeys, data);
+            __writeKeys(data[0], data[1] == null ? "" : data[1]);
         }
         private static void __keygen() {
-            if((_command = (_command.Length>7)?_command.Remove(0, 7): null) == "import") {
+            if (File.Exists(_swshKeys)) {
+                __color("WARNING: This action will overwrite previously generated or imported keys in the data file but not the original keys. Continue? (y/n): ", ConsoleColor.Yellow);
+                if (Console.ReadKey().Key != ConsoleKey.Y) {
+                    Console.WriteLine();
+                    return;
+                }
+            }
+            if ((_command = (_command.Length>7)?_command.Remove(0, 7): null) == "import") {
                 __importKey();
                 return;
             }
@@ -334,7 +334,7 @@ namespace SWSH {
                     return;
                 }
                 __color($"Your public key:\n\n{File.ReadAllLines(publicFile)[0]}\n", ConsoleColor.Green);
-                File.WriteAllLines(_swshKeys, new string[] { new FileInfo(privateFile).FullName, new FileInfo(publicFile).FullName });
+                __writeKeys(privateFile, publicFile);
             } else __error($"The binary 'swsh-keygen.exe' was not found. Are you sure it's installed?\nSee: {Url.Keygen}.\n");
 
             return;
@@ -583,8 +583,19 @@ namespace SWSH {
             Console.Write(err);
         }
 
-        private static string __getPrivateKey() {
-            return File.ReadAllLines("swsh-settings")[0];
+        private static string[] __readKeys() {
+            var xml = new XmlDocument();
+            xml.Load(_swshKeys);
+            return new string[] {xml.GetElementsByTagName("private")[0].InnerText, xml.GetElementsByTagName("public")[0].InnerText };
+        }
+        private static void __writeKeys(string privateFile, string publicFile) {
+            File.WriteAllLines(_swshKeys, new string[] {
+                "<?xml version=\"1.0\" encoding=\"utf-8\" ?>",
+                "<data>",
+                $"<private>{File.ReadAllText(new FileInfo(privateFile).FullName)}</private>",
+                $"<public>{publicFile ?? File.ReadAllText(new FileInfo(publicFile).FullName)}</public>",
+                "</data>"
+            });
         }
         private static ConnectionInfo __CreateConnection(string data) {
             try {
@@ -601,11 +612,7 @@ namespace SWSH {
                         data.Split('@')[0],
                         new PrivateKeyAuthenticationMethod(
                             data.Split('@')[0],
-                            new PrivateKeyFile(
-                                new FileStream(
-                                    __getPrivateKey(),
-                                    FileMode.Open,
-                                    FileAccess.Read))));
+                            new PrivateKeyFile(new StreamReader(new MemoryStream(Encoding.ASCII.GetBytes(__readKeys()[0]))).BaseStream)));
             } catch (Exception exp) { __error($"{exp.Message}\n"); }
             return null;
         }
