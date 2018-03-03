@@ -77,19 +77,19 @@ Connected to username@host...
 
 ## Commands
 
-| Command                                   | Description                                                           |
-|:------------------------------------------|:----------------------------------------------------------------------|
-| [version](#version)                       | Check the version of swsh.                                            |
-| [connect [user@host] (-p)](#connect)      | Connects to Server over SSH.                                          |
-| [keygen (options)](#keygen)               | Generates SSH RSA key pair.                                           |
-| [help    [command]](#help)                | Displays this help or command details.                                |
-| [clear](#clear)                           | Clears the console.                                                   |
-| [pwd](#pwd)                               | Prints working directory.                                             |
-| [computehash [(>/>>) path]](#computehash) | Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen. |
-| [exit](#exit)                             | Exits.                                                                |
-| [ls](#ls)                                 | Lists all files and directories in working directory.                 |
-| [cd [arg]](#cd)                           | Changes directory to 'arg'. arg = directory name.                     |
-| [upload [arguments]](#upload)             | Uploads files and directories. 'upload -h' for help.                  |
+| Command                   | Description                                                           |
+|:--------------------------|:----------------------------------------------------------------------|
+| version                   | Check the version of swsh.                                            |
+| connect [user@host] (-p)  | Connects to Server over SSH.                                          |
+| keygen (options)          | Generates SSH RSA key pair.                                           |
+| help    [command]         | Displays this help or command details.                                |
+| clear                     | Clears the console.                                                   |
+| pwd                       | Prints working directory.                                             |
+| computehash [(>/>>) path] | Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen. |
+| exit                      | Exits.                                                                |
+| ls                        | Lists all files and directories in working directory.                 |
+| cd [arg]                  | Changes directory to 'arg'. arg = directory name.                     |
+| upload [arguments]        | Uploads files and directories. 'upload -h' for help.                  |
 
 For more, see our [documentation](DOCUMENTATION.md).
 
