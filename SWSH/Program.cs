@@ -80,7 +80,9 @@ namespace SWSH {
                     Color("swsh> ", ConsoleColor.DarkGray);
                     Command = GetCommand();
                     if (Command.StartsWith("swsh")) {
-                        Color("WARNING:\nThis type of commands is deprecated and will stop working in future.\nPlease take a look at our latest documentation or use `help` command.\n", ConsoleColor.Yellow);
+                        Color(
+                            "WARNING:\nThis type of commands is deprecated and will stop working in future.\nPlease take a look at our latest documentation or"
+                            + " use `help` command.\n", ConsoleColor.Yellow);
                         if (Command.StartsWith("swsh --")) Command = Command.Remove(0, 7);
                     }
                     if (Command == "version") GetVersion();
@@ -279,7 +281,9 @@ namespace SWSH {
                 return;
             }
             if (File.Exists(Keys)) {
-                Color("WARNING: This action will overwrite previously generated or imported keys in the data file but not the original keys. Continue? (y/n): ", ConsoleColor.Yellow);
+                Color(
+                    "WARNING: This action will overwrite previously generated or imported keys in the data file but not the original keys. Continue? (y/n): ",
+                    ConsoleColor.Yellow);
                 if (Console.ReadKey().Key != ConsoleKey.Y) {
                     Console.WriteLine();
                     return;
@@ -413,7 +417,10 @@ namespace SWSH {
         }
         private static void Upload() {
             if ((Command = Command.Remove(0, 7)) == "-h") {
-                Console.WriteLine("upload [--dir]* [args] [user@host]:[location]\n\n'args' are seperated using spaces ( ) and last 'arg' will be treated as server data which includes username and host location as well as the location of data to upload, part after the colon (:), where the data is to be uploaded. Use flag '--dir' to upload directiories. Do not use absolute paths for local path, change working directory to navigate.");
+                Console.WriteLine(
+                    "upload [--dir]* [args] [user@host]:[location]\n\n'args' are seperated using spaces ( ) and last 'arg' will be treated as server data whic" 
+                    + "h includes username and host location as well as the location of data to upload, part after the colon (:), where the data is to be uplo"
+                    + "aded. Use flag '--dir' to upload directiories. Do not use absolute paths for local path, change working directory to navigate.");
             } else {
                 var toupload = Command.StartsWith("--dir") ? Command.Replace("--dir", "").Trim().Split(' ').ToList() : Command.Trim().Split(' ').ToList();
                 try {
@@ -475,7 +482,9 @@ namespace SWSH {
             return retVal;
         }
         private static string GetVersion() {
-            Console.Write("   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __  /  \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
+            Console.Write(
+                "   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __  /  \n/____/ |_" 
+                + "_/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
             Console.Write($"\nRelease: {Codename} {Version}\n");
             return $"{Codename} {Version}";
         }
@@ -532,7 +541,10 @@ namespace SWSH {
                 .ComputeHash(File.ReadAllBytes(path)))
                 .Select(x => x.ToString("x2"))
                 .Aggregate((x, y) => x + y);
-        private static void Notice() => Console.Write("SWSH - Secure Windows Shell\nCopyright (C) 2017  Muhammad Muzzammil\nThis program comes with ABSOLUTELY NO WARRANTY; for details type `license'.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions; type `license' for details.\n\n");
+        private static void Notice() => 
+            Console.Write("SWSH - Secure Windows Shell\nCopyright (C) 2017  Muhammad Muzzammil\nThis program comes with ABSOLUTELY NO WARRANTY; for details ty"
+                          + "pe `license'.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions; type `license' for detail"
+                          + "s.\n\n");
         private static string GetCommand() {
             var list = new List<string>();
             var commands = new[] { "version", "connect", "keygen", "help", "clear", "exit", "upload", "pwd", "computehash" };
@@ -554,7 +566,8 @@ namespace SWSH {
             } catch (IndexOutOfRangeException) { }
             var read = ReadLine.Read();
             File.AppendAllText(History, $"[{DateTime.UtcNow} UTC]\t=>\t{read}\n");
-            if (read.Contains("%appdata%")) read = read.Replace("%appdata%", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace('\\', '/'));
+            if (read.Contains("%appdata%"))
+                read = read.Replace("%appdata%", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace('\\', '/'));
             return read.TrimEnd().TrimStart().Trim();
         }
         private static string GetPassword(string prompt) {
