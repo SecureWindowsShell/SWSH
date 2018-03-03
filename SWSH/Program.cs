@@ -32,7 +32,8 @@ using Renci.SshNet;
 
 namespace SWSH {
     public static class Program {
-        public static bool KeygenIsAvailable;
+        public static bool KeygenIsAvailable { get; set; }
+        public static bool Unstable => Codename.StartsWith("unstable");
         public static string Version => "";
         public static string Codename => "unstable-titan";
         public static string AppDataDirectory =>
@@ -40,8 +41,8 @@ namespace SWSH {
         public static string History => $"{AppDataDirectory}/swsh_history";
         public static string Keys => $"{AppDataDirectory}/swsh_keys";
         public static string License => $"{AppDataDirectory}/LICENSE.txt";
-        public static bool Unstable => Codename.StartsWith("unstable");
-        public static string Command = "", WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        public static string Command { get; set; }
+        public static string WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         private static void Main(string[] args) {
             if (!Directory.Exists(AppDataDirectory)) Directory.CreateDirectory(AppDataDirectory);
             Console.Title = "SWSH - Secure Windows Shell";
