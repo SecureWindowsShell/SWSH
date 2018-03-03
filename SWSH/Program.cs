@@ -273,7 +273,7 @@ namespace SWSH {
                 }
             } else
                 Console.Write("\r\b\rImport public key? (y/n): ...skipped\n");
-            WriteKeys(data[0], data[1] == null ? "" : data[1]);
+            WriteKeys(data[0], data[1] ?? "");
         }
         private static void Keygen() {
             Command = Command.Length > 7 ? Command.Remove(0, 7):null;
