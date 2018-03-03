@@ -183,52 +183,54 @@ namespace SWSH {
             }
 
             var ccinfo = CreateConnection(Command.Remove(0, 8));
-            if (ccinfo == null) return;
-            Console.Write($"Waiting for response from {ccinfo.Username}@{ccinfo.Host}...\n");
-            using (var ssh = new SshClient(ccinfo)) {
-                ssh.Connect();
-                Color($"Connected to {ccinfo.Username}@{ccinfo.Host}...\n", ConsoleColor.Green);
-                var actual = ssh.CreateShellStream(
-                    "xterm-256color",
-                    (uint) Console.BufferWidth,
-                    (uint) Console.BufferHeight,
-                    (uint) Console.BufferWidth,
-                    (uint) Console.BufferHeight,
-                    Console.BufferHeight, null);
-                //Read Thread
-                var read = new Thread(() => {
-                    if (!actual.CanRead) return;
-                    while (true)
-                        Console.WriteLine(actual.ReadLine());
-                });
-                //Write Thread
-                new Thread(() => {
-                    if (!actual.CanWrite) return;
-                    while (true) {
-                        try {
-                            actual.WriteLine("");
-                            var input = Console.ReadLine();
-                            Console.Write("\b\r\b\r");
-                            actual.WriteLine(input);
-                            if (input != "exit") continue;
-                            actual.Dispose();
-                            read.Abort();
-                            throw new Exception();
-                        }
-                        catch (Exception) {
-                            Color($"Connection to {ccinfo.Username}@{ccinfo.Host}, closed.\n",
-                                ConsoleColor.Yellow);
-                            Color("(E)xit SWSH - Any other key to reload SWSH: ", ConsoleColor.Blue);
-                            var key = Console.ReadKey();
-                            if (key.Key != ConsoleKey.E)
-                                Process.Start(Assembly.GetExecutingAssembly().Location);
-                            ssh.Disconnect();
-                            Environment.Exit(0);
-                        }
-                    }
-                }).Start();
-                read.Start();
-                while (true) { }
+            if (ccinfo != null) {
+                Console.Write($"Waiting for response from {ccinfo.Username}@{ccinfo.Host}...\n");
+                using (var ssh = new SshClient(ccinfo)) {
+                    ssh.Connect();
+                    Color($"Connected to {ccinfo.Username}@{ccinfo.Host}...\n", ConsoleColor.Green);
+                    var actual = ssh.CreateShellStream(
+                        "xterm-256color",
+                        (uint) Console.BufferWidth,
+                        (uint) Console.BufferHeight,
+                        (uint) Console.BufferWidth,
+                        (uint) Console.BufferHeight,
+                        Console.BufferHeight, null);
+                    //Read Thread
+                    var read = new Thread(() => {
+                        if (actual.CanRead)
+                            while (true)
+                                Console.WriteLine(actual.ReadLine());
+                    });
+                    //Write Thread
+                    new Thread(() => {
+                        if (actual.CanWrite)
+                            while (true) {
+                                try {
+                                    actual.WriteLine("");
+                                    var input = Console.ReadLine();
+                                    Console.Write("\b\r\b\r");
+                                    actual.WriteLine(input);
+                                    if (input == "exit") {
+                                        actual.Dispose();
+                                        read.Abort();
+                                        throw new Exception();
+                                    }
+                                }
+                                catch (Exception) {
+                                    Color($"Connection to {ccinfo.Username}@{ccinfo.Host}, closed.\n",
+                                        ConsoleColor.Yellow);
+                                    Color("(E)xit SWSH - Any other key to reload SWSH: ", ConsoleColor.Blue);
+                                    var key = Console.ReadKey();
+                                    if (key.Key != ConsoleKey.E)
+                                        Process.Start(Assembly.GetExecutingAssembly().Location);
+                                    ssh.Disconnect();
+                                    Environment.Exit(0);
+                                }
+                            }
+                    }).Start();
+                    read.Start();
+                    while (true) { }
+                }
             }
         }
         private static void ImportKey() {
@@ -317,10 +319,12 @@ namespace SWSH {
                     else if (publicFile == "-e" || privateFile == "exit") return;
                 } while (!IsWritable(publicFile));
                 bool IsWritable(string path) {
-                    if (!File.Exists(path)) return true;
-                    Color($"File exists: {new FileInfo(path).FullName}\n\n\nOverwrite? (y/n): ", ConsoleColor.Red);
-                    return GetCommand().ToUpper() == "Y";
+                    if (File.Exists(path)) {
+                        Color($"File exists: {new FileInfo(path).FullName}\n\n\nOverwrite? (y/n): ", ConsoleColor.Red);
+                        return GetCommand().ToUpper() == "Y";
+                    }
 
+                    return true;
                 }
                 var keygenProcess = new Process {
                     StartInfo = new ProcessStartInfo {
@@ -356,48 +360,50 @@ namespace SWSH {
                 data.ForEach(x => {
                     if (File.Exists(x)) {
                         var info = new FileInfo(x);
-                        if (info.Attributes.ToString().Contains("Hidden")) return;
-                        var owner = File.GetAccessControl(x).GetOwner(typeof(NTAccount)).ToString().Split('\\')[1];
-                        var size = (info.Length > 1024 ? (info.Length / 1024 > 1024 ? info.Length / 1024 / 1024 : info.Length / 1024) :
+                        if (!info.Attributes.ToString().Contains("Hidden")) {
+                            var owner = File.GetAccessControl(x).GetOwner(typeof(NTAccount)).ToString().Split('\\')[1];
+                            var size = (info.Length > 1024 ? (info.Length / 1024 > 1024 ? info.Length / 1024 / 1024 : info.Length / 1024) :
                             info.Length).ToString();
-                        var toApp = "";
-                        owner = owner.Length >= 10 ? owner.Remove(5) + "..." + owner.Remove(0, owner.Length - 2) : owner;
-                        if (owner.Length < 10) for (int i = 0; i < 10 - owner.Length; i++) toApp += " ";
-                        owner += toApp;
-                        if (size.Length < 4) for (int i = 0; i < 3 - size.Length; i++) toApp += " ";
-                        size = toApp + size;
-                        Color(size, ConsoleColor.Green);
-                        Color(info.Length > 1024 ? (info.Length / 1024 > 1024 ? "MB" : "KB") : "B", ConsoleColor.DarkGreen);
-                        Color($"\t{owner}  ", ConsoleColor.Yellow);
-                        Color(
-                            $"{($"{info.LastWriteTime.Date:d}".Split('/')[0].Length > 1 ? "" : " ")}" +
-                            $"{$"{info.LastWriteTime.Date:d}".Split('/')[0]} " +
-                            $"{$"{info.LastWriteTime.Date:m}".Remove(3)} " +
-                            $"{info.LastWriteTime.ToLocalTime():HH:mm}    ",
-                            ConsoleColor.Blue);
-                        Color(info.Name, Path.GetFileNameWithoutExtension(x).Length > 0 ? ConsoleColor.Magenta : ConsoleColor.Cyan);
-                        Console.WriteLine();
+                            var toApp = "";
+                            owner = owner.Length >= 10 ? owner.Remove(5) + "..." + owner.Remove(0, owner.Length - 2) : owner;
+                            if (owner.Length < 10) for (int i = 0; i < 10 - owner.Length; i++) toApp += " ";
+                            owner += toApp;
+                            if (size.Length < 4) for (int i = 0; i < 3 - size.Length; i++) toApp += " ";
+                            size = toApp + size;
+                            Color(size, ConsoleColor.Green);
+                            Color(info.Length > 1024 ? (info.Length / 1024 > 1024 ? "MB" : "KB") : "B", ConsoleColor.DarkGreen);
+                            Color($"\t{owner}  ", ConsoleColor.Yellow);
+                            Color(
+                                $"{($"{info.LastWriteTime.Date:d}".Split('/')[0].Length > 1 ? "" : " ")}" +
+                                $"{$"{info.LastWriteTime.Date:d}".Split('/')[0]} " +
+                                $"{$"{info.LastWriteTime.Date:m}".Remove(3)} " +
+                                $"{info.LastWriteTime.ToLocalTime():HH:mm}    ",
+                                ConsoleColor.Blue);
+                            Color(info.Name, Path.GetFileNameWithoutExtension(x).Length > 0 ? ConsoleColor.Magenta : ConsoleColor.Cyan);
+                            Console.WriteLine();
+                        }
                     } else if (Directory.Exists(x)) {
                         var info = new DirectoryInfo(x);
-                        if (info.Attributes.ToString().Contains("Hidden")) return;
-                        var owner = File.GetAccessControl(x).GetOwner(typeof(NTAccount)).ToString().Split('\\')[1];
-                        owner = owner.Length >= 10 ? owner.Remove(5) + "..." + owner.Remove(0, owner.Length - 2) : owner;
-                        var toApp = "";
-                        if (owner.Length < 10) for (int i = 0; i < 10 - owner.Length; i++) toApp += " ";
-                        owner += toApp;
-                        Color("   -", ConsoleColor.DarkGray);
-                        Color($"\t{owner}  ", ConsoleColor.Yellow);
-                        Color(
-                            $"{($"{info.LastWriteTime.Date:d}".Split('/')[0].Length > 1 ? "" : " ")}" +
-                            $"{$"{info.LastWriteTime.Date:d}".Split('/')[0]} " +
-                            $"{$"{info.LastWriteTime.Date:m}".Remove(3)} " +
-                            $"{info.LastWriteTime.ToLocalTime():HH:mm}    ",
-                            ConsoleColor.Blue);
-                        Color(info.Name,
-                            info.Name.StartsWith(".") ? ConsoleColor.DarkCyan : info.GetFiles().Length > 0 || info.GetDirectories().Length > 0 ?
+                        if (!info.Attributes.ToString().Contains("Hidden")) {
+                            var owner = File.GetAccessControl(x).GetOwner(typeof(NTAccount)).ToString().Split('\\')[1];
+                            owner = owner.Length >= 10 ? owner.Remove(5) + "..." + owner.Remove(0, owner.Length - 2) : owner;
+                            var toApp = "";
+                            if (owner.Length < 10) for (int i = 0; i < 10 - owner.Length; i++) toApp += " ";
+                            owner += toApp;
+                            Color("   -", ConsoleColor.DarkGray);
+                            Color($"\t{owner}  ", ConsoleColor.Yellow);
+                            Color(
+                                $"{($"{info.LastWriteTime.Date:d}".Split('/')[0].Length > 1 ? "" : " ")}" +
+                                $"{$"{info.LastWriteTime.Date:d}".Split('/')[0]} " +
+                                $"{$"{info.LastWriteTime.Date:m}".Remove(3)} " +
+                                $"{info.LastWriteTime.ToLocalTime():HH:mm}    ",
+                                ConsoleColor.Blue);
+                            Color(info.Name,
+                                info.Name.StartsWith(".") ? ConsoleColor.DarkCyan : info.GetFiles().Length > 0 || info.GetDirectories().Length > 0 ?
                                 ConsoleColor.White : ConsoleColor.DarkGray);
-                        Color(info.GetFiles().Length == 0 && info.GetDirectories().Length == 0 ? "  <empty>" : "", ConsoleColor.DarkRed);
-                        Console.WriteLine();
+                            Color(info.GetFiles().Length == 0 && info.GetDirectories().Length == 0 ? "  <empty>" : "", ConsoleColor.DarkRed);
+                            Console.WriteLine();
+                        }
                     }
                 });
             }
@@ -507,11 +513,12 @@ namespace SWSH {
                 if (!File.Exists(keygenlocation)) {
                     Color("WARNING: Could not find swsh-keygen.exe. SSH key generation will not be available.\n", ConsoleColor.Yellow);
                 }
-
-                if (ignore) return false;
-                Color(error, ConsoleColor.Red);
-                Console.Read();
-                Environment.Exit(500);
+                if (!ignore) {
+                    Color(error, ConsoleColor.Red);
+                    Console.Read();
+                    Environment.Exit(500);
+                }
+                return false;
             }
         }
         private static void PrintHash() {
