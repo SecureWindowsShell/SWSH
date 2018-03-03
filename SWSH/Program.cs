@@ -35,10 +35,11 @@ namespace SWSH {
         public static bool KeygenIsAvailable;
         public static string Version => "";
         public static string Codename => "unstable-titan";
-        public static string AppDataDirectory => Environment.GetFolderPath((Environment.SpecialFolder.ApplicationData)) + "/SWSH";
-        public static string History => AppDataDirectory + "/swsh_history";
-        public static string Keys => AppDataDirectory + "/swsh_keys";
-        public static string License => AppDataDirectory + "/LICENSE.txt";
+        public static string AppDataDirectory =>
+            $"{Environment.GetFolderPath((Environment.SpecialFolder.ApplicationData))}/SWSH";
+        public static string History => $"{AppDataDirectory}/swsh_history";
+        public static string Keys => $"{AppDataDirectory}/swsh_keys";
+        public static string License => $"{AppDataDirectory}/LICENSE.txt";
         public static string Command = "", WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         private static void Main(string[] args) {
             if (!Directory.Exists(AppDataDirectory)) Directory.CreateDirectory(AppDataDirectory);
