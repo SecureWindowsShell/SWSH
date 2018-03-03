@@ -32,22 +32,22 @@ using System.Xml;
 
 namespace SWSH {
     public static class Program {
-        public static bool _keygenstatus;
+        public static bool KeygenIsAvailable;
         public const string
-            _absVersion = "0.4",
-            _version = "",
-            _codename = "unstable-titan";
+            AbsoluteVersion = "0.4",
+            Version = "",
+            Codename = "unstable-titan";
         public static string
-            _command = "",
-            _swshAppdata = Environment.GetFolderPath((Environment.SpecialFolder.ApplicationData)) + "/SWSH",
-            _swshHistory = _swshAppdata + "/swsh_history",
-            _swshKeys = _swshAppdata + "/swsh_keys",
-            _swshLicense = _swshAppdata + "/LICENSE.txt",
-            _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        static void Main(string[] args) {
-            if (!Directory.Exists(_swshAppdata)) Directory.CreateDirectory(_swshAppdata);
+            Command = "",
+            AppDataDirectory = Environment.GetFolderPath((Environment.SpecialFolder.ApplicationData)) + "/SWSH",
+            History = AppDataDirectory + "/swsh_history",
+            Keys = AppDataDirectory + "/swsh_keys",
+            License = AppDataDirectory + "/LICENSE.txt",
+            WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        private static void Main(string[] args) {
+            if (!Directory.Exists(AppDataDirectory)) Directory.CreateDirectory(AppDataDirectory);
             Console.Title = "SWSH - Secure Windows Shell";
-            __notice();
+            Notice();
             Console.Write("\nType `license notice` to view this notice again.\n");
             for (int i = 0; i < 5; i++) {
                 Console.Write($"\rStarting in {5 - (i + 1)}s");
@@ -56,59 +56,59 @@ namespace SWSH {
             Console.Clear();
             /* Downloading License; if does not exists. START */
             try {
-                if (!File.Exists(_swshLicense)) {
+                if (!File.Exists(License)) {
                     Console.WriteLine("License file not found, downloading...");
-                    new WebClient().DownloadFile(new Uri(Url.License), _swshLicense);
+                    new WebClient().DownloadFile(new Uri(Url.License), License);
                     Console.Clear();
                 }
-            } catch (Exception exp) { __error($"Unable to download License, view online copy here: {Url.License}\nReason:{exp.Message}\n"); }
+            } catch (Exception exp) { Error($"Unable to download License, view online copy here: {Url.License}\nReason:{exp.Message}\n"); }
             /* Downloading License; if does not exists. END   */
-            Console.Title = $"SWSH - {__version()}";
-            if (!__unstable()) _keygenstatus = __checkHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
+            Console.Title = $"SWSH - {GetVersion()}";
+            if (!Unstable()) KeygenIsAvailable = CheckHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
             Console.Write("Use `help` command for help.\n\n");
             try {
                 var handle = ExternalFunctions.GetStdHandle(-11);
                 ExternalFunctions.GetConsoleMode(handle, out var mode);
                 ExternalFunctions.SetConsoleMode(handle, mode | 0x4);
                 ExternalFunctions.GetConsoleMode(handle, out mode);
-            } catch (Exception exp) { __error($"{exp.Message}\n"); }
-            __start();
+            } catch (Exception exp) { Error($"{exp.Message}\n"); }
+            Start();
         }
-        private static void __start() {
+        private static void Start() {
             while (true) {
                 try {
-                    __color($"{_workingDirectory.Replace('\\', '/').Remove(0, 2).ToLower()}:", ConsoleColor.DarkCyan);
-                    __color("swsh> ", ConsoleColor.DarkGray);
-                    _command = __getCommand();
-                    if (_command.StartsWith("swsh")) {
-                        __color("WARNING:\nThis type of commands is deprecated and will stop working in future.\nPlease take a look at our latest documentation or use `help` command.\n", ConsoleColor.Yellow);
-                        if (_command.StartsWith("swsh --")) _command = _command.Remove(0, 7);
+                    Color($"{WorkingDirectory.Replace('\\', '/').Remove(0, 2).ToLower()}:", ConsoleColor.DarkCyan);
+                    Color("swsh> ", ConsoleColor.DarkGray);
+                    Command = GetCommand();
+                    if (Command.StartsWith("swsh")) {
+                        Color("WARNING:\nThis type of commands is deprecated and will stop working in future.\nPlease take a look at our latest documentation or use `help` command.\n", ConsoleColor.Yellow);
+                        if (Command.StartsWith("swsh --")) Command = Command.Remove(0, 7);
                     }
-                    if (_command == "version") __version();
-                    else if (_command.StartsWith("help")) __help();
-                    else if (_command.StartsWith("connect")) __connect();
-                    else if (_command.StartsWith("keygen")) __keygen();
-                    else if (_command == "ls") __ls();
-                    else if (_command.StartsWith("cd")) __cd();
-                    else if (_command.StartsWith("upload")) __upload();
-                    else if (_command == "clear") __clear();
-                    else if (_command == "license") File.ReadAllLines(_swshLicense).ToList().ForEach(x => Console.WriteLine(x));
-                    else if (_command == "license notice") __notice();
-                    else if (_command == "pwd") Console.WriteLine(_workingDirectory.ToLower());
-                    else if (_command.StartsWith("computehash")) __printHash();
-                    else if (_command == "exit") Environment.Exit(0);
-                    else if (_command.Trim() != "") __error($"SWSH -> {_command} -> unknown command.\n");
-                } catch (Exception exp) { __error($"{exp.Message}\n"); }
+                    if (Command == "version") GetVersion();
+                    else if (Command.StartsWith("help")) Help();
+                    else if (Command.StartsWith("connect")) Connect();
+                    else if (Command.StartsWith("keygen")) Keygen();
+                    else if (Command == "ls") Ls();
+                    else if (Command.StartsWith("cd")) Cd();
+                    else if (Command.StartsWith("upload")) Upload();
+                    else if (Command == "clear") Clear();
+                    else if (Command == "license") File.ReadAllLines(License).ToList().ForEach(x => Console.WriteLine(x));
+                    else if (Command == "license notice") Notice();
+                    else if (Command == "pwd") Console.WriteLine(WorkingDirectory.ToLower());
+                    else if (Command.StartsWith("computehash")) PrintHash();
+                    else if (Command == "exit") Environment.Exit(0);
+                    else if (Command.Trim() != "") Error($"SWSH -> {Command} -> unknown command.\n");
+                } catch (Exception exp) { Error($"{exp.Message}\n"); }
             }
         }
-        private static void __help() {
-            _command = _command.Remove(0, 4).Trim();
-            if (_command.Length > 0) {
-                var title = $"Help for {_command}";
+        private static void Help() {
+            Command = Command.Remove(0, 4).Trim();
+            if (Command.Length > 0) {
+                var title = $"Help for {Command}";
                 Console.WriteLine(title);
                 for (int i = 0; i < title.Length; i++) Console.Write("=");
                 Console.WriteLine();
-                switch (_command) {
+                switch (Command) {
                     case "version": {
                             Console.WriteLine("Syntax: version");
                             Console.WriteLine("Checks the version of swsh.\n\nUsage: version\n");
@@ -144,7 +144,7 @@ namespace SWSH {
                             break;
                         }
                     default:
-                        __error($"SWSH -> {_command} -> unknown command.\n");
+                        Error($"SWSH -> {Command} -> unknown command.\n");
                         break;
                 }
             } else {
@@ -164,16 +164,16 @@ namespace SWSH {
                     + "  upload [arguments]          -Uploads files and directories. 'upload -h' for help.\n");
             }
         }
-        private static void __connect() {
-            if (!_command.EndsWith("-p")) { 
-                if (!File.Exists(_swshKeys)) {
+        private static void Connect() {
+            if (!Command.EndsWith("-p")) { 
+                if (!File.Exists(Keys)) {
                     Console.Write("SWSH private key file not found. (I)mport or (G)enerate?: ");
                     switch (Console.ReadKey().Key) {
                         case ConsoleKey.I:
-                            __importKey();
+                            ImportKey();
                             break;
                         case ConsoleKey.G:
-                            __keygen();
+                            Keygen();
                             break;
                         default:
                             Console.WriteLine(" <= Invalid option.");
@@ -181,15 +181,15 @@ namespace SWSH {
                     }
                     return;
                 }
-                    if (String.IsNullOrEmpty(__readKeys()[1])) __color("WARNING: No public key detected.\n", ConsoleColor.Yellow);
+                    if (String.IsNullOrEmpty(ReadKeys()[1])) Color("WARNING: No public key detected.\n", ConsoleColor.Yellow);
             }
             ConnectionInfo ccinfo;
-            ccinfo = __CreateConnection(_command.Remove(0, 8));
+            ccinfo = CreateConnection(Command.Remove(0, 8));
             if (ccinfo != null) {
                 Console.Write($"Waiting for response from {ccinfo.Username}@{ccinfo.Host}...\n");
                 using (var ssh = new SshClient(ccinfo)) {
                     ssh.Connect();
-                    __color($"Connected to {ccinfo.Username}@{ccinfo.Host}...\n", ConsoleColor.Green);
+                    Color($"Connected to {ccinfo.Username}@{ccinfo.Host}...\n", ConsoleColor.Green);
                     var actual = ssh.CreateShellStream(
                         "xterm-256color",
                         (uint) Console.BufferWidth,
@@ -219,9 +219,9 @@ namespace SWSH {
                                     }
                                 }
                                 catch (Exception) {
-                                    __color($"Connection to {ccinfo.Username}@{ccinfo.Host}, closed.\n",
+                                    Color($"Connection to {ccinfo.Username}@{ccinfo.Host}, closed.\n",
                                         ConsoleColor.Yellow);
-                                    __color("(E)xit SWSH - Any other key to reload SWSH: ", ConsoleColor.Blue);
+                                    Color("(E)xit SWSH - Any other key to reload SWSH: ", ConsoleColor.Blue);
                                     var key = Console.ReadKey();
                                     if (key.Key != ConsoleKey.E)
                                         Process.Start(Assembly.GetExecutingAssembly().Location);
@@ -235,99 +235,98 @@ namespace SWSH {
                 }
             }
         }
-
-        private static void __importKey() {
+        private static void ImportKey() {
             string[] data = new string[2];
             Console.WriteLine("\nImporting keys...");
             while (true) {
                 Console.Write("Enter path to private key: ");
-                data[0] = __getCommand();
+                data[0] = GetCommand();
                 if (data[0].Trim() == String.Empty)
-                    __error("SWSH -> key path should not be empty!\n");
+                    Error("SWSH -> key path should not be empty!\n");
                 else {
-                    if (File.Exists(data[0]) && File.Exists($"{_workingDirectory}/{data[0]}"))
-                        __error($"SWSH -> {data[0]} -> file path is ambiguous.\n");
-                    else if (File.Exists($"{_workingDirectory}/{data[0]}")) {
-                        data[0] = $"{_workingDirectory.Replace('\\', '/')}/{data[0]}";
+                    if (File.Exists(data[0]) && File.Exists($"{WorkingDirectory}/{data[0]}"))
+                        Error($"SWSH -> {data[0]} -> file path is ambiguous.\n");
+                    else if (File.Exists($"{WorkingDirectory}/{data[0]}")) {
+                        data[0] = $"{WorkingDirectory.Replace('\\', '/')}/{data[0]}";
                         break;
                     } else if (!File.Exists(data[0]))
-                        __error($"SWSH -> {data[0]} -> file is non existent.\n");
+                        Error($"SWSH -> {data[0]} -> file is non existent.\n");
                     else break;
                 }
             }
 
             Console.Write("Import public key? (y/n): ");
-            if (__getCommand().ToUpper() == "Y") {
+            if (GetCommand().ToUpper() == "Y") {
                 while (true) {
                     Console.Write("Enter path to public key: ");
-                    data[1] = __getCommand();
+                    data[1] = GetCommand();
                     if (data[1].Trim() == String.Empty)
-                        __error("SWSH -> key path should not be empty!\n");
+                        Error("SWSH -> key path should not be empty!\n");
                     else {
-                        if (File.Exists(data[1]) && File.Exists($"{_workingDirectory}/{data[1]}"))
-                            __error($"SWSH -> {data[1]} -> file path is ambiguous.\n");
-                        else if (File.Exists($"{_workingDirectory}/{data[0]}")) {
-                            data[0] = $"{_workingDirectory.Replace('\\', '/')}/{data[0]}";
+                        if (File.Exists(data[1]) && File.Exists($"{WorkingDirectory}/{data[1]}"))
+                            Error($"SWSH -> {data[1]} -> file path is ambiguous.\n");
+                        else if (File.Exists($"{WorkingDirectory}/{data[0]}")) {
+                            data[0] = $"{WorkingDirectory.Replace('\\', '/')}/{data[0]}";
                             break;
                         } else if (!File.Exists(data[1]))
-                            __error($"SWSH -> {data[1]} -> file is non existent.\n");
+                            Error($"SWSH -> {data[1]} -> file is non existent.\n");
                         else break;
                     }
                 }
             } else
                 Console.Write("\r\b\rImport public key? (y/n): ...skipped\n");
-            __writeKeys(data[0], data[1] == null ? "" : data[1]);
+            WriteKeys(data[0], data[1] == null ? "" : data[1]);
         }
-        private static void __keygen() {
-            _command = (_command.Length > 7) ? _command.Remove(0, 7):null;
-            if (_command != null && _command.StartsWith("show")) {
-                if (_command.Remove(0, 4).Trim() == "private") {
-                    Console.WriteLine(__readKeys()[0]);
+        private static void Keygen() {
+            Command = (Command.Length > 7) ? Command.Remove(0, 7):null;
+            if (Command != null && Command.StartsWith("show")) {
+                if (Command.Remove(0, 4).Trim() == "private") {
+                    Console.WriteLine(ReadKeys()[0]);
                 } else {
-                    if (!String.IsNullOrEmpty(__readKeys()[1])) Console.WriteLine(__readKeys()[1]);
+                    if (!String.IsNullOrEmpty(ReadKeys()[1])) Console.WriteLine(ReadKeys()[1]);
                     else Console.WriteLine("No public key detected.");
                 }
                 return;
             }
-            if (File.Exists(_swshKeys)) {
-                __color("WARNING: This action will overwrite previously generated or imported keys in the data file but not the original keys. Continue? (y/n): ", ConsoleColor.Yellow);
+            if (File.Exists(Keys)) {
+                Color("WARNING: This action will overwrite previously generated or imported keys in the data file but not the original keys. Continue? (y/n): ", ConsoleColor.Yellow);
                 if (Console.ReadKey().Key != ConsoleKey.Y) {
                     Console.WriteLine();
                     return;
                 }
             }
-            if (_command == "import") {
-                __importKey();
+            if (Command == "import") {
+                ImportKey();
                 return;
             }
-            if (!_keygenstatus ^ __unstable()) {
-                __color("Key generation is unavailable.\n", ConsoleColor.DarkBlue);
+            if (!KeygenIsAvailable ^ Unstable()) {
+                Color("Key generation is unavailable.\n", ConsoleColor.DarkBlue);
                 return;
             }
             if (File.Exists("swsh-keygen.exe")) {
-                if (!__checkHash(true) ^ __unstable()) return;
+                if (!CheckHash(true) ^ Unstable()) return;
                 Console.WriteLine("\nGenerating public/private rsa key pair.");
                 string privateFile, publicFile;
-                __color("exit", ConsoleColor.Red);
+                Color("exit", ConsoleColor.Red);
                 Console.Write(" or ");
-                __color("-e", ConsoleColor.Red);
+                Color("-e", ConsoleColor.Red);
                 Console.Write(" to cancel.\n");
                 do {
-                    __color("Enter absolute path to save private key (%appdata%/SWSH/swsh.private):\t", ConsoleColor.Yellow);
-                    privateFile = __getCommand();
-                    if (privateFile == String.Empty) privateFile = _swshAppdata + "/swsh.private";
+                    Color("Enter absolute path to save private key (%appdata%/SWSH/swsh.private):\t", ConsoleColor.Yellow);
+                    privateFile = GetCommand();
+                    if (privateFile == String.Empty) privateFile = AppDataDirectory + "/swsh.private";
                     else if (privateFile == "-e" || privateFile == "exit") return;
                 } while (!isWritable(privateFile));
                 do {
-                    __color("Enter absolute path to save public key (%appdata%/SWSH/swsh.public):\t", ConsoleColor.Yellow);
-                    publicFile = __getCommand();
-                    if (publicFile == String.Empty) publicFile = _swshAppdata + "/swsh.public";
+                    Color("Enter absolute path to save public key (%appdata%/SWSH/swsh.public):\t", ConsoleColor.Yellow);
+                    publicFile = GetCommand();
+                    if (publicFile == String.Empty) publicFile = AppDataDirectory + "/swsh.public";
                     else if (publicFile == "-e" || privateFile == "exit") return;
                 } while (!isWritable(publicFile));
                 bool isWritable(string path) {
                     if (File.Exists(path)) {
-                        __color($"File exists: {new FileInfo(path).FullName}\n\n\nOverwrite? (y/n): ", ConsoleColor.Red);
-                        return (__getCommand().ToUpper() == "Y") ? true : false;
+                        Color($"File exists: {new FileInfo(path).FullName}\n\n\nOverwrite? (y/n): ", ConsoleColor.Red);
+                        return (GetCommand().ToUpper() == "Y") ? true : false;
                     } else return true;
                 }
                 var keygenProcess = new Process {
@@ -342,25 +341,25 @@ namespace SWSH {
                 keygenProcess.Start();
                 keygenProcess.WaitForExit();
                 if (keygenProcess.ExitCode != 0) {
-                    __color($"WARNING: swsh-keygen exited with exit code {keygenProcess.ExitCode}.", ConsoleColor.Yellow);
+                    Color($"WARNING: swsh-keygen exited with exit code {keygenProcess.ExitCode}.", ConsoleColor.Yellow);
                     return;
                 }
-                __color($"Your public key:\n\n{File.ReadAllLines(publicFile)[0]}\n", ConsoleColor.Green);
-                __writeKeys(privateFile, publicFile);
-            } else __error($"The binary 'swsh-keygen.exe' was not found. Are you sure it's installed?\nSee: {Url.Keygen}.\n");
+                Color($"Your public key:\n\n{File.ReadAllLines(publicFile)[0]}\n", ConsoleColor.Green);
+                WriteKeys(privateFile, publicFile);
+            } else Error($"The binary 'swsh-keygen.exe' was not found. Are you sure it's installed?\nSee: {Url.Keygen}.\n");
 
             return;
         }
-        private static void __clear() {
+        private static void Clear() {
             Console.Clear();
-            __version();
+            GetVersion();
             Console.Write("Use `help` command for help.\n\n");
         }
-        private static void __ls() {
-            if (Directory.GetDirectories(_workingDirectory).Length > 0) {
+        private static void Ls() {
+            if (Directory.GetDirectories(WorkingDirectory).Length > 0) {
                 List<string> data = new List<string>();
-                Directory.GetDirectories(_workingDirectory).ToList().ForEach(dir => data.Add(dir));
-                Directory.GetFiles(_workingDirectory).ToList().ForEach(file => data.Add(file));
+                Directory.GetDirectories(WorkingDirectory).ToList().ForEach(dir => data.Add(dir));
+                Directory.GetFiles(WorkingDirectory).ToList().ForEach(file => data.Add(file));
                 data.Sort();
                 Console.WriteLine("Size\tUser        Date Modified   Name\n====\t====        =============   ====");
                 data.ForEach(x => {
@@ -376,15 +375,15 @@ namespace SWSH {
                             owner += toApp;
                             if (size.Length < 4) for (int i = 0; i < 3 - size.Length; i++) toApp += " ";
                             size = toApp + size;
-                            __color(size, ConsoleColor.Green);
-                            __color((info.Length > 1024) ? (((info.Length / 1024) > 1024) ? "MB" : "KB") : "B", ConsoleColor.DarkGreen);
-                            __color($"\t{owner}  ", ConsoleColor.Yellow);
-                            __color(String.Format("{0}{1} {2} {3}", (
+                            Color(size, ConsoleColor.Green);
+                            Color((info.Length > 1024) ? (((info.Length / 1024) > 1024) ? "MB" : "KB") : "B", ConsoleColor.DarkGreen);
+                            Color($"\t{owner}  ", ConsoleColor.Yellow);
+                            Color(String.Format("{0}{1} {2} {3}", (
                                 String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0].Length > 1 ? "" : " "),
                                 String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0],
                                 String.Format("{0:m}", info.LastWriteTime.Date).Remove(3),
                                 String.Format("{0:HH:mm}    ", info.LastWriteTime.ToLocalTime())), ConsoleColor.Blue);
-                            __color(info.Name, (Path.GetFileNameWithoutExtension(x).Length > 0) ? ConsoleColor.Magenta : ConsoleColor.Cyan);
+                            Color(info.Name, (Path.GetFileNameWithoutExtension(x).Length > 0) ? ConsoleColor.Magenta : ConsoleColor.Cyan);
                             Console.WriteLine();
                         }
                     } else if (Directory.Exists(x)) {
@@ -395,41 +394,41 @@ namespace SWSH {
                             var toApp = "";
                             if (owner.Length < 10) for (int i = 0; i < 10 - owner.Length; i++) toApp += " ";
                             owner += toApp;
-                            __color("   -", ConsoleColor.DarkGray);
-                            __color(String.Format("\t{0}  ", owner), ConsoleColor.Yellow);
-                            __color(String.Format("{0}{1} {2} {3}", (
+                            Color("   -", ConsoleColor.DarkGray);
+                            Color(String.Format("\t{0}  ", owner), ConsoleColor.Yellow);
+                            Color(String.Format("{0}{1} {2} {3}", (
                                 String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0].Length > 1 ? "" : " "),
                                 String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0],
                                 String.Format("{0:m}", info.LastWriteTime.Date).Remove(3),
                                 String.Format("{0:HH:mm}    ", info.LastWriteTime.ToLocalTime())), ConsoleColor.Blue);
-                            __color(info.Name,
+                            Color(info.Name,
                                 (info.Name.StartsWith(".")) ? ConsoleColor.DarkCyan : (info.GetFiles().Length > 0 || info.GetDirectories().Length > 0) ?
                                 ConsoleColor.White : ConsoleColor.DarkGray);
-                            __color((info.GetFiles().Length == 0 && info.GetDirectories().Length == 0) ? "  <empty>" : "", ConsoleColor.DarkRed);
+                            Color((info.GetFiles().Length == 0 && info.GetDirectories().Length == 0) ? "  <empty>" : "", ConsoleColor.DarkRed);
                             Console.WriteLine();
                         }
                     }
                 });
             }
-            if (Directory.GetDirectories(_workingDirectory).Length == 0 && Directory.GetFiles(_workingDirectory).Length == 0)
-                __color("No files or directories here.\n", ConsoleColor.Yellow);
+            if (Directory.GetDirectories(WorkingDirectory).Length == 0 && Directory.GetFiles(WorkingDirectory).Length == 0)
+                Color("No files or directories here.\n", ConsoleColor.Yellow);
         }
-        private static void __cd() {
-            if ((_command = _command.Remove(0, 3)) == "..") __changeWorkingDir(Path.GetDirectoryName(_workingDirectory));
-            else if (_command.StartsWith("./")) __changeWorkingDir($"{_workingDirectory}/{_command.Remove(0, 2)}");
-            else if (_command.StartsWith("/")) __changeWorkingDir(Path.GetPathRoot(_workingDirectory) + _command.Remove(0, 1));
-            else __changeWorkingDir($"{_workingDirectory}/{_command}");
+        private static void Cd() {
+            if ((Command = Command.Remove(0, 3)) == "..") __changeWorkingDir(Path.GetDirectoryName(WorkingDirectory));
+            else if (Command.StartsWith("./")) __changeWorkingDir($"{WorkingDirectory}/{Command.Remove(0, 2)}");
+            else if (Command.StartsWith("/")) __changeWorkingDir(Path.GetPathRoot(WorkingDirectory) + Command.Remove(0, 1));
+            else __changeWorkingDir($"{WorkingDirectory}/{Command}");
             void __changeWorkingDir(string path) {
                 path = path.Replace('\\', '/');
-                if (Directory.Exists(Path.GetFullPath(path))) _workingDirectory = Path.GetFullPath(path);
-                else __error($"SWSH -> {path} -> path does not exists.\n");
+                if (Directory.Exists(Path.GetFullPath(path))) WorkingDirectory = Path.GetFullPath(path);
+                else Error($"SWSH -> {path} -> path does not exists.\n");
             }
         }
-        private static void __upload() {
-            if ((_command = _command.Remove(0, 7)) == "-h") {
+        private static void Upload() {
+            if ((Command = Command.Remove(0, 7)) == "-h") {
                 Console.WriteLine("upload [--dir]* [args] [user@host]:[location]\n\n'args' are seperated using spaces ( ) and last 'arg' will be treated as server data which includes username and host location as well as the location of data to upload, part after the colon (:), where the data is to be uploaded. Use flag '--dir' to upload directiories. Do not use absolute paths for local path, change working directory to navigate.");
             } else {
-                List<string> toupload = (_command.StartsWith("--dir")) ? _command.Replace("--dir", "").Trim().Split(' ').ToList() : _command.Trim().Split(' ')
+                List<string> toupload = (Command.StartsWith("--dir")) ? Command.Replace("--dir", "").Trim().Split(' ').ToList() : Command.Trim().Split(' ')
                     .ToList();
                 try {
                     var serverData = toupload.Pop().Split(':');
@@ -437,38 +436,38 @@ namespace SWSH {
                     var location = serverData[1];
                     try {
                             ConnectionInfo ccinfo;
-                            ccinfo = __CreateConnection(data);
+                            ccinfo = CreateConnection(data);
                         if (ccinfo != null) {
-                            if (_command.StartsWith("--dir"))
+                            if (Command.StartsWith("--dir"))
                                 using (var sftp = new SftpClient(ccinfo)) {
-                                    _command = _command.Replace("--dir", "");
+                                    Command = Command.Replace("--dir", "");
                                     sftp.Connect();
                                     toupload.ForEach(x => {
-                                        var path = $"{_workingDirectory}/{x.Trim()}";
+                                        var path = $"{WorkingDirectory}/{x.Trim()}";
                                         location = serverData[1] + ((serverData[1].EndsWith("/")) ? "" : "/") +
                                                    x.Trim();
                                         if (!sftp.Exists(location)) sftp.CreateDirectory(location);
-                                        __color($"Uploading <directory>: {x.Trim()}\n", ConsoleColor.Yellow);
+                                        Color($"Uploading <directory>: {x.Trim()}\n", ConsoleColor.Yellow);
                                         __uploadDir(sftp, path, location);
-                                        __color("Done.\n", ConsoleColor.Green);
+                                        Color("Done.\n", ConsoleColor.Green);
                                     });
                                 }
                             else
                                 using (var scp = new ScpClient(ccinfo)) {
                                     scp.Connect();
                                     toupload.ForEach(x => {
-                                        var path = $"{_workingDirectory}/{x.Trim()}";
+                                        var path = $"{WorkingDirectory}/{x.Trim()}";
                                         if (File.Exists(path)) {
-                                            __color($"Uploading <file>: {x.Trim()}", ConsoleColor.Yellow);
+                                            Color($"Uploading <file>: {x.Trim()}", ConsoleColor.Yellow);
                                             scp.Upload(new FileInfo(path), location);
-                                            __color(" -> Done\n", ConsoleColor.Green);
+                                            Color(" -> Done\n", ConsoleColor.Green);
                                         }
-                                        else __error($"SWSH -> {path.Replace('/', '\\')} -> file does not exists.\n");
+                                        else Error($"SWSH -> {path.Replace('/', '\\')} -> file does not exists.\n");
                                     });
                                 }
                         }
-                    } catch (Exception exp) { __error($"{exp.Message}\n"); }
-                } catch { __error($"SWSH -> upload {_command} -> is not the correct syntax for this command.\n"); }
+                    } catch (Exception exp) { Error($"{exp.Message}\n"); }
+                } catch { Error($"SWSH -> upload {Command} -> is not the correct syntax for this command.\n"); }
             }
             void __uploadDir(SftpClient client, string localPath, string remotePath) {
                 new DirectoryInfo(localPath).EnumerateFileSystemInfos().ToList().ForEach(x => {
@@ -481,7 +480,7 @@ namespace SWSH {
                             Console.ForegroundColor = ConsoleColor.Yellow;
                             Console.Write("\tUploading <file>: {0} ({1:N0} bytes)", x, ((FileInfo)x).Length);
                             client.UploadFile(fileStream, $"{remotePath}/{x.Name}");
-                            __color(" -> Done\n", ConsoleColor.Green);
+                            Color(" -> Done\n", ConsoleColor.Green);
                         }
                     }
                 });
@@ -492,18 +491,18 @@ namespace SWSH {
             list.RemoveAt(list.Count - 1);
             return retVal;
         }
-        private static string __version() {
+        private static string GetVersion() {
             Console.Write("   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __  /  \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
-            Console.Write($"\nRelease: {_codename} {_version}\n");
-            return $"{_codename} {_version}";
+            Console.Write($"\nRelease: {Codename} {Version}\n");
+            return $"{Codename} {Version}";
         }
-        private static void __color(string message, ConsoleColor cc) {
+        private static void Color(string message, ConsoleColor cc) {
             Console.ForegroundColor = cc;
             Console.Write(message);
             Console.ResetColor();
         }
-        private static bool __checkHash(bool ignore) {
-            bool compareHash(string path, string hash) => !__computeHash(path).Equals(hash.Trim());
+        private static bool CheckHash(bool ignore) {
+            bool compareHash(string path, string hash) => !ComputeHash(path).Equals(hash.Trim());
             string getHash(string uri) => new WebClient().DownloadString($"{uri}?" + new Random().Next());
             string
                 error = "ERROR: Checksum Mismatch! This executable *may* be out of date or malicious!\n",
@@ -516,55 +515,55 @@ namespace SWSH {
                 return true;
             } catch (Exception) {
                 if (!File.Exists(keygenlocation)) {
-                    __color("WARNING: Could not find swsh-keygen.exe. SSH key generation will not be available.\n", ConsoleColor.Yellow);
+                    Color("WARNING: Could not find swsh-keygen.exe. SSH key generation will not be available.\n", ConsoleColor.Yellow);
                 }
                 if (!ignore) {
-                    __color(error, ConsoleColor.Red);
+                    Color(error, ConsoleColor.Red);
                     Console.Read();
                     Environment.Exit(500);
                 }
                 return false;
             }
         }
-        private static void __printHash() {
-            string action = _command.Remove(0, 11).Trim(), file;
+        private static void PrintHash() {
+            string action = Command.Remove(0, 11).Trim(), file;
             if (action.StartsWith(">") && File.Exists("swsh-keygen.exe")) {
-                __color($"Exporting... ", ConsoleColor.Yellow);
+                Color($"Exporting... ", ConsoleColor.Yellow);
                 if (action.StartsWith(">>")) {
                     file = action.Remove(0, 2).Trim();
-                    File.AppendAllText(file, $"{__computeHash(Assembly.GetExecutingAssembly().Location)} {__computeHash("swsh-keygen.exe")}");
+                    File.AppendAllText(file, $"{ComputeHash(Assembly.GetExecutingAssembly().Location)} {ComputeHash("swsh-keygen.exe")}");
                     Console.WriteLine(new FileInfo(file).FullName);
                     return;
                 }
                 file = action.Remove(0, 1).Trim();
-                File.WriteAllText(file, $"{__computeHash(Assembly.GetExecutingAssembly().Location)} {__computeHash("swsh-keygen.exe")}");
+                File.WriteAllText(file, $"{ComputeHash(Assembly.GetExecutingAssembly().Location)} {ComputeHash("swsh-keygen.exe")}");
                 Console.WriteLine(new FileInfo(file).FullName);
                 return;
             }
-            Console.WriteLine($"{__computeHash(Assembly.GetExecutingAssembly().Location)} -- SHA1 -- SWSH.exe");
+            Console.WriteLine($"{ComputeHash(Assembly.GetExecutingAssembly().Location)} -- SHA1 -- SWSH.exe");
             if (File.Exists("swsh-keygen.exe"))
-                Console.WriteLine($"{__computeHash("swsh-keygen.exe")} -- SHA1 -- swsh-keygen.exe");
+                Console.WriteLine($"{ComputeHash("swsh-keygen.exe")} -- SHA1 -- swsh-keygen.exe");
         }
-        private static string __computeHash(string path) =>
+        private static string ComputeHash(string path) =>
             new List<byte>(new SHA1CryptoServiceProvider()
                 .ComputeHash(File.ReadAllBytes(path)))
                 .Select((x) => x.ToString("x2"))
                 .Aggregate((x, y) => x + y);
-        private static void __notice() => Console.Write("SWSH - Secure Windows Shell\nCopyright (C) 2017  Muhammad Muzzammil\nThis program comes with ABSOLUTELY NO WARRANTY; for details type `license'.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions; type `license' for details.\n\n");
-        private static string __getCommand() {
+        private static void Notice() => Console.Write("SWSH - Secure Windows Shell\nCopyright (C) 2017  Muhammad Muzzammil\nThis program comes with ABSOLUTELY NO WARRANTY; for details type `license'.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions; type `license' for details.\n\n");
+        private static string GetCommand() {
             var list = new List<string>();
             var commands = new string[] { "version", "connect", "keygen", "help", "clear", "exit", "upload", "pwd", "comput" +
                 "ehash" };
             foreach (var i in commands) list.Add(i);
-            foreach (var i in Directory.GetDirectories(_workingDirectory)) list.Add($"cd {new DirectoryInfo(i).Name.ToLower()}");
+            foreach (var i in Directory.GetDirectories(WorkingDirectory)) list.Add($"cd {new DirectoryInfo(i).Name.ToLower()}");
             try {
                 ReadLine.AutoCompletionHandler = (data, length) => {
                     var tList = new List<string>();
                     if (data.StartsWith("cd ") && (data.Contains("/") || data.Contains("\\")))
-                        Directory.GetDirectories($"{_workingDirectory}/{Path.GetDirectoryName(data.Remove(0, 3))}").ToList()
+                        Directory.GetDirectories($"{WorkingDirectory}/{Path.GetDirectoryName(data.Remove(0, 3))}").ToList()
                         .Where(x => new DirectoryInfo(x)
                             .FullName.ToLower().Contains(data.ToLower().Split(' ')[1].Replace('/', '\\'))).ToList()
-                        .ForEach(x => tList.Add(x.Remove(0, ($"{_workingDirectory}/{Path.GetDirectoryName(data.Remove(0, 3))}").Length + 1).ToLower()));
+                        .ForEach(x => tList.Add(x.Remove(0, ($"{WorkingDirectory}/{Path.GetDirectoryName(data.Remove(0, 3))}").Length + 1).ToLower()));
                     if (data.Trim() == "help")
                         commands.ToList().ForEach(x => tList.Add(x));
                     list.Where(x => x.Contains(data)).ToList().ForEach(y => tList.Add(y.Remove(0, length)));
@@ -572,32 +571,30 @@ namespace SWSH {
                 };
             } catch (IndexOutOfRangeException) { }
             var read = ReadLine.Read();
-            File.AppendAllText(_swshHistory, $"[{DateTime.UtcNow} UTC]\t=>\t{read}\n");
+            File.AppendAllText(History, $"[{DateTime.UtcNow} UTC]\t=>\t{read}\n");
             if (read.Contains("%appdata%")) read = read.Replace("%appdata%", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace('\\', '/'));
             return read.TrimEnd().TrimStart().Trim();
         }
-
-        private static string __getPassword(string prompt) {
+        private static string GetPassword(string prompt) {
             ReadLine.PasswordMode = true;
             var password = ReadLine.Read(prompt);
             ReadLine.GetHistory().Pop();
             ReadLine.PasswordMode = false;
             return password;
         }
-        private static bool __unstable() => _codename.StartsWith("unstable");
-        private static void __error(string err) {
-            __color("ERROR: ", ConsoleColor.Red);
+        private static bool Unstable() => Codename.StartsWith("unstable");
+        private static void Error(string err) {
+            Color("ERROR: ", ConsoleColor.Red);
             Console.Write(err);
         }
-
-        private static string[] __readKeys() {
+        private static string[] ReadKeys() {
             var xml = new XmlDocument();
-            xml.Load(_swshKeys);
+            xml.Load(Keys);
             return new string[] {xml.GetElementsByTagName("private")[0].InnerText, xml.GetElementsByTagName("public")[0].InnerText };
         }
-        private static void __writeKeys(string privateFile, string publicFile) {
+        private static void WriteKeys(string privateFile, string publicFile) {
             var publickey = publicFile == null ? "" : File.ReadAllText(new FileInfo(publicFile).FullName);
-            File.WriteAllLines(_swshKeys, new string[] {
+            File.WriteAllLines(Keys, new string[] {
                 "<?xml version=\"1.0\" encoding=\"utf-8\" ?>",
                 "<data>",
                 $"<private>{File.ReadAllText(new FileInfo(privateFile).FullName)}</private>",
@@ -605,7 +602,7 @@ namespace SWSH {
                 "</data>"
             });
         }
-        private static ConnectionInfo __CreateConnection(string data) {
+        private static ConnectionInfo CreateConnection(string data) {
             try {
                 if (data.EndsWith("-p")) {
                     data = data.Split(' ')[0];
@@ -614,14 +611,14 @@ namespace SWSH {
                         data.Split('@')[0],
                         new PasswordAuthenticationMethod(
                             data.Split('@')[0],
-                            __getPassword($"Password for {data}: ")));
+                            GetPassword($"Password for {data}: ")));
                 } else return new ConnectionInfo(
                         data.Split('@')[1],
                         data.Split('@')[0],
                         new PrivateKeyAuthenticationMethod(
                             data.Split('@')[0],
-                            new PrivateKeyFile(new StreamReader(new MemoryStream(Encoding.ASCII.GetBytes(__readKeys()[0]))).BaseStream)));
-            } catch (Exception exp) { __error($"{exp.Message}\n"); }
+                            new PrivateKeyFile(new StreamReader(new MemoryStream(Encoding.ASCII.GetBytes(ReadKeys()[0]))).BaseStream)));
+            } catch (Exception exp) { Error($"{exp.Message}\n"); }
             return null;
         }
     }
