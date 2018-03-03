@@ -418,7 +418,7 @@ namespace SWSH {
         private static void Upload() {
             if ((Command = Command.Remove(0, 7)) == "-h") {
                 Console.WriteLine(
-                    "upload [--dir]* [args] [user@host]:[location]\n\n'args' are seperated using spaces ( ) and last 'arg' will be treated as server data whic" 
+                    "upload [--dir]* [args] [user@host]:[location]\n\n'args' are seperated using spaces ( ) and last 'arg' will be treated as server data whic"
                     + "h includes username and host location as well as the location of data to upload, part after the colon (:), where the data is to be uplo"
                     + "aded. Use flag '--dir' to upload directiories. Do not use absolute paths for local path, change working directory to navigate.");
             } else {
@@ -483,7 +483,7 @@ namespace SWSH {
         }
         private static string GetVersion() {
             Console.Write(
-                "   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __  /  \n/____/ |_" 
+                "   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __  /  \n/____/ |_"
                 + "_/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
             Console.Write($"\nRelease: {Codename} {Version}\n");
             return $"{Codename} {Version}";
@@ -541,7 +541,7 @@ namespace SWSH {
                 .ComputeHash(File.ReadAllBytes(path)))
                 .Select(x => x.ToString("x2"))
                 .Aggregate((x, y) => x + y);
-        private static void Notice() => 
+        private static void Notice() =>
             Console.Write("SWSH - Secure Windows Shell\nCopyright (C) 2017  Muhammad Muzzammil\nThis program comes with ABSOLUTELY NO WARRANTY; for details ty"
                           + "pe `license'.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions; type `license' for detail"
                           + "s.\n\n");
@@ -555,9 +555,9 @@ namespace SWSH {
                     var tList = new List<string>();
                     if (data.StartsWith("cd ") && (data.Contains("/") || data.Contains("\\")))
                         Directory.GetDirectories($"{WorkingDirectory}/{Path.GetDirectoryName(data.Remove(0, 3))}").ToList()
-                        .Where(x => new DirectoryInfo(x)
-                            .FullName.ToLower().Contains(data.ToLower().Split(' ')[1].Replace('/', '\\'))).ToList()
-                        .ForEach(x => tList.Add(x.Remove(0, $"{WorkingDirectory}/{Path.GetDirectoryName(data.Remove(0, 3))}".Length + 1).ToLower()));
+                            .Where(x => new DirectoryInfo(x)
+                                .FullName.ToLower().Contains(data.ToLower().Split(' ')[1].Replace('/', '\\'))).ToList()
+                            .ForEach(x => tList.Add(x.Remove(0, $"{WorkingDirectory}/{Path.GetDirectoryName(data.Remove(0, 3))}".Length + 1).ToLower()));
                     if (data.Trim() == "help")
                         commands.ToList().ForEach(x => tList.Add(x));
                     list.Where(x => x.Contains(data)).ToList().ForEach(y => tList.Add(y.Remove(0, length)));
