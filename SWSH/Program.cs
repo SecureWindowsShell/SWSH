@@ -17,18 +17,18 @@
  */
 
 using System;
-using System.IO;
-using Renci.SshNet;
-using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
-using System.Reflection;
-using System.Security.Principal;
-using System.Security.Cryptography;
+using System.IO;
+using System.Linq;
 using System.Net;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Security.Principal;
 using System.Text;
+using System.Threading;
 using System.Xml;
+using Renci.SshNet;
 
 namespace SWSH {
     public static class Program {
@@ -36,7 +36,7 @@ namespace SWSH {
         public static string Version => "";
         public static string Codename => "unstable-titan";
         public static string AppDataDirectory =>
-            $"{Environment.GetFolderPath((Environment.SpecialFolder.ApplicationData))}/SWSH";
+            $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/SWSH";
         public static string History => $"{AppDataDirectory}/swsh_history";
         public static string Keys => $"{AppDataDirectory}/swsh_keys";
         public static string License => $"{AppDataDirectory}/LICENSE.txt";
@@ -61,7 +61,7 @@ namespace SWSH {
             } catch (Exception exp) { Error($"Unable to download License, view online copy here: {Url.License}\nReason:{exp.Message}\n"); }
             /* Downloading License; if does not exists. END   */
             Console.Title = $"SWSH - {GetVersion()}";
-            if (!Unstable()) KeygenIsAvailable = CheckHash(args.Any((x) => x == "--IgnoreChecksumMismatch"));
+            if (!Unstable()) KeygenIsAvailable = CheckHash(args.Any(x => x == "--IgnoreChecksumMismatch"));
             Console.Write("Use `help` command for help.\n\n");
             try {
                 var handle = ExternalFunctions.GetStdHandle(-11);
@@ -275,7 +275,7 @@ namespace SWSH {
             WriteKeys(data[0], data[1] == null ? "" : data[1]);
         }
         private static void Keygen() {
-            Command = (Command.Length > 7) ? Command.Remove(0, 7):null;
+            Command = Command.Length > 7 ? Command.Remove(0, 7):null;
             if (Command != null && Command.StartsWith("show")) {
                 if (Command.Remove(0, 4).Trim() == "private") {
                     Console.WriteLine(ReadKeys()[0]);
@@ -323,11 +323,13 @@ namespace SWSH {
                 bool isWritable(string path) {
                     if (File.Exists(path)) {
                         Color($"File exists: {new FileInfo(path).FullName}\n\n\nOverwrite? (y/n): ", ConsoleColor.Red);
-                        return (GetCommand().ToUpper() == "Y") ? true : false;
-                    } else return true;
+                        return GetCommand().ToUpper() == "Y" ? true : false;
+                    }
+
+                    return true;
                 }
                 var keygenProcess = new Process {
-                    StartInfo = new ProcessStartInfo() {
+                    StartInfo = new ProcessStartInfo {
                         FileName = "swsh-keygen.exe",
                         Arguments = $"-pub={new FileInfo(publicFile).FullName} -pri={new FileInfo(privateFile).FullName}",
                         RedirectStandardOutput = true,
@@ -344,8 +346,6 @@ namespace SWSH {
                 Color($"Your public key:\n\n{File.ReadAllLines(publicFile)[0]}\n", ConsoleColor.Green);
                 WriteKeys(privateFile, publicFile);
             } else Error($"The binary 'swsh-keygen.exe' was not found. Are you sure it's installed?\nSee: {Url.Keygen}.\n");
-
-            return;
         }
         private static void Clear() {
             Console.Clear();
@@ -364,44 +364,42 @@ namespace SWSH {
                         var info = new FileInfo(x);
                         if (!info.Attributes.ToString().Contains("Hidden")) {
                             var owner = File.GetAccessControl(x).GetOwner(typeof(NTAccount)).ToString().Split('\\')[1];
-                            var size = ((info.Length > 1024) ? (((info.Length / 1024) > 1024) ? (info.Length / 1024) / 1024 : info.Length / 1024) :
+                            var size = (info.Length > 1024 ? (info.Length / 1024 > 1024 ? info.Length / 1024 / 1024 : info.Length / 1024) :
                             info.Length).ToString();
                             var toApp = "";
-                            owner = (owner.Length >= 10) ? owner.Remove(5) + "..." + owner.Remove(0, owner.Length - 2) : owner;
+                            owner = owner.Length >= 10 ? owner.Remove(5) + "..." + owner.Remove(0, owner.Length - 2) : owner;
                             if (owner.Length < 10) for (int i = 0; i < 10 - owner.Length; i++) toApp += " ";
                             owner += toApp;
                             if (size.Length < 4) for (int i = 0; i < 3 - size.Length; i++) toApp += " ";
                             size = toApp + size;
                             Color(size, ConsoleColor.Green);
-                            Color((info.Length > 1024) ? (((info.Length / 1024) > 1024) ? "MB" : "KB") : "B", ConsoleColor.DarkGreen);
+                            Color(info.Length > 1024 ? (info.Length / 1024 > 1024 ? "MB" : "KB") : "B", ConsoleColor.DarkGreen);
                             Color($"\t{owner}  ", ConsoleColor.Yellow);
-                            Color(String.Format("{0}{1} {2} {3}", (
-                                String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0].Length > 1 ? "" : " "),
+                            Color(String.Format("{0}{1} {2} {3}", String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0].Length > 1 ? "" : " ",
                                 String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0],
                                 String.Format("{0:m}", info.LastWriteTime.Date).Remove(3),
                                 String.Format("{0:HH:mm}    ", info.LastWriteTime.ToLocalTime())), ConsoleColor.Blue);
-                            Color(info.Name, (Path.GetFileNameWithoutExtension(x).Length > 0) ? ConsoleColor.Magenta : ConsoleColor.Cyan);
+                            Color(info.Name, Path.GetFileNameWithoutExtension(x).Length > 0 ? ConsoleColor.Magenta : ConsoleColor.Cyan);
                             Console.WriteLine();
                         }
                     } else if (Directory.Exists(x)) {
                         var info = new DirectoryInfo(x);
                         if (!info.Attributes.ToString().Contains("Hidden")) {
                             var owner = File.GetAccessControl(x).GetOwner(typeof(NTAccount)).ToString().Split('\\')[1];
-                            owner = (owner.Length >= 10) ? owner.Remove(5) + "..." + owner.Remove(0, owner.Length - 2) : owner;
+                            owner = owner.Length >= 10 ? owner.Remove(5) + "..." + owner.Remove(0, owner.Length - 2) : owner;
                             var toApp = "";
                             if (owner.Length < 10) for (int i = 0; i < 10 - owner.Length; i++) toApp += " ";
                             owner += toApp;
                             Color("   -", ConsoleColor.DarkGray);
                             Color(String.Format("\t{0}  ", owner), ConsoleColor.Yellow);
-                            Color(String.Format("{0}{1} {2} {3}", (
-                                String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0].Length > 1 ? "" : " "),
+                            Color(String.Format("{0}{1} {2} {3}", String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0].Length > 1 ? "" : " ",
                                 String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0],
                                 String.Format("{0:m}", info.LastWriteTime.Date).Remove(3),
                                 String.Format("{0:HH:mm}    ", info.LastWriteTime.ToLocalTime())), ConsoleColor.Blue);
                             Color(info.Name,
-                                (info.Name.StartsWith(".")) ? ConsoleColor.DarkCyan : (info.GetFiles().Length > 0 || info.GetDirectories().Length > 0) ?
+                                info.Name.StartsWith(".") ? ConsoleColor.DarkCyan : info.GetFiles().Length > 0 || info.GetDirectories().Length > 0 ?
                                 ConsoleColor.White : ConsoleColor.DarkGray);
-                            Color((info.GetFiles().Length == 0 && info.GetDirectories().Length == 0) ? "  <empty>" : "", ConsoleColor.DarkRed);
+                            Color(info.GetFiles().Length == 0 && info.GetDirectories().Length == 0 ? "  <empty>" : "", ConsoleColor.DarkRed);
                             Console.WriteLine();
                         }
                     }
@@ -425,7 +423,7 @@ namespace SWSH {
             if ((Command = Command.Remove(0, 7)) == "-h") {
                 Console.WriteLine("upload [--dir]* [args] [user@host]:[location]\n\n'args' are seperated using spaces ( ) and last 'arg' will be treated as server data which includes username and host location as well as the location of data to upload, part after the colon (:), where the data is to be uploaded. Use flag '--dir' to upload directiories. Do not use absolute paths for local path, change working directory to navigate.");
             } else {
-                List<string> toupload = (Command.StartsWith("--dir")) ? Command.Replace("--dir", "").Trim().Split(' ').ToList() : Command.Trim().Split(' ')
+                List<string> toupload = Command.StartsWith("--dir") ? Command.Replace("--dir", "").Trim().Split(' ').ToList() : Command.Trim().Split(' ')
                     .ToList();
                 try {
                     var serverData = toupload.Pop().Split(':');
@@ -441,7 +439,7 @@ namespace SWSH {
                                     sftp.Connect();
                                     toupload.ForEach(x => {
                                         var path = $"{WorkingDirectory}/{x.Trim()}";
-                                        location = serverData[1] + ((serverData[1].EndsWith("/")) ? "" : "/") +
+                                        location = serverData[1] + (serverData[1].EndsWith("/") ? "" : "/") +
                                                    x.Trim();
                                         if (!sftp.Exists(location)) sftp.CreateDirectory(location);
                                         Color($"Uploading <directory>: {x.Trim()}\n", ConsoleColor.Yellow);
@@ -544,12 +542,12 @@ namespace SWSH {
         private static string ComputeHash(string path) =>
             new List<byte>(new SHA1CryptoServiceProvider()
                 .ComputeHash(File.ReadAllBytes(path)))
-                .Select((x) => x.ToString("x2"))
+                .Select(x => x.ToString("x2"))
                 .Aggregate((x, y) => x + y);
         private static void Notice() => Console.Write("SWSH - Secure Windows Shell\nCopyright (C) 2017  Muhammad Muzzammil\nThis program comes with ABSOLUTELY NO WARRANTY; for details type `license'.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions; type `license' for details.\n\n");
         private static string GetCommand() {
             var list = new List<string>();
-            var commands = new string[] { "version", "connect", "keygen", "help", "clear", "exit", "upload", "pwd", "comput" +
+            var commands = new[] { "version", "connect", "keygen", "help", "clear", "exit", "upload", "pwd", "comput" +
                 "ehash" };
             foreach (var i in commands) list.Add(i);
             foreach (var i in Directory.GetDirectories(WorkingDirectory)) list.Add($"cd {new DirectoryInfo(i).Name.ToLower()}");
@@ -560,7 +558,7 @@ namespace SWSH {
                         Directory.GetDirectories($"{WorkingDirectory}/{Path.GetDirectoryName(data.Remove(0, 3))}").ToList()
                         .Where(x => new DirectoryInfo(x)
                             .FullName.ToLower().Contains(data.ToLower().Split(' ')[1].Replace('/', '\\'))).ToList()
-                        .ForEach(x => tList.Add(x.Remove(0, ($"{WorkingDirectory}/{Path.GetDirectoryName(data.Remove(0, 3))}").Length + 1).ToLower()));
+                        .ForEach(x => tList.Add(x.Remove(0, $"{WorkingDirectory}/{Path.GetDirectoryName(data.Remove(0, 3))}".Length + 1).ToLower()));
                     if (data.Trim() == "help")
                         commands.ToList().ForEach(x => tList.Add(x));
                     list.Where(x => x.Contains(data)).ToList().ForEach(y => tList.Add(y.Remove(0, length)));
@@ -587,11 +585,11 @@ namespace SWSH {
         private static string[] ReadKeys() {
             var xml = new XmlDocument();
             xml.Load(Keys);
-            return new string[] {xml.GetElementsByTagName("private")[0].InnerText, xml.GetElementsByTagName("public")[0].InnerText };
+            return new[] {xml.GetElementsByTagName("private")[0].InnerText, xml.GetElementsByTagName("public")[0].InnerText };
         }
         private static void WriteKeys(string privateFile, string publicFile) {
             var publickey = publicFile == null ? "" : File.ReadAllText(new FileInfo(publicFile).FullName);
-            File.WriteAllLines(Keys, new string[] {
+            File.WriteAllLines(Keys, new[] {
                 "<?xml version=\"1.0\" encoding=\"utf-8\" ?>",
                 "<data>",
                 $"<private>{File.ReadAllText(new FileInfo(privateFile).FullName)}</private>",
@@ -609,12 +607,14 @@ namespace SWSH {
                         new PasswordAuthenticationMethod(
                             data.Split('@')[0],
                             GetPassword($"Password for {data}: ")));
-                } else return new ConnectionInfo(
-                        data.Split('@')[1],
+                }
+
+                return new ConnectionInfo(
+                    data.Split('@')[1],
+                    data.Split('@')[0],
+                    new PrivateKeyAuthenticationMethod(
                         data.Split('@')[0],
-                        new PrivateKeyAuthenticationMethod(
-                            data.Split('@')[0],
-                            new PrivateKeyFile(new StreamReader(new MemoryStream(Encoding.ASCII.GetBytes(ReadKeys()[0]))).BaseStream)));
+                        new PrivateKeyFile(new StreamReader(new MemoryStream(Encoding.ASCII.GetBytes(ReadKeys()[0]))).BaseStream)));
             } catch (Exception exp) { Error($"{exp.Message}\n"); }
             return null;
         }
