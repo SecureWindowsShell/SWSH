@@ -229,7 +229,7 @@ namespace SWSH {
                             }
                     }).Start();
                     read.Start();
-                    while (true) ;
+                    while (true) { }
                 }
             }
         }
@@ -314,17 +314,17 @@ namespace SWSH {
                     privateFile = GetCommand();
                     if (privateFile == String.Empty) privateFile = AppDataDirectory + "/swsh.private";
                     else if (privateFile == "-e" || privateFile == "exit") return;
-                } while (!isWritable(privateFile));
+                } while (!IsWritable(privateFile));
                 do {
                     Color("Enter absolute path to save public key (%appdata%/SWSH/swsh.public):\t", ConsoleColor.Yellow);
                     publicFile = GetCommand();
                     if (publicFile == String.Empty) publicFile = AppDataDirectory + "/swsh.public";
                     else if (publicFile == "-e" || privateFile == "exit") return;
-                } while (!isWritable(publicFile));
-                bool isWritable(string path) {
+                } while (!IsWritable(publicFile));
+                bool IsWritable(string path) {
                     if (File.Exists(path)) {
                         Color($"File exists: {new FileInfo(path).FullName}\n\n\nOverwrite? (y/n): ", ConsoleColor.Red);
-                        return GetCommand().ToUpper() == "Y" ? true : false;
+                        return GetCommand().ToUpper() == "Y";
                     }
 
                     return true;
@@ -410,11 +410,11 @@ namespace SWSH {
                 Color("No files or directories here.\n", ConsoleColor.Yellow);
         }
         private static void Cd() {
-            if ((Command = Command.Remove(0, 3)) == "..") __changeWorkingDir(Path.GetDirectoryName(WorkingDirectory));
-            else if (Command.StartsWith("./")) __changeWorkingDir($"{WorkingDirectory}/{Command.Remove(0, 2)}");
-            else if (Command.StartsWith("/")) __changeWorkingDir(Path.GetPathRoot(WorkingDirectory) + Command.Remove(0, 1));
-            else __changeWorkingDir($"{WorkingDirectory}/{Command}");
-            void __changeWorkingDir(string path) {
+            if ((Command = Command.Remove(0, 3)) == "..") ChangeWorkingDir(Path.GetDirectoryName(WorkingDirectory));
+            else if (Command.StartsWith("./")) ChangeWorkingDir($"{WorkingDirectory}/{Command.Remove(0, 2)}");
+            else if (Command.StartsWith("/")) ChangeWorkingDir(Path.GetPathRoot(WorkingDirectory) + Command.Remove(0, 1));
+            else ChangeWorkingDir($"{WorkingDirectory}/{Command}");
+            void ChangeWorkingDir(string path) {
                 path = path.Replace('\\', '/');
                 if (Directory.Exists(Path.GetFullPath(path))) WorkingDirectory = Path.GetFullPath(path);
                 else Error($"SWSH -> {path} -> path does not exists.\n");
@@ -444,7 +444,7 @@ namespace SWSH {
                                                    x.Trim();
                                         if (!sftp.Exists(location)) sftp.CreateDirectory(location);
                                         Color($"Uploading <directory>: {x.Trim()}\n", ConsoleColor.Yellow);
-                                        __uploadDir(sftp, path, location);
+                                        UploadDir(sftp, path, location);
                                         Color("Done.\n", ConsoleColor.Green);
                                     });
                                 }
@@ -465,12 +465,12 @@ namespace SWSH {
                     } catch (Exception exp) { Error($"{exp.Message}\n"); }
                 } catch { Error($"SWSH -> upload {Command} -> is not the correct syntax for this command.\n"); }
             }
-            void __uploadDir(SftpClient client, string localPath, string remotePath) {
+            void UploadDir(SftpClient client, string localPath, string remotePath) {
                 new DirectoryInfo(localPath).EnumerateFileSystemInfos().ToList().ForEach(x => {
                     if (x.Attributes.HasFlag(FileAttributes.Directory)) {
                         string subPath = $"{remotePath}/{x.Name}";
                         if (!client.Exists(subPath)) client.CreateDirectory(subPath);
-                        __uploadDir(client, x.FullName, $"{remotePath}/{x.Name}");
+                        UploadDir(client, x.FullName, $"{remotePath}/{x.Name}");
                     } else {
                         using (Stream fileStream = new FileStream(x.FullName, FileMode.Open)) {
                             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -498,15 +498,15 @@ namespace SWSH {
             Console.ResetColor();
         }
         private static bool CheckHash(bool ignore) {
-            bool compareHash(string path, string hash) => !ComputeHash(path).Equals(hash.Trim());
-            string getHash(string uri) => new WebClient().DownloadString($"{uri}?" + new Random().Next());
+            bool CompareHash(string path, string hash) => !ComputeHash(path).Equals(hash.Trim());
+            string GetHash(string uri) => new WebClient().DownloadString($"{uri}?" + new Random().Next());
             string
                 error = "ERROR: Checksum Mismatch! This executable *may* be out of date or malicious!\n",
                 checksumfile = Url.Checksum,
                 swshlocation = Assembly.GetExecutingAssembly().Location,
                 keygenlocation = "swsh-keygen.exe";
             try {
-                if (compareHash(swshlocation, getHash(checksumfile).Split(' ')[0]) || compareHash(keygenlocation, getHash(checksumfile).Split(' ')[1]))
+                if (CompareHash(swshlocation, GetHash(checksumfile).Split(' ')[0]) || CompareHash(keygenlocation, GetHash(checksumfile).Split(' ')[1]))
                     throw new Exception();
                 return true;
             } catch (Exception) {
