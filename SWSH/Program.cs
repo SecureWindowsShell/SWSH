@@ -236,7 +236,7 @@ namespace SWSH {
             while (true) {
                 Console.Write("Enter path to private key: ");
                 data[0] = GetCommand();
-                if (data[0].Trim() == String.Empty)
+                if (data[0].Trim() == string.Empty)
                     Error("SWSH -> key path should not be empty!\n");
                 else {
                     if (File.Exists(data[0]) && File.Exists($"{WorkingDirectory}/{data[0]}"))
@@ -254,7 +254,7 @@ namespace SWSH {
                 while (true) {
                     Console.Write("Enter path to public key: ");
                     data[1] = GetCommand();
-                    if (data[1].Trim() == String.Empty)
+                    if (data[1].Trim() == string.Empty)
                         Error("SWSH -> key path should not be empty!\n");
                     else {
                         if (File.Exists(data[1]) && File.Exists($"{WorkingDirectory}/{data[1]}"))
@@ -304,13 +304,13 @@ namespace SWSH {
                 do {
                     Color("Enter absolute path to save private key (%appdata%/SWSH/swsh.private):\t", ConsoleColor.Yellow);
                     privateFile = GetCommand();
-                    if (privateFile == String.Empty) privateFile = AppDataDirectory + "/swsh.private";
+                    if (privateFile == string.Empty) privateFile = AppDataDirectory + "/swsh.private";
                     else if (privateFile == "-e" || privateFile == "exit") return;
                 } while (!IsWritable(privateFile));
                 do {
                     Color("Enter absolute path to save public key (%appdata%/SWSH/swsh.public):\t", ConsoleColor.Yellow);
                     publicFile = GetCommand();
-                    if (publicFile == String.Empty) publicFile = AppDataDirectory + "/swsh.public";
+                    if (publicFile == string.Empty) publicFile = AppDataDirectory + "/swsh.public";
                     else if (publicFile == "-e" || privateFile == "exit") return;
                 } while (!IsWritable(publicFile));
                 bool IsWritable(string path) {
