@@ -34,7 +34,6 @@ namespace SWSH {
     public static class Program {
         public static bool KeygenIsAvailable;
         public const string
-            AbsoluteVersion = "0.4",
             Version = "",
             Codename = "unstable-titan";
         public static string
