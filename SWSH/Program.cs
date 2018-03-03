@@ -180,8 +180,8 @@ namespace SWSH {
                 }
                     if (String.IsNullOrEmpty(ReadKeys()[1])) Color("WARNING: No public key detected.\n", ConsoleColor.Yellow);
             }
-            ConnectionInfo ccinfo;
-            ccinfo = CreateConnection(Command.Remove(0, 8));
+
+            var ccinfo = CreateConnection(Command.Remove(0, 8));
             if (ccinfo != null) {
                 Console.Write($"Waiting for response from {ccinfo.Username}@{ccinfo.Host}...\n");
                 using (var ssh = new SshClient(ccinfo)) {
@@ -430,8 +430,7 @@ namespace SWSH {
                     var data = serverData[0];
                     var location = serverData[1];
                     try {
-                            ConnectionInfo ccinfo;
-                            ccinfo = CreateConnection(data);
+                        var ccinfo = CreateConnection(data);
                         if (ccinfo != null) {
                             if (Command.StartsWith("--dir"))
                                 using (var sftp = new SftpClient(ccinfo)) {
@@ -521,9 +520,10 @@ namespace SWSH {
             }
         }
         private static void PrintHash() {
-            string action = Command.Remove(0, 11).Trim(), file;
+            string action = Command.Remove(0, 11).Trim();
             if (action.StartsWith(">") && File.Exists("swsh-keygen.exe")) {
-                Color($"Exporting... ", ConsoleColor.Yellow);
+                Color("Exporting... ", ConsoleColor.Yellow);
+                string file;
                 if (action.StartsWith(">>")) {
                     file = action.Remove(0, 2).Trim();
                     File.AppendAllText(file, $"{ComputeHash(Assembly.GetExecutingAssembly().Location)} {ComputeHash("swsh-keygen.exe")}");
