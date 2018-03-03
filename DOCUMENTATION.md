@@ -1,21 +1,16 @@
 # Documentation for SWSH
 
-For Version beta-3.0
+For Titan
 
 ## Index
 
 * [Getting Started](#getting-started)
-  * [Nicknames](#nicknames)
   * [Generating SSH keys](#generating-ssh-keys)
-  * [Making a nickname with Private key](#making-a-nickname-with-key)
-  * [Making a nickname with Password](#making-a-nickname-with-password)
+  * [Importing SSH keys](#importing-ssh-keys)
+  * [Connecting to a host](#connecting-to-a-host)
 * [Commands](#commands)
   * [version](#version)
-  * [add    [-password]](#add)
-  * [show    [nickname]](#show)
   * [connect [nickname]](#connect)
-  * [delete  [nickname]](#delete)
-  * [edit    [nickname] [arg]](#edit)
   * [keygen](#keygen)
   * [help    [command]](#help)
   * [clear](#clear)
@@ -28,82 +23,61 @@ For Version beta-3.0
 
 ## Getting Started
 
-### Nicknames
-
-SSH connections are saved as **nicknames**, each nickname has to be unique.
-
 ### Generating SSH keys
 
-SSH keys serve as a means of identifying yourself to an SSH server. To Generate your private and public key, SWSH uses an add-on, swsh-keygen. You can [build swsh-keygen](https://github.com/SecureWindowsShell/swsh-keygen) yourself if you want and place the executable (.exe) in SWSH's root directory. 
+SSH keys serve as a means of identifying yourself to an SSH server. To Generate your private and public key, SWSH uses an add-on, swsh-keygen. You can [build swsh-keygen](https://github.com/SecureWindowsShell/swsh-keygen) yourself if you want and place the executable (.exe) in SWSH's root (installation) directory.
 
-Use command ```keygen``` to tell SWSH that you want to generate a new RSA key pair for SSH connection after that just follow the prompts. 
+Use command ```keygen``` to tell SWSH that you want to generate a new RSA key pair for SSH connection after that just follow the prompts.
 You'll be asked for locations to store your keys, leave it blank if you want it to be default.
 Output will be similar to this:
 
 ```swsh
 /users/muzzammil:swsh> keygen
+
+Generating public/private rsa key pair.
 exit or -e to cancel.
-Enter path to save private key (swsh.private): 
-Enter path to save public key (swsh.public):
+Enter absolute path to save private key (%appdata%/SWSH/swsh.private):
+Enter absolute path to save public key (%appdata%/SWSH/swsh.public):
 Your public key:
 
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDIAHPhxzRApbQgcgDCXysDqkBezHgHBHJTeBpfcGXfkHyGKUlbv7X1Ftz5Qyl6lEPwTg2vOR+FCMKbOOVbv5ISZXJJyGSiPPqis0Jfp58wmSjPuyS78N+ZgqynD6SXbcKbJhEYtriPBKueraj3lY3DYQjRQR42YoeAqjcAg2Riew==
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQCt2MxdswuuUvmaY4JK6kP4lYIqGy0KeHCqcx1NEjB4EcqH7+MIeXGbdikACvP3wlOAEAt+7PMEhBHf7nL2S2SsOybpegJw0piiMeOIPJwQxIQFaRWyz3xn0ESItzBizsQ4yxfQiG37sFkMeQVnP5fHuc2+Z4JZ5SD56Dh1xxgnEw==
 ```
+
+### Importing SSH keys
+
+If you already have SSH keys and want to use them instead of creating a new pair, you can! Use ```keygen import``` command to do so and just follow the prompts.
 
 NOTE: DO **NOT** SHARE YOUR PRIVATE KEY!
 
-### Making a nickname with Key
+### Connecting to a host
 
-To add a new nickname run ```add``` and follow the prompts:
+To connect run ```connect username@host```.
 
-```swsh
-Path to private key: C:\path\to\ssh\private.key
-Username: root
-Server: my.server.ssh
-Unique Nickname: server.ssh
-```
+To use a password connection, use tag `-p` like this: ```connect username@host -p```.
 
-### Making a nickname with Password
-
-To add a new nickname run ```add -password``` and follow the prompts:
+If done properly, output would be similar to the following:
 
 ```swsh
-Username: root
-Server: my.server.ssh
-Unique Nickname: server.ssh
-```
-
-### Connecting to server
-
-To connect run ```connect nickname```.
-
-If done properly, output would be similar to the following (you will be asked for a password if you didn't add a key):
-
-```swsh
-Waiting for response from usr@host...
-Connected to usr@host...
+Waiting for response from username@host...
+Connected to username@host...
 ~:/ $
 ```
 
 ## Commands
 
-| Command                                           | Description                                                            |
-|:--------------------------------------------------|:-----------------------------------------------------------------------|
-| [version](#version)                               | Check the version of swsh.                                             |
-| [add    [-password]](#add)                        | Add a new connection either using private key or password (-password). |
-| [show    [nickname]](#show)                       | Show nicknames/Details of a nickname.                                  |
-| [connect [nickname]](#connect)                    | Connects to Server over SSH.                                           |
-| [delete  [nickname]](#delete)                     | Deletes connection's nickname.                                         |
-| [edit    [nickname] [arg]](#edit)                 | Edits nickname, use one argument at a time.                            |
-| [keygen](#keygen)                                 | Generates SSH RSA key pair.                                            |
-| [help    [command]](#help)                        | Displays this help or command details.                                 |
-| [clear](#clear)                                   | Clears the console.                                                    |
-| [pwd](#pwd)                                       | Prints working directory.                                              |
-| [computehash [(>/>>) path/to/file]](#computehash) | Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.  |
-| [exit](#exit)                                     | Exits.                                                                 |
-| [ls](#ls)                                         | Lists all files and directories in working directory.                  |
-| [cd [arg]](#cd)                                   | Changes directory to 'arg'. arg = directory name.                      |
-| [upload [args] [nickname]:[location]](#upload)    | Uploads files and directories. 'upload -h' for help.                   |
+| Command                                   | Description                                                           |
+|:------------------------------------------|:----------------------------------------------------------------------|
+| [version](#version)                       | Check the version of swsh.                                            |
+| [connect [user@host] (-p)](#connect)      | Connects to Server over SSH.                                          |
+| [keygen (options)](#keygen)               | Generates SSH RSA key pair.                                           |
+| [help    [command]](#help)                | Displays this help or command details.                                |
+| [clear](#clear)                           | Clears the console.                                                   |
+| [pwd](#pwd)                               | Prints working directory.                                             |
+| [computehash [(>/>>) path]](#computehash) | Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen. |
+| [exit](#exit)                             | Exits.                                                                |
+| [ls](#ls)                                 | Lists all files and directories in working directory.                 |
+| [cd [arg]](#cd)                           | Changes directory to 'arg'. arg = directory name.                     |
+| [upload [arguments]](#upload)             | Uploads files and directories. 'upload -h' for help.                  |
 
 ### version
 
@@ -114,63 +88,24 @@ Checks the version of swsh.
 Usage: version
 ```
 
-### add
-
-```swsh
-Syntax: add [-password]
-Add a new connection either using private key or password.
-
-Usage to add using private key: add
-Usage to add using a password: add -password
-
-You'll be asked for password each time as SWSH doesn't store them.
-```
-
-### show
-
-```swsh
-Syntax: show [nickname]
-Show nicknames if no arguments are given. If nickname is provided, shows details of a nickname.
-Usage to check all nicknames: show
-Usage to check a nickname: show myserver
-```
-
 ### connect
 
 ```swsh
-Syntax: connect [nickname]
-Connects to Server over SSH.
-Usage: connect myserver
-```
-
-### delete
-
-```swsh
-Syntax: delete [nickname]
-Deletes connection's nickname.
-Usage: delete myserver
-```
-
-### edit
-
-```swsh
-Syntax: edit [nickname] [arg]
-arg:
-        -user [newUserName]
-        -key [newKey]
-        -server [newServer]
-Edits nickname, use one argument at a time.
-Usage: edit myserver -user newUSER
+Syntax: connect [user@host] (-p)
+Connects to Server over SSH. Use `-p` for password connection.
+Usage: connect root@server.ip
 ```
 
 ### keygen
 
 ```swsh
-Syntax: keygen
-Generates SSH RSA key pair. Requires swsh-keygen.exe.
-
+Syntax: keygen (options)
+Generates, imports or show SSH RSA key pair. Requires swsh-keygen.exe.
 Default values are provided in parentheses.
-Usage: keygen
+
+Options:
+        import          - Imports RSA key pair.
+        show [private]  - Print RSA keys. By default, prints public key. Use `private` to print private key.
 ```
 
 ### help
@@ -178,7 +113,7 @@ Usage: keygen
 ```swsh
 Syntax: help [command]
 Displays this help or command details.
-Usage: help add
+Usage: help pwd
 ```
 
 ### clear
@@ -239,10 +174,9 @@ Usage: cd
 ### upload
 
 ```swsh
-Syntax: upload [--dir]* [args] [nickname]:[location]
-Uploads files and directories. 'upload -h' for help.
+upload [--dir]* [args] [user@host]:[location]
 
-'args' are seperated using spaces ( ) and last 'arg' will be treated as server data which includes nickname as well as the location, part after the colon (:), where the data is to be uploaded. Use flag '--dir' to upload directiories. Do not use absolute paths for local path, change working directory to navigate.
+'args' are seperated using spaces ( ) and last 'arg' will be treated as server data which includes username and host location as well as the location of data to upload, part after the colon (:), where the data is to be uploaded. Use flag '--dir' to upload directiories. Do not use absolute paths for local path, change working directory to navigate.
 
-Usage: upload --dir files nickname:/var/files
+Usage: upload --dir files root@43.22.56.111:/var/files
 ```

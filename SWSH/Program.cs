@@ -27,6 +27,8 @@ using System.Reflection;
 using System.Security.Principal;
 using System.Security.Cryptography;
 using System.Net;
+using System.Text;
+using System.Xml;
 
 namespace SWSH {
     public static class Program {
@@ -39,7 +41,7 @@ namespace SWSH {
             _command = "",
             _swshAppdata = Environment.GetFolderPath((Environment.SpecialFolder.ApplicationData)) + "/SWSH",
             _swshHistory = _swshAppdata + "/swsh_history",
-            _mainDirectory = _swshAppdata + "/swsh-data/",
+            _swshKeys = _swshAppdata + "/swsh_keys",
             _swshLicense = _swshAppdata + "/LICENSE.txt",
             _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         static void Main(string[] args) {
@@ -84,12 +86,8 @@ namespace SWSH {
                         if (_command.StartsWith("swsh --")) _command = _command.Remove(0, 7);
                     }
                     if (_command == "version") __version();
-                    else if (_command.StartsWith("add")) __addConnection();
                     else if (_command.StartsWith("help")) __help();
                     else if (_command.StartsWith("connect")) __connect();
-                    else if (_command.StartsWith("show")) __show();
-                    else if (_command.StartsWith("delete")) __delete();
-                    else if (_command.StartsWith("edit")) __edit();
                     else if (_command.StartsWith("keygen")) __keygen();
                     else if (_command == "ls") __ls();
                     else if (_command.StartsWith("cd")) __cd();
@@ -102,72 +100,6 @@ namespace SWSH {
                     else if (_command == "exit") Environment.Exit(0);
                     else if (_command.Trim() != "") __error($"SWSH -> {_command} -> unknown command.\n");
                 } catch (Exception exp) { __error($"{exp.Message}\n"); }
-            }
-        }
-        private static void __addConnection() {
-            _command = _command.Remove(0, 3).Trim();
-            __color("exit", ConsoleColor.Red);
-            Console.Write(" or ");
-            __color("-e", ConsoleColor.Red);
-            Console.Write(" to cancel.\n");
-            String[] data = new String[4] /*{ key, username, server, nickname }*/;
-            if (_command.StartsWith("-password")) data[0] = "-password";
-            else {
-                while (true) {
-                    Console.Write("Enter path to private key: ");
-                    data[0] = __getCommand();
-                    if (data[0].Trim() == String.Empty)
-                        __error("SWSH -> key path should not be empty!\n");
-                    else {
-                        __checkexit(data[0]);
-                        if (File.Exists(data[0]) && File.Exists($"{_workingDirectory}/{data[0]}"))
-                            __error($"SWSH -> {data[0]} -> file path is ambiguous.\n");
-                        else if (File.Exists($"{_workingDirectory}/{data[0]}")) {
-                            data[0] = $"{_workingDirectory.Replace('\\', '/')}/{data[0]}";
-                            break;
-                        } else if (!File.Exists(data[0]))
-                            __error($"SWSH -> {data[0]} -> file is non existent.\n");
-                        else break;
-                    }
-                }
-            }
-
-            while (true) {
-                Console.Write("Username: ");
-                data[1] = __getCommand();
-                __checkexit(data[1]);
-                if (data[1].Trim() == String.Empty)
-                    __error("SWSH -> username should not be empty!\n");
-                else break;
-            }
-
-            while (true) {
-                Console.Write("Server: ");
-                data[2] = __getCommand();
-                __checkexit(data[2]);
-                if (data[2].Trim() == String.Empty)
-                    __error("SWSH -> IP address or domain name should not be empty!\n");
-                else break;
-            }
-
-            while (true) {
-                Console.Write("Unique Nickname: ");
-                data[3] = __getCommand();
-                __checkexit(data[3]);
-                if (data[3].Trim() == string.Empty)
-                    __error("SWSH -> nickname should not be empty!\n");
-                else if (File.Exists(__getNickname(data[3])))
-                    __error($"SWSH -> {data[3]} -> nickname exists!\n");
-                else
-                    break;
-            }
-            if (!Directory.Exists(_mainDirectory)) Directory.CreateDirectory(_mainDirectory);
-            File.AppendAllLines(__getNickname(data[3]), data.Take(data.Count() - 1).ToArray());
-            void __checkexit(string keyword) {
-                if (keyword == "exit" || keyword == "-e") {
-                    __color("Aborted.\n", ConsoleColor.Yellow);
-                    __start();
-                }
             }
         }
         private static void __help() {
@@ -183,39 +115,17 @@ namespace SWSH {
                             Console.WriteLine("Checks the version of swsh.\n\nUsage: version\n");
                             break;
                         }
-                    case "add": {
-                            Console.WriteLine("Syntax: add [-password]");
-                            Console.WriteLine("Add a new connection either using private key or password.\n\nUsage to add using private "
-                                + "key: add\nUsage to add using a password: add -password\n\nYou'll be asked for password "
-                                + "each time as SWSH doesn't store them.\n");
-                            break;
-                        }
-                    case "show": {
-                            Console.WriteLine("Syntax: show [nickname]");
-                            Console.WriteLine("Show nicknames if no arguments are given. If nickname is provided, shows details of a n"
-                                + "ickname.\nUsage to check all nicknames: show\nUsage to check a nickname: show myserver");
-                            break;
-                        }
                     case "connect": {
-                            Console.WriteLine("Syntax: connect [nickname]");
-                            Console.WriteLine("Connects to Server over SSH.\nUsage: connect myserver");
-                            break;
-                        }
-                    case "delete": {
-                            Console.WriteLine("Syntax: delete [nickname]");
-                            Console.WriteLine("Deletes connection's nickname.\nUsage: delete myserver");
-                            break;
-                        }
-                    case "edit": {
-                            Console.WriteLine("Syntax: edit [nickname] [arg]");
-                            Console.WriteLine("arg:\n\t-user [newUserName]\n\t-key [newKey]\n\t-server [newServer]");
-                            Console.WriteLine("Edits nickname, use one argument at a time.\nUsage: edit myserver -user newUSER");
+                            Console.WriteLine("Syntax: connect [user@host] (-p)");
+                            Console.WriteLine("Connects to Server over SSH. Use `-p` for password connection.\nUsage: connect root@server.ip");
                             break;
                         }
                     case "keygen": {
-                            Console.WriteLine("Syntax: keygen");
-                            Console.WriteLine("Generates SSH RSA key pair. Requires swsh-keygen.exe.\n\nDefault values are provided in parentheses.\nUsage: " +
-                                "keygen");
+                            Console.WriteLine("Syntax: keygen (options)");
+                            Console.WriteLine("Generates, imports or show SSH RSA key pair. Requires swsh-keygen.exe.");
+                            Console.WriteLine("Default values are provided in parentheses.");
+                            Console.WriteLine("\nOptions:\n\timport\t\t- Imports RSA key pair.");
+                            Console.WriteLine("\tshow [private]\t- Print RSA keys. By default, prints public key. Use `private` to print private key.");
                             break;
                         }
                     case "pwd": {
@@ -231,7 +141,7 @@ namespace SWSH {
                         }
                     case "help": {
                             Console.WriteLine("Syntax: help [command]");
-                            Console.WriteLine("Displays this help or command details.\nUsage: help add");
+                            Console.WriteLine("Displays this help or command details.\nUsage: help pwd");
                             break;
                         }
                     default:
@@ -240,195 +150,177 @@ namespace SWSH {
                 }
             } else {
                 Console.Write(
-                      "Usage: <command> [arguments]\n"
+                      "Usage: <command> [arguments] (options)\n"
                     + "Available commands:\n"
-                    + "  version                             -Check the version of swsh.\n"
-                    + "  add     [-password]                 -Add a new connection either using private key or password (-password).\n"
-                    + "  show    [nickname]                  -Show nicknames/Details of a nickname.\n"
-                    + "  connect [nickname]                  -Connects to Server over SSH.\n"
-                    + "  delete  [nickname]                  -Deletes connection's nickname.\n"
-                    + "  edit    [nickname] [arg]            -Edits nickname, use one argument at a time.\n"
-                    + "  keygen                              -Generates SSH RSA key pair.\n"
-                    + "  help    [command]                   -Displays this help or command details.\n"
-                    + "  clear                               -Clears the console.\n"
-                    + "  pwd                                 -Prints working directory.\n"
-                    + "  computehash [(>/>>) path/to/file]   -Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\n"
-                    + "  exit                                -Exits.\n"
-                    + "  ls                                  -Lists all files and directories in working directory.\n"
-                    + "  cd [arg]                            -Changes directory to 'arg'. arg = directory name.\n"
-                    + "  upload [args] [nickname]:[location] -Uploads files and directories. 'upload -h' for help.\n");
+                    + "  version                     -Check the version of swsh.\n"
+                    + "  connect [user@host] (-p)    -Connects to Server over SSH.\n"
+                    + "  keygen (options)            -Generates, imports or show SSH RSA key pair. `help keygen` for more.\n"
+                    + "  help [command]              -Displays this help or command details.\n"
+                    + "  clear                       -Clears the console.\n"
+                    + "  pwd                         -Prints working directory.\n"
+                    + "  computehash [(>/>>) path]   -Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\n"
+                    + "  exit                        -Exits.\n"
+                    + "  ls                          -Lists all files and directories in working directory.\n"
+                    + "  cd [arg]                    -Changes directory to 'arg'. arg = directory name.\n"
+                    + "  upload [arguments]          -Uploads files and directories. 'upload -h' for help.\n");
             }
         }
         private static void __connect() {
-            ConnectionInfo ccinfo;
-            string nickname = _command.Remove(0, 8);
-            if (File.Exists(__getNickname(nickname))) {
-                ccinfo = __CreateConnection(nickname);
-                if (ccinfo != null) {
-                    Console.Write($"Waiting for response from {ccinfo.Username}@{ccinfo.Host}...\n");
-                    using (var ssh = new SshClient(ccinfo)) {
-                        ssh.Connect();
-                        __color($"Connected to {ccinfo.Username}@{ccinfo.Host}...\n", ConsoleColor.Green);
-                        var actual = ssh.CreateShellStream(
-                            "xterm-256color",
-                            (uint)Console.BufferWidth,
-                            (uint)Console.BufferHeight,
-                            (uint)Console.BufferWidth,
-                            (uint)Console.BufferHeight,
-                            Console.BufferHeight, null);
-                        //Read Thread
-                        var read = new Thread(() => {
-                            if (actual.CanRead)
-                                while (true)
-                                    Console.WriteLine(actual.ReadLine());
-                        });
-                        //Write Thread
-                        new Thread(() => {
-                            if (actual.CanWrite)
-                                while (true) {
-                                    try {
-                                        actual.WriteLine("");
-                                        var input = Console.ReadLine();
-                                        Console.Write("\b\r\b\r");
-                                        actual.WriteLine(input);
-                                        if (input == "exit") {
-                                            actual.Dispose();
-                                            read.Abort();
-                                            throw new Exception();
-                                        }
-                                    } catch (Exception) {
-                                        __color($"Connection to {ccinfo.Username}@{ccinfo.Host}, closed.\n", ConsoleColor.Yellow);
-                                        __color("(E)xit SWSH - Any other key to reload SWSH: ", ConsoleColor.Blue);
-                                        var key = Console.ReadKey();
-                                        if (key.Key != ConsoleKey.E)
-                                            Process.Start(Assembly.GetExecutingAssembly().Location);
-                                        ssh.Disconnect();
-                                        Environment.Exit(0);
-                                    }
-                                }
-                        }).Start();
-                        read.Start();
-                        while (true) ;
+            if (!_command.EndsWith("-p")) { 
+                if (!File.Exists(_swshKeys)) {
+                    Console.Write("SWSH private key file not found. (I)mport or (G)enerate?: ");
+                    switch (Console.ReadKey().Key) {
+                        case ConsoleKey.I:
+                            __importKey();
+                            break;
+                        case ConsoleKey.G:
+                            __keygen();
+                            break;
+                        default:
+                            Console.WriteLine(" <= Invalid option.");
+                            return;
                     }
+                    return;
                 }
-            } else __error($"SWSH -> {nickname} -> nickname does not exists.\n");
-        }
-        private static void __show() {
-            _command = _command.Remove(0, 4).Trim();
-            if (_command == string.Empty) {
-                if (Directory.Exists(_mainDirectory) && Directory.GetFiles(_mainDirectory).Length > 0) {
-                    foreach (var file in Directory.GetFiles(_mainDirectory)) {
-                        try {
-                            var data = File.ReadAllLines(file);
-                            Console.Write($"\nDetails of {Path.GetFileNameWithoutExtension(file)}:\n");
-                            for (int i = 0; i < Path.GetFileNameWithoutExtension(file).Length + 12; i++) Console.Write("=");
-                            if (data[0] == "-password") Console.Write($"\nUsername: {data[1]}\nHost: {data[2]}\n\n");
-                            else {
-                                Console.Write($"\nPath to key: {data[0]}\nUsername: {data[1]}\nHost: {data[2]}\nStatus: ");
-                                var conInfo = __CreateConnection(Path.GetFileNameWithoutExtension(file));
-                                if (conInfo != null)
-                                    using (var connection = new SshClient(conInfo)) {
-                                        connection.Connect();
-                                        __color("Working\n\n", ConsoleColor.Green);
+                    if (String.IsNullOrEmpty(__readKeys()[1])) __color("WARNING: No public key detected.\n", ConsoleColor.Yellow);
+            }
+            ConnectionInfo ccinfo;
+            ccinfo = __CreateConnection(_command.Remove(0, 8));
+            if (ccinfo != null) {
+                Console.Write($"Waiting for response from {ccinfo.Username}@{ccinfo.Host}...\n");
+                using (var ssh = new SshClient(ccinfo)) {
+                    ssh.Connect();
+                    __color($"Connected to {ccinfo.Username}@{ccinfo.Host}...\n", ConsoleColor.Green);
+                    var actual = ssh.CreateShellStream(
+                        "xterm-256color",
+                        (uint) Console.BufferWidth,
+                        (uint) Console.BufferHeight,
+                        (uint) Console.BufferWidth,
+                        (uint) Console.BufferHeight,
+                        Console.BufferHeight, null);
+                    //Read Thread
+                    var read = new Thread(() => {
+                        if (actual.CanRead)
+                            while (true)
+                                Console.WriteLine(actual.ReadLine());
+                    });
+                    //Write Thread
+                    new Thread(() => {
+                        if (actual.CanWrite)
+                            while (true) {
+                                try {
+                                    actual.WriteLine("");
+                                    var input = Console.ReadLine();
+                                    Console.Write("\b\r\b\r");
+                                    actual.WriteLine(input);
+                                    if (input == "exit") {
+                                        actual.Dispose();
+                                        read.Abort();
+                                        throw new Exception();
                                     }
-                            }
-                        } catch (Exception exp) { __error($"{exp.Message}\n"); }
-                    }
-                } else __error("SWSH -> no nickname(s) found. Try `help`.\n");
-            } else {
-                var file = __getNickname(_command);
-                try {
-                    if (File.Exists(file)) {
-                        Console.Write($"Details of {_command}:\n");
-                        var data = File.ReadAllLines(file);
-                        for (int i = 0; i < _command.Length + 12; i++) Console.Write("=");
-                        if (data[0] == "-password") {
-                            Console.Write($"\nUsername: {data[1]}\nHost: {data[2]}\n\n");
-                        } else {
-                            Console.Write($"\nPath to key: {data[0]}\nUsername: {data[1]}\nHost: {data[2]}\nStatus: ");
-                            var conInfo = __CreateConnection(Path.GetFileNameWithoutExtension(file));
-                            if (conInfo != null)
-                                using (var connection = new SshClient(conInfo)) {
-                                    connection.Connect();
-                                    __color("Working\n\n", ConsoleColor.Green);
                                 }
-                        }
-                    } else __error($"SWSH -> {_command} -> nickname does not exists.\n");
-                } catch (Exception exp) { __error($"{exp.Message}\n"); }
+                                catch (Exception) {
+                                    __color($"Connection to {ccinfo.Username}@{ccinfo.Host}, closed.\n",
+                                        ConsoleColor.Yellow);
+                                    __color("(E)xit SWSH - Any other key to reload SWSH: ", ConsoleColor.Blue);
+                                    var key = Console.ReadKey();
+                                    if (key.Key != ConsoleKey.E)
+                                        Process.Start(Assembly.GetExecutingAssembly().Location);
+                                    ssh.Disconnect();
+                                    Environment.Exit(0);
+                                }
+                            }
+                    }).Start();
+                    read.Start();
+                    while (true) ;
+                }
             }
         }
-        private static void __delete() {
-            try {
-                var name = _command.Remove(0, 6).Trim();
-                if (File.Exists(__getNickname(name))) {
-                    __color("Are you sure you want to delete this nickname? (y/n): ", ConsoleColor.Red);
-                    var ans = __getCommand().ToUpper();
-                    if (ans == "Y") {
-                        Console.Write("Type the nickname to confirm: ");
-                        if (__getCommand() != name) __color("Aborted.\n", ConsoleColor.Yellow);
-                        else {
-                            File.Delete(__getNickname(name));
-                            __color("Deleted.\n", ConsoleColor.Green);
-                        }
-                    } else __color("Aborted.\n", ConsoleColor.Yellow);
-                } else __error($"SWSH -> {name} -> nickname does not exists.\n");
-            } catch (Exception exp) { __error($"{exp.Message}\n"); }
-        }
-        private static void __edit() {
-            _command = _command.Remove(0, 4);
-            String[] data = _command.Split(' ');
-            if (File.Exists(__getNickname(data[1]))) {
-                string[] arrLine = File.ReadAllLines(__getNickname(data[1]));
-                if (data[2] == "-user") arrLine[1] = data[3];
-                else if (data[2] == "-server") arrLine[2] = data[3];
-                else if (data[2] == "-key") {
-                    if (!File.Exists(data[3]) && data[3] != "-password") {
-                        __error($"SWSH -> {data[3]} -> file is non existent.\n");
-                        __color("exit", ConsoleColor.Red);
-                        Console.Write(" or ");
-                        __color("-e", ConsoleColor.Red);
-                        Console.Write(" to cancel.\n");
-                        while (true) {
-                            Console.Write("-key: ");
-                            var key = __getCommand();
-                            if (key == "-e" || key == "exit") {
-                                __color("Aborted.\n", ConsoleColor.Yellow);
-                                break;
-                            } else if (File.Exists(key)) {
-                                arrLine[0] = key;
-                                save();
-                            } else if (key != String.Empty) __error($"SWSH -> {key} -> file is non existent.\n");
-                        }
-                        return;
-                    } else arrLine[0] = data[3];
+
+        private static void __importKey() {
+            string[] data = new string[2];
+            Console.WriteLine("\nImporting keys...");
+            while (true) {
+                Console.Write("Enter path to private key: ");
+                data[0] = __getCommand();
+                if (data[0].Trim() == String.Empty)
+                    __error("SWSH -> key path should not be empty!\n");
+                else {
+                    if (File.Exists(data[0]) && File.Exists($"{_workingDirectory}/{data[0]}"))
+                        __error($"SWSH -> {data[0]} -> file path is ambiguous.\n");
+                    else if (File.Exists($"{_workingDirectory}/{data[0]}")) {
+                        data[0] = $"{_workingDirectory.Replace('\\', '/')}/{data[0]}";
+                        break;
+                    } else if (!File.Exists(data[0]))
+                        __error($"SWSH -> {data[0]} -> file is non existent.\n");
+                    else break;
                 }
-                save();
-                void save() {
-                    File.WriteAllLines(__getNickname(data[1]), arrLine);
-                    __color("Updated.\n", ConsoleColor.Green);
+            }
+
+            Console.Write("Import public key? (y/n): ");
+            if (__getCommand().ToUpper() == "Y") {
+                while (true) {
+                    Console.Write("Enter path to public key: ");
+                    data[1] = __getCommand();
+                    if (data[1].Trim() == String.Empty)
+                        __error("SWSH -> key path should not be empty!\n");
+                    else {
+                        if (File.Exists(data[1]) && File.Exists($"{_workingDirectory}/{data[1]}"))
+                            __error($"SWSH -> {data[1]} -> file path is ambiguous.\n");
+                        else if (File.Exists($"{_workingDirectory}/{data[0]}")) {
+                            data[0] = $"{_workingDirectory.Replace('\\', '/')}/{data[0]}";
+                            break;
+                        } else if (!File.Exists(data[1]))
+                            __error($"SWSH -> {data[1]} -> file is non existent.\n");
+                        else break;
+                    }
                 }
-            } else __error($"SWSH -> {data[1]} -> nickname does not exists.\n");
+            } else
+                Console.Write("\r\b\rImport public key? (y/n): ...skipped\n");
+            __writeKeys(data[0], data[1] == null ? "" : data[1]);
         }
         private static void __keygen() {
+            _command = (_command.Length > 7) ? _command.Remove(0, 7):null;
+            if (_command != null && _command.StartsWith("show")) {
+                if (_command.Remove(0, 4).Trim() == "private") {
+                    Console.WriteLine(__readKeys()[0]);
+                } else {
+                    if (!String.IsNullOrEmpty(__readKeys()[1])) Console.WriteLine(__readKeys()[1]);
+                    else Console.WriteLine("No public key detected.");
+                }
+                return;
+            }
+            if (File.Exists(_swshKeys)) {
+                __color("WARNING: This action will overwrite previously generated or imported keys in the data file but not the original keys. Continue? (y/n): ", ConsoleColor.Yellow);
+                if (Console.ReadKey().Key != ConsoleKey.Y) {
+                    Console.WriteLine();
+                    return;
+                }
+            }
+            if (_command == "import") {
+                __importKey();
+                return;
+            }
             if (!_keygenstatus ^ __unstable()) {
                 __color("Key generation is unavailable.\n", ConsoleColor.DarkBlue);
                 return;
             }
             if (File.Exists("swsh-keygen.exe")) {
                 if (!__checkHash(true) ^ __unstable()) return;
+                Console.WriteLine("\nGenerating public/private rsa key pair.");
                 string privateFile, publicFile;
                 __color("exit", ConsoleColor.Red);
                 Console.Write(" or ");
                 __color("-e", ConsoleColor.Red);
                 Console.Write(" to cancel.\n");
                 do {
-                    __color("Enter path to save private key (%appdata%/SWSH/swsh.private):\t", ConsoleColor.Yellow);
+                    __color("Enter absolute path to save private key (%appdata%/SWSH/swsh.private):\t", ConsoleColor.Yellow);
                     privateFile = __getCommand();
                     if (privateFile == String.Empty) privateFile = _swshAppdata + "/swsh.private";
                     else if (privateFile == "-e" || privateFile == "exit") return;
                 } while (!isWritable(privateFile));
                 do {
-                    __color("Enter path to save public key (%appdata%/SWSH/swsh.public):\t", ConsoleColor.Yellow);
+                    __color("Enter absolute path to save public key (%appdata%/SWSH/swsh.public):\t", ConsoleColor.Yellow);
                     publicFile = __getCommand();
                     if (publicFile == String.Empty) publicFile = _swshAppdata + "/swsh.public";
                     else if (publicFile == "-e" || privateFile == "exit") return;
@@ -455,7 +347,10 @@ namespace SWSH {
                     return;
                 }
                 __color($"Your public key:\n\n{File.ReadAllLines(publicFile)[0]}\n", ConsoleColor.Green);
+                __writeKeys(privateFile, publicFile);
             } else __error($"The binary 'swsh-keygen.exe' was not found. Are you sure it's installed?\nSee: {Url.Keygen}.\n");
+
+            return;
         }
         private static void __clear() {
             Console.Clear();
@@ -533,47 +428,49 @@ namespace SWSH {
         }
         private static void __upload() {
             if ((_command = _command.Remove(0, 7)) == "-h") {
-                Console.WriteLine("upload [--dir]* [args] [nickname]:[location]\n\n'args' are seperated using spaces ( ) and last 'arg' will be treated as s" +
-                    "erver data which includes nickname as well as the location, part after the colon (:), where the data is to be uploaded. Use flag '--dir" +
-                    "' to upload directiories. Do not use absolute paths for local path, change working directory to navigate.");
+                Console.WriteLine("upload [--dir]* [args] [user@host]:[location]\n\n'args' are seperated using spaces ( ) and last 'arg' will be treated as " +
+                    "server data which includes username and host location as well as the location of data to upload, part after the colon (:), where the da" +
+                    "ta is to be uploaded. Use flag '--dir' to upload directiories. Do not use absolute paths for local path, change working directory to na" +
+                    "vigate.");
             } else {
                 List<string> toupload = (_command.StartsWith("--dir")) ? _command.Replace("--dir", "").Trim().Split(' ').ToList() : _command.Trim().Split(' ')
                     .ToList();
                 try {
                     var serverData = toupload.Pop().Split(':');
-                    var nickname = serverData[0];
+                    var data = serverData[0];
                     var location = serverData[1];
                     try {
-                        if (File.Exists(__getNickname(nickname))) {
                             ConnectionInfo ccinfo;
-                            ccinfo = __CreateConnection(nickname);
-                            if (ccinfo != null) {
-                                if (_command.StartsWith("--dir"))
-                                    using (var sftp = new SftpClient(ccinfo)) {
-                                        _command = _command.Replace("--dir", "");
-                                        sftp.Connect();
-                                        toupload.ForEach(x => {
-                                            var path = $"{_workingDirectory}/{x.Trim()}";
-                                            location = serverData[1] + ((serverData[1].EndsWith("/")) ? "" : "/") + x.Trim();
-                                            if (!sftp.Exists(location)) sftp.CreateDirectory(location);
-                                            __color($"Uploading <directory>: {x.Trim()}\n", ConsoleColor.Yellow);
-                                            __uploadDir(sftp, path, location);
-                                            __color("Done.\n", ConsoleColor.Green);
-                                        });
-                                    } else
-                                    using (var scp = new ScpClient(ccinfo)) {
-                                        scp.Connect();
-                                        toupload.ForEach(x => {
-                                            var path = $"{_workingDirectory}/{x.Trim()}";
-                                            if (File.Exists(path)) {
-                                                __color($"Uploading <file>: {x.Trim()}", ConsoleColor.Yellow);
-                                                scp.Upload(new FileInfo(path), location);
-                                                __color(" -> Done\n", ConsoleColor.Green);
-                                            } else __error($"SWSH -> {path.Replace('/', '\\')} -> file does not exists.\n");
-                                        });
-                                    }
-                            }
-                        } else __error($"SWSH -> {nickname} -> nickname does not exists.\n");
+                            ccinfo = __CreateConnection(data);
+                        if (ccinfo != null) {
+                            if (_command.StartsWith("--dir"))
+                                using (var sftp = new SftpClient(ccinfo)) {
+                                    _command = _command.Replace("--dir", "");
+                                    sftp.Connect();
+                                    toupload.ForEach(x => {
+                                        var path = $"{_workingDirectory}/{x.Trim()}";
+                                        location = serverData[1] + ((serverData[1].EndsWith("/")) ? "" : "/") +
+                                                   x.Trim();
+                                        if (!sftp.Exists(location)) sftp.CreateDirectory(location);
+                                        __color($"Uploading <directory>: {x.Trim()}\n", ConsoleColor.Yellow);
+                                        __uploadDir(sftp, path, location);
+                                        __color("Done.\n", ConsoleColor.Green);
+                                    });
+                                }
+                            else
+                                using (var scp = new ScpClient(ccinfo)) {
+                                    scp.Connect();
+                                    toupload.ForEach(x => {
+                                        var path = $"{_workingDirectory}/{x.Trim()}";
+                                        if (File.Exists(path)) {
+                                            __color($"Uploading <file>: {x.Trim()}", ConsoleColor.Yellow);
+                                            scp.Upload(new FileInfo(path), location);
+                                            __color(" -> Done\n", ConsoleColor.Green);
+                                        }
+                                        else __error($"SWSH -> {path.Replace('/', '\\')} -> file does not exists.\n");
+                                    });
+                                }
+                        }
                     } catch (Exception exp) { __error($"{exp.Message}\n"); }
                 } catch { __error($"SWSH -> upload {_command} -> is not the correct syntax for this command.\n"); }
             }
@@ -661,25 +558,15 @@ namespace SWSH {
         private static void __notice() => Console.Write("SWSH - Secure Windows Shell\nCopyright (C) 2017  Muhammad Muzzammil\nThis program comes with ABSOLU" +
             "TELY NO WARRANTY; for details type `license'.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions; type `l" +
             "icense' for details.\n\n");
-        private static string __getNickname(string s) => $"{_mainDirectory}{s}.swsh";
         private static string __getCommand() {
             var list = new List<string>();
-            var commands = new string[] { "version", "add", "show", "connect", "delete", "edit", "keygen", "help", "clear", "exit", "upload", "pwd", "comput" +
+            var commands = new string[] { "version", "connect", "keygen", "help", "clear", "exit", "upload", "pwd", "comput" +
                 "ehash" };
             foreach (var i in commands) list.Add(i);
             foreach (var i in Directory.GetDirectories(_workingDirectory)) list.Add($"cd {new DirectoryInfo(i).Name.ToLower()}");
-            bool requiresNickname(string data) {
-                foreach (var i in new List<string>() { "show", "connect", "delete", "edit" })
-                    if (data.StartsWith(i)) return true;
-                return false;
-            }
             try {
                 ReadLine.AutoCompletionHandler = (data, length) => {
                     var tList = new List<string>();
-                    if (requiresNickname(data) && Directory.Exists(_mainDirectory) && new DirectoryInfo(_mainDirectory).GetFiles().Length > 0)
-                        Directory.GetFiles(_mainDirectory).ToList()
-                        .Where(x => Path.GetFileNameWithoutExtension(x).Contains(data.Split(' ')[1])).ToList()
-                        .ForEach(x => { tList.Add(Path.GetFileNameWithoutExtension(x)); });
                     if (data.StartsWith("cd ") && (data.Contains("/") || data.Contains("\\")))
                         Directory.GetDirectories($"{_workingDirectory}/{Path.GetDirectoryName(data.Remove(0, 3))}").ToList()
                         .Where(x => new DirectoryInfo(x)
@@ -696,38 +583,51 @@ namespace SWSH {
             if (read.Contains("%appdata%")) read = read.Replace("%appdata%", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace('\\', '/'));
             return read.TrimEnd().TrimStart().Trim();
         }
+
+        private static string __getPassword(string prompt) {
+            ReadLine.PasswordMode = true;
+            var password = ReadLine.Read(prompt);
+            ReadLine.GetHistory().Pop();
+            ReadLine.PasswordMode = false;
+            return password;
+        }
         private static bool __unstable() => _codename.StartsWith("unstable");
         private static void __error(string err) {
             __color("ERROR: ", ConsoleColor.Red);
             Console.Write(err);
         }
-        private static ConnectionInfo __CreateConnection(string nickname) {
+
+        private static string[] __readKeys() {
+            var xml = new XmlDocument();
+            xml.Load(_swshKeys);
+            return new string[] {xml.GetElementsByTagName("private")[0].InnerText, xml.GetElementsByTagName("public")[0].InnerText };
+        }
+        private static void __writeKeys(string privateFile, string publicFile) {
+            var publickey = publicFile == null ? "" : File.ReadAllText(new FileInfo(publicFile).FullName);
+            File.WriteAllLines(_swshKeys, new string[] {
+                "<?xml version=\"1.0\" encoding=\"utf-8\" ?>",
+                "<data>",
+                $"<private>{File.ReadAllText(new FileInfo(privateFile).FullName)}</private>",
+                $"<public>{publickey}</public>",
+                "</data>"
+            });
+        }
+        private static ConnectionInfo __CreateConnection(string data) {
             try {
-                string
-                    firstString = File.ReadAllLines(__getNickname(nickname))[0],
-                    user = File.ReadAllLines(__getNickname(nickname))[1],
-                    server = File.ReadAllLines(__getNickname(nickname))[2];
-                if (firstString == "-password") {
-                    ReadLine.PasswordMode = true;
-                    var password = ReadLine.Read($"Password for {nickname}: ");
-                    ReadLine.GetHistory().Pop();
-                    ReadLine.PasswordMode = false;
+                if (data.EndsWith("-p")) {
+                    data = data.Split(' ')[0];
                     return new ConnectionInfo(
-                        server,
-                        user,
+                        data.Split('@')[1],
+                        data.Split('@')[0],
                         new PasswordAuthenticationMethod(
-                            user,
-                            password));
+                            data.Split('@')[0],
+                            __getPassword($"Password for {data}: ")));
                 } else return new ConnectionInfo(
-                        server,
-                        user,
+                        data.Split('@')[1],
+                        data.Split('@')[0],
                         new PrivateKeyAuthenticationMethod(
-                            user,
-                            new PrivateKeyFile(
-                                new FileStream(
-                                    firstString,
-                                    FileMode.Open,
-                                    FileAccess.Read))));
+                            data.Split('@')[0],
+                            new PrivateKeyFile(new StreamReader(new MemoryStream(Encoding.ASCII.GetBytes(__readKeys()[0]))).BaseStream)));
             } catch (Exception exp) { __error($"{exp.Message}\n"); }
             return null;
         }
