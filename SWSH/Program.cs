@@ -163,7 +163,7 @@ namespace SWSH {
             }
         }
         private static void Connect() {
-            if (!Command.EndsWith("-p")) { 
+            if (!Command.EndsWith("-p")) {
                 if (!File.Exists(Keys)) {
                     Console.Write("SWSH private key file not found. (I)mport or (G)enerate?: ");
                     switch (Console.ReadKey().Key) {
@@ -179,7 +179,7 @@ namespace SWSH {
                     }
                     return;
                 }
-                    if (string.IsNullOrEmpty(ReadKeys()[1])) Color("WARNING: No public key detected.\n", ConsoleColor.Yellow);
+                if (string.IsNullOrEmpty(ReadKeys()[1])) Color("WARNING: No public key detected.\n", ConsoleColor.Yellow);
             }
 
             var ccinfo = CreateConnection(Command.Remove(0, 8));
@@ -190,10 +190,10 @@ namespace SWSH {
                 Color($"Connected to {ccinfo.Username}@{ccinfo.Host}...\n", ConsoleColor.Green);
                 var actual = ssh.CreateShellStream(
                     "xterm-256color",
-                    (uint) Console.BufferWidth,
-                    (uint) Console.BufferHeight,
-                    (uint) Console.BufferWidth,
-                    (uint) Console.BufferHeight,
+                    (uint)Console.BufferWidth,
+                    (uint)Console.BufferHeight,
+                    (uint)Console.BufferWidth,
+                    (uint)Console.BufferHeight,
                     Console.BufferHeight, null);
                 //Read Thread
                 var read = new Thread(() => {
@@ -214,8 +214,7 @@ namespace SWSH {
                             actual.Dispose();
                             read.Abort();
                             throw new Exception();
-                        }
-                        catch (Exception) {
+                        } catch (Exception) {
                             Color($"Connection to {ccinfo.Username}@{ccinfo.Host}, closed.\n",
                                 ConsoleColor.Yellow);
                             Color("(E)xit SWSH - Any other key to reload SWSH: ", ConsoleColor.Blue);
@@ -272,7 +271,7 @@ namespace SWSH {
             WriteKeys(data[0], data[1] ?? "");
         }
         private static void Keygen() {
-            Command = Command.Length > 7 ? Command.Remove(0, 7):null;
+            Command = Command.Length > 7 ? Command.Remove(0, 7) : null;
             if (Command != null && Command.StartsWith("show")) {
                 if (Command.Remove(0, 4).Trim() == "private") {
                     Console.WriteLine(ReadKeys()[0]);
@@ -437,8 +436,7 @@ namespace SWSH {
                                         UploadDir(sftp, path, location);
                                         Color("Done.\n", ConsoleColor.Green);
                                     });
-                                }
-                            else
+                                } else
                                 using (var scp = new ScpClient(ccinfo)) {
                                     scp.Connect();
                                     toupload.ForEach(x => {
@@ -447,8 +445,7 @@ namespace SWSH {
                                             Color($"Uploading <file>: {x.Trim()}", ConsoleColor.Yellow);
                                             scp.Upload(new FileInfo(path), location);
                                             Color(" -> Done\n", ConsoleColor.Green);
-                                        }
-                                        else Error($"SWSH -> {path.Replace('/', '\\')} -> file does not exists.\n");
+                                        } else Error($"SWSH -> {path.Replace('/', '\\')} -> file does not exists.\n");
                                     });
                                 }
                         }
@@ -574,7 +571,7 @@ namespace SWSH {
         private static string[] ReadKeys() {
             var xml = new XmlDocument();
             xml.Load(Keys);
-            return new[] {xml.GetElementsByTagName("private")[0].InnerText, xml.GetElementsByTagName("public")[0].InnerText };
+            return new[] { xml.GetElementsByTagName("private")[0].InnerText, xml.GetElementsByTagName("public")[0].InnerText };
         }
         private static void WriteKeys(string privateFile, string publicFile) {
             var publickey = publicFile == null ? "" : File.ReadAllText(new FileInfo(publicFile).FullName);
