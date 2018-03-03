@@ -90,7 +90,7 @@ namespace SWSH {
                     else if (Command.StartsWith("cd")) Cd();
                     else if (Command.StartsWith("upload")) Upload();
                     else if (Command == "clear") Clear();
-                    else if (Command == "license") File.ReadAllLines(License).ToList().ForEach(x => Console.WriteLine(x));
+                    else if (Command == "license") File.ReadAllLines(License).ToList().ForEach(Console.WriteLine);
                     else if (Command == "license notice") Notice();
                     else if (Command == "pwd") Console.WriteLine(WorkingDirectory.ToLower());
                     else if (Command.StartsWith("computehash")) PrintHash();
