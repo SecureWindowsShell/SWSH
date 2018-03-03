@@ -373,10 +373,12 @@ namespace SWSH {
                             Color(size, ConsoleColor.Green);
                             Color(info.Length > 1024 ? (info.Length / 1024 > 1024 ? "MB" : "KB") : "B", ConsoleColor.DarkGreen);
                             Color($"\t{owner}  ", ConsoleColor.Yellow);
-                            Color(String.Format("{0}{1} {2} {3}", String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0].Length > 1 ? "" : " ",
-                                String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0],
-                                String.Format("{0:m}", info.LastWriteTime.Date).Remove(3),
-                                String.Format("{0:HH:mm}    ", info.LastWriteTime.ToLocalTime())), ConsoleColor.Blue);
+                            Color(
+                                $"{($"{info.LastWriteTime.Date:d}".Split('/')[0].Length > 1 ? "" : " ")}" +
+                                $"{$"{info.LastWriteTime.Date:d}".Split('/')[0]} " +
+                                $"{$"{info.LastWriteTime.Date:m}".Remove(3)} " +
+                                $"{info.LastWriteTime.ToLocalTime():HH:mm}    ",
+                                ConsoleColor.Blue);
                             Color(info.Name, Path.GetFileNameWithoutExtension(x).Length > 0 ? ConsoleColor.Magenta : ConsoleColor.Cyan);
                             Console.WriteLine();
                         }
@@ -389,11 +391,13 @@ namespace SWSH {
                             if (owner.Length < 10) for (int i = 0; i < 10 - owner.Length; i++) toApp += " ";
                             owner += toApp;
                             Color("   -", ConsoleColor.DarkGray);
-                            Color(String.Format("\t{0}  ", owner), ConsoleColor.Yellow);
-                            Color(String.Format("{0}{1} {2} {3}", String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0].Length > 1 ? "" : " ",
-                                String.Format("{0:d}", info.LastWriteTime.Date).Split('/')[0],
-                                String.Format("{0:m}", info.LastWriteTime.Date).Remove(3),
-                                String.Format("{0:HH:mm}    ", info.LastWriteTime.ToLocalTime())), ConsoleColor.Blue);
+                            Color($"\t{owner}  ", ConsoleColor.Yellow);
+                            Color(
+                                $"{($"{info.LastWriteTime.Date:d}".Split('/')[0].Length > 1 ? "" : " ")}" +
+                                $"{$"{info.LastWriteTime.Date:d}".Split('/')[0]} " +
+                                $"{$"{info.LastWriteTime.Date:m}".Remove(3)} " +
+                                $"{info.LastWriteTime.ToLocalTime():HH:mm}    ",
+                                ConsoleColor.Blue);
                             Color(info.Name,
                                 info.Name.StartsWith(".") ? ConsoleColor.DarkCyan : info.GetFiles().Length > 0 || info.GetDirectories().Length > 0 ?
                                 ConsoleColor.White : ConsoleColor.DarkGray);
