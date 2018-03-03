@@ -546,9 +546,8 @@ namespace SWSH {
                           + "pe `license'.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions; type `license' for detail"
                           + "s.\n\n");
         private static string GetCommand() {
-            var list = new List<string>();
             var commands = new[] { "version", "connect", "keygen", "help", "clear", "exit", "upload", "pwd", "computehash" };
-            foreach (var i in commands) list.Add(i);
+            var list = commands.ToList();
             foreach (var i in Directory.GetDirectories(WorkingDirectory)) list.Add($"cd {new DirectoryInfo(i).Name.ToLower()}");
             try {
                 ReadLine.AutoCompletionHandler = (data, length) => {
