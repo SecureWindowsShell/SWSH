@@ -280,10 +280,7 @@ namespace SWSH {
             if (Command != null && Command.StartsWith("show")) {
                 if (Command.Remove(0, 4).Trim() == "private") {
                     Console.WriteLine(ReadKeys()[0]);
-                } else {
-                    if (!String.IsNullOrEmpty(ReadKeys()[1])) Console.WriteLine(ReadKeys()[1]);
-                    else Console.WriteLine("No public key detected.");
-                }
+                } else Console.WriteLine(!string.IsNullOrEmpty(ReadKeys()[1]) ? ReadKeys()[1] : "No public key detected.");
                 return;
             }
             if (File.Exists(Keys)) {
