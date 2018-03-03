@@ -40,6 +40,7 @@ namespace SWSH {
         public static string History => $"{AppDataDirectory}/swsh_history";
         public static string Keys => $"{AppDataDirectory}/swsh_keys";
         public static string License => $"{AppDataDirectory}/LICENSE.txt";
+        public static bool Unstable => Codename.StartsWith("unstable");
         public static string Command = "", WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         private static void Main(string[] args) {
             if (!Directory.Exists(AppDataDirectory)) Directory.CreateDirectory(AppDataDirectory);
@@ -61,7 +62,7 @@ namespace SWSH {
             } catch (Exception exp) { Error($"Unable to download License, view online copy here: {Url.License}\nReason:{exp.Message}\n"); }
             /* Downloading License; if does not exists. END   */
             Console.Title = $"SWSH - {GetVersion()}";
-            if (!Unstable()) KeygenIsAvailable = CheckHash(args.Any(x => x == "--IgnoreChecksumMismatch"));
+            if (!Unstable) KeygenIsAvailable = CheckHash(args.Any(x => x == "--IgnoreChecksumMismatch"));
             Console.Write("Use `help` command for help.\n\n");
             try {
                 var handle = ExternalFunctions.GetStdHandle(-11);
@@ -296,12 +297,12 @@ namespace SWSH {
                 ImportKey();
                 return;
             }
-            if (!KeygenIsAvailable ^ Unstable()) {
+            if (!KeygenIsAvailable ^ Unstable) {
                 Color("Key generation is unavailable.\n", ConsoleColor.DarkBlue);
                 return;
             }
             if (File.Exists("swsh-keygen.exe")) {
-                if (!CheckHash(true) ^ Unstable()) return;
+                if (!CheckHash(true) ^ Unstable) return;
                 Console.WriteLine("\nGenerating public/private rsa key pair.");
                 string privateFile, publicFile;
                 Color("exit", ConsoleColor.Red);
@@ -577,7 +578,6 @@ namespace SWSH {
             ReadLine.PasswordMode = false;
             return password;
         }
-        private static bool Unstable() => Codename.StartsWith("unstable");
         private static void Error(string err) {
             Color("ERROR: ", ConsoleColor.Red);
             Console.Write(err);
