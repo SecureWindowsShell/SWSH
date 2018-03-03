@@ -81,8 +81,7 @@ namespace SWSH {
                     __color("swsh> ", ConsoleColor.DarkGray);
                     _command = __getCommand();
                     if (_command.StartsWith("swsh")) {
-                        __color("WARNING:\nThis type of commands is deprecated and will stop working in future.\nPlease take a look at our latest documentat" +
-                            "ion or use `help` command.\n", ConsoleColor.Yellow);
+                        __color("WARNING:\nThis type of commands is deprecated and will stop working in future.\nPlease take a look at our latest documentation or use `help` command.\n", ConsoleColor.Yellow);
                         if (_command.StartsWith("swsh --")) _command = _command.Remove(0, 7);
                     }
                     if (_command == "version") __version();
@@ -428,10 +427,7 @@ namespace SWSH {
         }
         private static void __upload() {
             if ((_command = _command.Remove(0, 7)) == "-h") {
-                Console.WriteLine("upload [--dir]* [args] [user@host]:[location]\n\n'args' are seperated using spaces ( ) and last 'arg' will be treated as " +
-                    "server data which includes username and host location as well as the location of data to upload, part after the colon (:), where the da" +
-                    "ta is to be uploaded. Use flag '--dir' to upload directiories. Do not use absolute paths for local path, change working directory to na" +
-                    "vigate.");
+                Console.WriteLine("upload [--dir]* [args] [user@host]:[location]\n\n'args' are seperated using spaces ( ) and last 'arg' will be treated as server data which includes username and host location as well as the location of data to upload, part after the colon (:), where the data is to be uploaded. Use flag '--dir' to upload directiories. Do not use absolute paths for local path, change working directory to navigate.");
             } else {
                 List<string> toupload = (_command.StartsWith("--dir")) ? _command.Replace("--dir", "").Trim().Split(' ').ToList() : _command.Trim().Split(' ')
                     .ToList();
@@ -497,8 +493,7 @@ namespace SWSH {
             return retVal;
         }
         private static string __version() {
-            Console.Write("   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __  / " +
-                " \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
+            Console.Write("   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __  /  \n/____/ |__/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
             Console.Write($"\nRelease: {_codename} {_version}\n");
             return $"{_codename} {_version}";
         }
@@ -555,9 +550,7 @@ namespace SWSH {
                 .ComputeHash(File.ReadAllBytes(path)))
                 .Select((x) => x.ToString("x2"))
                 .Aggregate((x, y) => x + y);
-        private static void __notice() => Console.Write("SWSH - Secure Windows Shell\nCopyright (C) 2017  Muhammad Muzzammil\nThis program comes with ABSOLU" +
-            "TELY NO WARRANTY; for details type `license'.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions; type `l" +
-            "icense' for details.\n\n");
+        private static void __notice() => Console.Write("SWSH - Secure Windows Shell\nCopyright (C) 2017  Muhammad Muzzammil\nThis program comes with ABSOLUTELY NO WARRANTY; for details type `license'.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions; type `license' for details.\n\n");
         private static string __getCommand() {
             var list = new List<string>();
             var commands = new string[] { "version", "connect", "keygen", "help", "clear", "exit", "upload", "pwd", "comput" +
