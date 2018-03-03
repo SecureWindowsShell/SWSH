@@ -73,7 +73,7 @@ namespace SWSH {
             Start();
         }
         private static void Start() {
-            while (true) {
+            while (Command != "exit") {
                 try {
                     Color($"{WorkingDirectory.Replace('\\', '/').Remove(0, 2).ToLower()}:", ConsoleColor.DarkCyan);
                     Color("swsh> ", ConsoleColor.DarkGray);
@@ -94,7 +94,6 @@ namespace SWSH {
                     else if (Command == "license notice") Notice();
                     else if (Command == "pwd") Console.WriteLine(WorkingDirectory.ToLower());
                     else if (Command.StartsWith("computehash")) PrintHash();
-                    else if (Command == "exit") Environment.Exit(0);
                     else if (Command.Trim() != "") Error($"SWSH -> {Command} -> unknown command.\n");
                 } catch (Exception exp) { Error($"{exp.Message}\n"); }
             }
