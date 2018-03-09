@@ -547,7 +547,7 @@ namespace SWSH {
         private static string GetCommand() {
             var commands = new[] { "version", "connect", "keygen", "help", "clear", "exit", "upload", "pwd", "computehash" };
             var list = commands.ToList();
-            foreach (var i in Directory.GetDirectories(WorkingDirectory)) list.Add($"cd {new DirectoryInfo(i).Name.ToLower()}");
+            list.AddRange(Directory.GetDirectories(WorkingDirectory).Select(i => $"cd {new DirectoryInfo(i).Name.ToLower()}"));
             try {
                 ReadLine.AutoCompletionHandler = (data, length) => {
                     var tList = new List<string>();
