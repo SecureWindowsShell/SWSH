@@ -23,17 +23,9 @@ namespace SWSH {
     public static class ReadLine {
         private static KeyHandler _keyHandler;
         public static List<string> History;
-
-        static ReadLine() {
-            History = new List<string>();
-        }
-
-        public static void AddHistory(params string[] text) => History.AddRange(text);
         public static List<string> GetHistory() => History;
-        public static void ClearHistory() => History = new List<string>();
         public static Func<string, int, string[]> AutoCompletionHandler { private get; set; }
         public static bool PasswordMode { private get; set; }
-
         public static string Read(string prompt = "", string defaultInput = "") {
             Console.Write(prompt);
 
