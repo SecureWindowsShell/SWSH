@@ -34,7 +34,6 @@ namespace SWSH {
     public static class Program {
         public static bool KeygenIsAvailable { get; set; }
         public static bool Unstable => Codename.StartsWith("unstable");
-        public static string Version => "";
         public static string Codename => "unstable-titan";
         public static string AppDataDirectory =>
             $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/SWSH";
@@ -485,8 +484,8 @@ namespace SWSH {
             Console.Write(
                 "   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __  /  \n/____/ |_"
                 + "_/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
-            Console.Write($"\nRelease: {Codename} {Version}\n");
-            return $"{Codename} {Version}";
+            Console.Write($"\nRelease: {Codename}\n");
+            return Codename;
         }
         private static void Color(string message, ConsoleColor cc) {
             Console.ForegroundColor = cc;
