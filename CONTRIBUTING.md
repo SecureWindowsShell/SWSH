@@ -38,7 +38,7 @@ A report should contain the following:
 
 **Description**: 
 
-* SWSH Version: beta 3.0
+* SWSH Release: Titan
 * Windows 10 1709 
 * .NET framework 4.7
 
@@ -65,31 +65,16 @@ Details should include:
 You can make a pull request, but it should follow guidelines described here and in our [code of conduct](#code-of-conduct).
 
 ### Somethings to remember when writing code:
-
-* Global variable names starts with an underscore (_), except for local variables.
-
-Example: `var _name = "Hi, I am a variable, I vary.";`
-
-* Global functions/methods starts with two (2) underscores (__), except for local functions.
-
-Example: 
-```cs
-public static string __name() {
-	...
-	// your code here
-	...
-}
-```
 * If a function is only required for one function, it should be a local function to the latter function.
 Example:
 ```cs
 // Instead of this:
-public static string __name() {
+public static string name() {
 	...
-	__otherFunction(str);
+	otherFunction(str);
 	...
 }
-public static string __otherFunction(string s) {
+public static string otherFunction(string s) {
 	...
 	// your code here
 	...
@@ -98,7 +83,7 @@ public static string __otherFunction(string s) {
 
 
 // Do this:
-public static string __name() {
+public static string name() {
 	...
 	otherFunction(str);
 	...
