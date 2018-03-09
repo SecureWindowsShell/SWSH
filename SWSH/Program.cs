@@ -485,7 +485,7 @@ namespace SWSH {
                 "   ______       _______ __  __\n  / ___/ |     / / ___// / / /\n  \\__ \\| | /| / /\\__ \\/ /_/ / \n ___/ /| |/ |/ /___/ / __  /  \n/____/ |_"
                 + "_/|__//____/_/ /_/   \n     Secure Windows Shell     \n");
             Console.Write($"\nRelease: {Codename}\n");
-            return Codename;
+            return $"{Codename} {(new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator)? "(Administrator)" : "")}";
         }
         private static void Color(string message, ConsoleColor cc) {
             Console.ForegroundColor = cc;
