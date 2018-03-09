@@ -59,28 +59,28 @@ namespace SWSH {
     internal class KeyHandler {
         private int _cursorPos;
         private int _cursorLimit;
-        private StringBuilder _text;
-        private List<string> _history;
+        private readonly StringBuilder _text;
+        private readonly List<string> _history;
         private int _historyIndex;
         private ConsoleKeyInfo _keyInfo;
-        private Dictionary<string, Action> _keyActions;
+        private readonly Dictionary<string, Action> _keyActions;
         private string[] _completions;
         private int _completionStart;
         private int _completionsIndex;
-        private IConsole Console2;
+        private readonly IConsole _console2;
 
         private bool IsStartOfLine() => _cursorPos == 0;
         private bool IsEndOfLine() => _cursorPos == _cursorLimit;
-        private bool IsStartOfBuffer() => Console2.CursorLeft == 0;
-        private bool IsEndOfBuffer() => Console2.CursorLeft == Console2.BufferWidth - 1;
+        private bool IsStartOfBuffer() => _console2.CursorLeft == 0;
+        private bool IsEndOfBuffer() => _console2.CursorLeft == _console2.BufferWidth - 1;
         private bool IsInAutoCompleteMode() => _completions != null;
         private void MoveCursorLeft() {
             if (IsStartOfLine())
                 return;
             if (IsStartOfBuffer())
-                Console2.SetCursorPosition(Console2.BufferWidth - 1, Console2.CursorTop - 1);
+                _console2.SetCursorPosition(_console2.BufferWidth - 1, _console2.CursorTop - 1);
             else
-                Console2.SetCursorPosition(Console2.CursorLeft - 1, Console2.CursorTop);
+                _console2.SetCursorPosition(_console2.CursorLeft - 1, _console2.CursorTop);
             _cursorPos--;
         }
         private void MoveCursorHome() {
@@ -95,9 +95,9 @@ namespace SWSH {
             if (IsEndOfLine())
                 return;
             if (IsEndOfBuffer())
-                Console2.SetCursorPosition(0, Console2.CursorTop + 1);
+                _console2.SetCursorPosition(0, _console2.CursorTop + 1);
             else
-                Console2.SetCursorPosition(Console2.CursorLeft + 1, Console2.CursorTop);
+                _console2.SetCursorPosition(_console2.CursorLeft + 1, _console2.CursorTop);
             _cursorPos++;
         }
         private void MoveCursorEnd() {
@@ -122,15 +122,15 @@ namespace SWSH {
         private void WriteChar(char c) {
             if (IsEndOfLine()) {
                 _text.Append(c);
-                Console2.Write(c.ToString());
+                _console2.Write(c.ToString());
                 _cursorPos++;
             } else {
-                int left = Console2.CursorLeft;
-                int top = Console2.CursorTop;
+                int left = _console2.CursorLeft;
+                int top = _console2.CursorTop;
                 string str = _text.ToString().Substring(_cursorPos);
                 _text.Insert(_cursorPos, c);
-                Console2.Write(c.ToString() + str);
-                Console2.SetCursorPosition(left, top);
+                _console2.Write(c.ToString() + str);
+                _console2.SetCursorPosition(left, top);
                 MoveCursorRight();
             }
             _cursorLimit++;
@@ -142,10 +142,10 @@ namespace SWSH {
             int index = _cursorPos;
             _text.Remove(index, 1);
             string replacement = _text.ToString().Substring(index);
-            int left = Console2.CursorLeft;
-            int top = Console2.CursorTop;
-            Console2.Write(string.Format("{0} ", replacement));
-            Console2.SetCursorPosition(left, top);
+            int left = _console2.CursorLeft;
+            int top = _console2.CursorTop;
+            _console2.Write($"{replacement} ");
+            _console2.SetCursorPosition(left, top);
             _cursorLimit--;
         }
         private void StartAutoComplete() {
@@ -197,13 +197,9 @@ namespace SWSH {
             _completions = null;
             _completionsIndex = 0;
         }
-        public string Text {
-            get {
-                return _text.ToString();
-            }
-        }
+        public string Text => _text.ToString();
         public KeyHandler(IConsole console, List<string> history, Func<string, int, string[]> autoCompleteHandler) {
-            Console2 = console;
+            _console2 = console;
 
             _historyIndex = history.Count;
             _history = history;
