@@ -11,7 +11,7 @@ A report should contain the following:
 
 **Description**: 
 
-* SWSH Version: beta 3.0
+* SWSH Version: Titan
 * Windows 10 1709 
 * .NET framework 4.7
 
