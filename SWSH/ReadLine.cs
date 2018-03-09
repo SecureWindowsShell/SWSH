@@ -22,22 +22,22 @@ using System.Text;
 namespace SWSH {
     public static class ReadLine {
         private static KeyHandler _keyHandler;
-        private static List<string> _history;
+        public static List<string> History;
 
         static ReadLine() {
-            _history = new List<string>();
+            History = new List<string>();
         }
 
-        public static void AddHistory(params string[] text) => _history.AddRange(text);
-        public static List<string> GetHistory() => _history;
-        public static void ClearHistory() => _history = new List<string>();
+        public static void AddHistory(params string[] text) => History.AddRange(text);
+        public static List<string> GetHistory() => History;
+        public static void ClearHistory() => History = new List<string>();
         public static Func<string, int, string[]> AutoCompletionHandler { private get; set; }
         public static bool PasswordMode { private get; set; }
 
         public static string Read(string prompt = "", string defaultInput = "") {
             Console.Write(prompt);
 
-            _keyHandler = new KeyHandler(new Console2() { PasswordMode = PasswordMode }, _history, AutoCompletionHandler);
+            _keyHandler = new KeyHandler(new Console2() { PasswordMode = PasswordMode }, History, AutoCompletionHandler);
             ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 
             while (keyInfo.Key != ConsoleKey.Enter) {
@@ -51,7 +51,7 @@ namespace SWSH {
             if (String.IsNullOrWhiteSpace(text) && !String.IsNullOrWhiteSpace(defaultInput))
                 text = defaultInput;
             else
-                _history.Add(text);
+                History.Add(text);
 
             return text;
         }
