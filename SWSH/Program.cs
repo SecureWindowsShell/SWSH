@@ -88,14 +88,14 @@ namespace SWSH {
                     else if (Command.StartsWith("help")) Help();
                     else if (Command.StartsWith("connect")) Connect();
                     else if (Command.StartsWith("keygen")) Keygen();
-                    else if (Command == "ls") Ls();
                     else if (Command.StartsWith("cd")) Cd();
                     else if (Command.StartsWith("upload")) Upload();
+                    else if (Command.StartsWith("computehash")) PrintHash();
+                    else if (Command == "ls") Ls();
                     else if (Command == "clear") Clear();
                     else if (Command == "license") File.ReadAllLines(License).ToList().ForEach(Console.WriteLine);
                     else if (Command == "license notice") Notice();
                     else if (Command == "pwd") Console.WriteLine(WorkingDirectory.ToLower());
-                    else if (Command.StartsWith("computehash")) PrintHash();
                     else if (Command.Trim() != "") Error($"SWSH -> {Command} -> unknown command.\n");
                 } catch (Exception exp) { Error($"{exp.Message}\n"); }
             }
