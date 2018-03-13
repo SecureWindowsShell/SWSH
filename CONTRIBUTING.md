@@ -69,12 +69,12 @@ You can make a pull request, but it should follow guidelines described here and 
 Example:
 ```cs
 // Instead of this:
-public static string name() {
+public static string Name() {
 	...
-	otherFunction(str);
+	OtherFunction(str);
 	...
 }
-public static string otherFunction(string s) {
+public static string OtherFunction(string s) {
 	...
 	// your code here
 	...
@@ -83,11 +83,11 @@ public static string otherFunction(string s) {
 
 
 // Do this:
-public static string name() {
+public static string Name() {
 	...
-	otherFunction(str);
+	OtherFunction(str);
 	...
-	string otherFunction(string s) {
+	string OtherFunction(string s) {
 		...
 		// your code here
 		...
