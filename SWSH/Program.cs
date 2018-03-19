@@ -109,49 +109,49 @@ namespace SWSH {
                 Console.WriteLine();
                 switch (Command) {
                     case "version": {
-                            Console.WriteLine("Syntax: version");
-                            Console.WriteLine("Checks the version of swsh.\n\nUsage: version\n");
-                            break;
-                        }
+                        Console.WriteLine("Syntax: version");
+                        Console.WriteLine("Checks the version of swsh.\n\nUsage: version\n");
+                        break;
+                    }
                     case "connect": {
-                            Console.WriteLine("Syntax: connect [user@host] (-p)");
-                            Console.WriteLine("Connects to Server over SSH. Use `-p` for password connection.\nUsage: connect root@server.ip");
-                            break;
-                        }
+                        Console.WriteLine("Syntax: connect [user@host] (-p)");
+                        Console.WriteLine("Connects to Server over SSH. Use `-p` for password connection.\nUsage: connect root@server.ip");
+                        break;
+                    }
                     case "keygen": {
-                            Console.WriteLine("Syntax: keygen (options)");
-                            Console.WriteLine("Generates, imports or show SSH RSA key pair. Requires swsh-keygen.exe.");
-                            Console.WriteLine("Default values are provided in parentheses.");
-                            Console.WriteLine("\nOptions:\n\timport\t\t- Imports RSA key pair.");
-                            Console.WriteLine("\tshow [private]\t- Print RSA keys. By default, prints public key. Use `private` to print private key.");
-                            break;
-                        }
+                        Console.WriteLine("Syntax: keygen (options)");
+                        Console.WriteLine("Generates, imports or show SSH RSA key pair. Requires swsh-keygen.exe.");
+                        Console.WriteLine("Default values are provided in parentheses.");
+                        Console.WriteLine("\nOptions:\n\timport\t\t- Imports RSA key pair.");
+                        Console.WriteLine("\tshow [private]\t- Print RSA keys. By default, prints public key. Use `private` to print private key.");
+                        break;
+                    }
                     case "help": {
-                            Console.WriteLine("Syntax: help [command]");
-                            Console.WriteLine("Displays this help or command details.\nUsage: help pwd");
-                            break;
-                        }
+                        Console.WriteLine("Syntax: help [command]");
+                        Console.WriteLine("Displays this help or command details.\nUsage: help pwd");
+                        break;
+                    }
                     case "clear": {
-                            Console.WriteLine("Syntax: clear");
-                            Console.WriteLine("Clears the console.\nUsage: clear");
-                            break;
-                        }
+                        Console.WriteLine("Syntax: clear");
+                        Console.WriteLine("Clears the console.\nUsage: clear");
+                        break;
+                    }
                     case "pwd": {
-                            Console.WriteLine("Syntax: pwd");
-                            Console.WriteLine("Prints working directory.\nUsage: pwd");
-                            break;
-                        }
+                        Console.WriteLine("Syntax: pwd");
+                        Console.WriteLine("Prints working directory.\nUsage: pwd");
+                        break;
+                    }
                     case "computehash": {
-                            Console.WriteLine("Syntax: computehash [(>/>>) path/to/file]");
-                            Console.WriteLine("Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\n");
-                            Console.WriteLine("Usage:\nTo overwrite-> computehash > path/to/file\nTo append-> computehash >> path/to/file");
-                            break;
-                        }
+                        Console.WriteLine("Syntax: computehash [(>/>>) path/to/file]");
+                        Console.WriteLine("Uses SHA-1 hash function to generate hashes for SWSH and swsh-keygen.\n");
+                        Console.WriteLine("Usage:\nTo overwrite-> computehash > path/to/file\nTo append-> computehash >> path/to/file");
+                        break;
+                    }
                     case "ls": {
-                            Console.WriteLine("Syntax: ls");
-                            Console.WriteLine("Lists all files and directories in working directory.\nUsage: ls");
-                            break;
-                        }
+                        Console.WriteLine("Syntax: ls");
+                        Console.WriteLine("Lists all files and directories in working directory.\nUsage: ls");
+                        break;
+                    }
                     case "cd": {
                         Console.WriteLine("Syntax: cd [arg]");
                         Console.WriteLine("Changes directory to 'arg'. arg = directory name.\nUsage: cd desktop");
@@ -159,7 +159,7 @@ namespace SWSH {
                     }
                     case "upload": {
                         Console.WriteLine("Use `upload -h`");
-                            break;
+                        break;
                     }
                     default:
                         Error($"SWSH -> {Command} -> unknown command.\n");
