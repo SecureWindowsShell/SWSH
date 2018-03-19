@@ -142,6 +142,25 @@ namespace SWSH {
                             Console.WriteLine("Displays this help or command details.\nUsage: help pwd");
                             break;
                         }
+                    case "clear": {
+                        Console.WriteLine("Syntax: clear");
+                        Console.WriteLine("Clears the console.\nUsage: clear");
+                        break;
+                    }
+                    case "cd": {
+                        Console.WriteLine("Syntax: cd [arg]");
+                        Console.WriteLine("Changes directory to 'arg'. arg = directory name.\nUsage: cd desktop");
+                        break;
+                    }
+                    case "ls": {
+                        Console.WriteLine("Syntax: ls");
+                        Console.WriteLine("Lists all files and directories in working directory.\nUsage: ls");
+                        break;
+                        }
+                    case "upload": {
+                        Console.WriteLine("Use `upload -h`");
+                            break;
+                    }
                     default:
                         Error($"SWSH -> {Command} -> unknown command.\n");
                         break;
