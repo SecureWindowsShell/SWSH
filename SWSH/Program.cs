@@ -183,6 +183,10 @@ namespace SWSH {
             }
         }
         private static void Connect() {
+            if (Command.Length <= 8) {
+                Help("connect");
+                return;
+            }
             if (!Command.EndsWith("-p")) {
                 if (!File.Exists(Keys)) {
                     Console.Write("SWSH private key file not found. (I)mport or (G)enerate?: ");
@@ -423,6 +427,10 @@ namespace SWSH {
                 Color("No files or directories here.\n", ConsoleColor.Yellow);
         }
         private static void Cd() {
+            if (Command.Length <= 3) {
+                Help("cd");
+                return;
+            }
             if ((Command = Command.Remove(0, 3)) == "..") ChangeWorkingDir(Path.GetDirectoryName(WorkingDirectory));
             else if (Command.StartsWith("./")) ChangeWorkingDir($"{WorkingDirectory}/{Command.Remove(0, 2)}");
             else if (Command.StartsWith("/")) ChangeWorkingDir(Path.GetPathRoot(WorkingDirectory) + Command.Remove(0, 1));
@@ -434,6 +442,9 @@ namespace SWSH {
             }
         }
         private static void Upload() {
+            if (Command.Length <= 7) {
+                Command = "upload -h";
+            }
             if ((Command = Command.Remove(0, 7)) == "-h") {
                 Console.WriteLine(
                     "upload [--dir]* [args] [user@host]:[location]\n\n'args' are seperated using spaces ( ) and last 'arg' will be treated as server data whic"
