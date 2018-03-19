@@ -165,7 +165,7 @@ Usage: ls
 ### cd
 
 ```swsh
-Syntax: cd
+Syntax: cd [arg]
 Changes directory to 'arg'. arg = directory name.
 
 Usage: cd
