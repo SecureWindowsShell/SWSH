@@ -85,7 +85,7 @@ namespace SWSH {
                         if (Command.StartsWith("swsh --")) Command = Command.Remove(0, 7);
                     }
                     if (Command == "version") GetVersion();
-                    else if (Command.StartsWith("help")) Help();
+                    else if (Command.StartsWith("help")) Help(null);
                     else if (Command.StartsWith("connect")) Connect();
                     else if (Command.StartsWith("keygen")) Keygen();
                     else if (Command.StartsWith("cd")) Cd();
@@ -100,8 +100,8 @@ namespace SWSH {
                 } catch (Exception exp) { Error($"{exp.Message}\n"); }
             }
         }
-        private static void Help() {
-            Command = Command.Remove(0, 4).Trim();
+        private static void Help(string cmd) {
+            Command = cmd ?? Command.Remove(0, 4).Trim();
             if (Command.Length > 0) {
                 var title = $"Help for {Command}";
                 Console.WriteLine(title);
