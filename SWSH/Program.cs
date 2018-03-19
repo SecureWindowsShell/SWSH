@@ -126,6 +126,16 @@ namespace SWSH {
                             Console.WriteLine("\tshow [private]\t- Print RSA keys. By default, prints public key. Use `private` to print private key.");
                             break;
                         }
+                    case "help": {
+                            Console.WriteLine("Syntax: help [command]");
+                            Console.WriteLine("Displays this help or command details.\nUsage: help pwd");
+                            break;
+                        }
+                    case "clear": {
+                            Console.WriteLine("Syntax: clear");
+                            Console.WriteLine("Clears the console.\nUsage: clear");
+                            break;
+                        }
                     case "pwd": {
                             Console.WriteLine("Syntax: pwd");
                             Console.WriteLine("Prints working directory.\nUsage: pwd");
@@ -137,26 +147,16 @@ namespace SWSH {
                             Console.WriteLine("Usage:\nTo overwrite-> computehash > path/to/file\nTo append-> computehash >> path/to/file");
                             break;
                         }
-                    case "help": {
-                            Console.WriteLine("Syntax: help [command]");
-                            Console.WriteLine("Displays this help or command details.\nUsage: help pwd");
+                    case "ls": {
+                            Console.WriteLine("Syntax: ls");
+                            Console.WriteLine("Lists all files and directories in working directory.\nUsage: ls");
                             break;
                         }
-                    case "clear": {
-                        Console.WriteLine("Syntax: clear");
-                        Console.WriteLine("Clears the console.\nUsage: clear");
-                        break;
-                    }
                     case "cd": {
                         Console.WriteLine("Syntax: cd [arg]");
                         Console.WriteLine("Changes directory to 'arg'. arg = directory name.\nUsage: cd desktop");
                         break;
                     }
-                    case "ls": {
-                        Console.WriteLine("Syntax: ls");
-                        Console.WriteLine("Lists all files and directories in working directory.\nUsage: ls");
-                        break;
-                        }
                     case "upload": {
                         Console.WriteLine("Use `upload -h`");
                             break;
