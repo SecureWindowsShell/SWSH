@@ -70,6 +70,8 @@ namespace SWSH {
                 ExternalFunctions.GetConsoleMode(handle, out mode);
             } catch (Exception exp) { Error($"{exp.Message}\n"); }
             ReadLine.History = File.ReadAllLines(History).ToList().ConvertAll(x => x.Split('=')[1].Remove(0, 2));
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.InputEncoding = Encoding.UTF8;
             Start();
         }
         private static void Start() {
