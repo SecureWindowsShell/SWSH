@@ -499,7 +499,7 @@ namespace SWSH {
                     } else {
                         using (Stream fileStream = new FileStream(x.FullName, FileMode.Open)) {
                             Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.Write("\tUploading <file>: {0} ({1:N0} bytes)", x, ((FileInfo)x).Length);
+                            Console.Write($"\tUploading <file>: {x} ({((FileInfo)x).Length:N0} bytes)");
                             client.UploadFile(fileStream, $"{remotePath}/{x.Name}");
                             Color(" -> Done\n", ConsoleColor.Green);
                         }
