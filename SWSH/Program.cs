@@ -34,7 +34,7 @@ namespace SWSH {
     public static class Program {
         public static bool KeygenIsAvailable { get; set; }
         public static bool Unstable => Codename.StartsWith("unstable");
-        public static string Codename => "unstable-titan";
+        public static string Codename => "Titan (1.0)";
         public static string AppDataDirectory => $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/SWSH";
         public static string History => $"{AppDataDirectory}/swsh_history";
         public static string Keys => $"{AppDataDirectory}/swsh_keys";
